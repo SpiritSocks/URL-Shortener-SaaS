@@ -18,12 +18,12 @@ const LoginRegistrationPage = () => {
 
     const handleLogin = () => {
         console.log('login')
-        navigate('/linkshomepage')
+        navigate('/home')
     }
 
     const handleRegistration = () => {
         console.log('register')
-        navigate('/linkshomepage')
+        navigate('/home')
     }
 
     const [mode, setMode] = useState<'login' | 'register'>('login');
