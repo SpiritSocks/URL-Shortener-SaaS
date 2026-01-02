@@ -1,29 +1,43 @@
 .button_active{
-    background-color: #3971b8;
-    width: 120px;
-    height: 50px;
-    padding: 0 20px 0 20px;
-    border-radius: 10px;
-    color: #fbfcee;
-    font-size: 18px;
-    font-weight: 400;
+  background-color: #3971b8;
+  color: #fbfcee;
+  border-radius: 10px;
+  font-weight: 400;
+  width: auto;              
+  height: auto;             
+  min-height: 44px;         
+  padding: 10px 16px;    
+  font-size: 16px;          
+  line-height: 1;
+  white-space: nowrap;
 }
 
-.button_inactive {
-    background-color: transparent;
-    width: 120px;
-    height: 50px;
-    padding: 0 20px 0 20px;
-    border-radius: 10px;
-    color: #fbfcee;
-    font-size: 18px;
-    font-weight: 400;
+.button_inactive{
+  background-color: transparent;
+  color: #fbfcee;
+  border-radius: 10px;
+  font-weight: 400;
+
+  width: auto;
+  height: auto;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
-.button_inactive:hover {
-    background-color: #414927;
-    transition-property: background-color;
-    transition-duration: 0.3s;
-    transition-timing-function: ease-in-out;
-    cursor: pointer;
+.button_inactive:hover{
+  background-color: #414927;
+  transition: background-color 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+@media (min-width: 640px){
+  .button_active,
+  .button_inactive{
+    min-height: 50px;
+    padding: 12px 20px;
+    font-size: 18px;
+  }
 }
