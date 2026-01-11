@@ -1,4 +1,3 @@
-// LandingCard.tsx
 import React from 'react';
 
 type LandingCardProps = {
