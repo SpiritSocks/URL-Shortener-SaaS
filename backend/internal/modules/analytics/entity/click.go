@@ -1,4 +1,4 @@
-package analytics
+package entity
 
 import "time"
 
