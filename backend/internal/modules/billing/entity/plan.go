@@ -1,4 +1,4 @@
-package billing
+package entity
 
 type Plan struct {
 	Plan_ID         int64

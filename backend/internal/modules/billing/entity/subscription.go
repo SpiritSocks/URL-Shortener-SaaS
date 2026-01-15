@@ -1,4 +1,4 @@
-package billing
+package entity
 
 import "time"
 
