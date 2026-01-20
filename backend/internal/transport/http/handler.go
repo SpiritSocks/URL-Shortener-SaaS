@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
-	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service"
 )
 
 type Handler struct {
-	svc service.LinkService
+	svc domain.LinkService
 }
 
 func NewLinkHandler(svc domain.LinkRepository) *Handler {

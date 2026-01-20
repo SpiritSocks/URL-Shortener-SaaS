@@ -32,3 +32,15 @@ type SubscriptionRepository interface {
 	Checkout() error
 	Cancel() error
 }
+
+type PlanService interface {
+	GetByID(ctx context.Context, planID int64) (Plan, error)
+	ListActive(ctx context.Context) ([]Plan, error)
+}
+
+type SubscriptionService interface {
+	CheckActive(ctx context.Context, sub Subscription) (bool, error)
+	EnforceAction(ctx context.Context, sub Subscription) (bool, error)
+	Checkout(ctx context.Context) error
+	Cancel(ctx context.Context) error
+}

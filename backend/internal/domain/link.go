@@ -19,3 +19,9 @@ type LinkRepository interface {
 	Delete(ctx context.Context, linkID int64) error
 	GetByID(ctx context.Context, linkID int64) (Link, error)
 }
+
+type LinkService interface {
+	Create(ctx context.Context, url string) (Link, error)
+	Delete(ctx context.Context, linkID int64) error
+	GetByID(ctx context.Context, linkID int64) (Link, error)
+}

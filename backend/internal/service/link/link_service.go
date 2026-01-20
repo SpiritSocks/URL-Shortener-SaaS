@@ -7,17 +7,11 @@ import (
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
 )
 
-type LinkService interface {
-	Create(ctx context.Context, url string) (domain.Link, error)
-	Delete(ctx context.Context, linkID int64) error
-	GetByID(ctx context.Context, linkID int64) (domain.Link, error)
-}
-
 type service struct {
 	repo domain.LinkRepository
 }
 
-func NewLinkService(repo domain.LinkRepository) LinkService {
+func NewLinkService(repo domain.LinkRepository) domain.LinkService {
 	return &service{repo: repo}
 }
 
