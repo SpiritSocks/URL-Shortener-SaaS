@@ -8,7 +8,7 @@ import (
 type Plan struct {
 	PlanID int64
 	Name   string
-	PPM    float64 // Price Per Month
+	PPM    int64 // Price Per Month
 	Limit  int64
 }
 
