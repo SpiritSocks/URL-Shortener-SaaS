@@ -26,16 +26,16 @@ type PlanRepository interface {
 	ListActive(ctx context.Context) ([]Plan, error)
 }
 
-type SubscriptionRepository interface {
-	CheckActive(sub Subscription) (bool, error)
-	EnforceAction(sub Subscription) (bool, error)
-	Checkout() error
-	Cancel() error
-}
-
 type PlanService interface {
 	GetByID(ctx context.Context, planID int64) (Plan, error)
 	ListActive(ctx context.Context) ([]Plan, error)
+}
+
+type SubscriptionRepository interface {
+	CheckActive(ctx context.Context, sub Subscription) (bool, error)
+	EnforceAction(ctx context.Context, sub Subscription) (bool, error)
+	Checkout(ctx context.Context) error
+	Cancel(ctx context.Context) error
 }
 
 type SubscriptionService interface {

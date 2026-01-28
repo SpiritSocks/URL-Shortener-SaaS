@@ -15,14 +15,14 @@ type User struct {
 }
 
 type UserRepository interface {
-	Register(u User) (User, error)
-	Login(email string, password string) (User, error)
-	Logout() error
-	GetUser() (User, error)
+	Register(ctx context.Context, u User) (User, error)
+	Login(ctx context.Context, email string, password string) (User, error)
+	Logout(ctx context.Context) error
+	GetUser(ctx context.Context) (User, error)
 }
 
 type UserService interface {
-	Register(ctx context.Context, u User) (User, error)
+	Register(ctx context.Context, username, email, password string) (User, error)
 	Login(ctx context.Context, email string, password string) (User, error)
 	Logout(ctx context.Context) error
 	GetUser(ctx context.Context) (User, error)
