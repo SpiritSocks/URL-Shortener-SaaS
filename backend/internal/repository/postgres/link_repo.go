@@ -17,6 +17,9 @@ func NewLinkRepository(conn *sql.DB) *LinkRepository {
 }
 
 func (lpo *LinkRepository) Create(ctx context.Context, url string) (domain.Link, error) {
+
+	//slug := service.SlugGenerator(url)
+
 	return domain.Link{}, nil
 }
 

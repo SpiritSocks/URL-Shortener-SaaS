@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Field,
-  FieldContent,
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
@@ -15,18 +13,59 @@ import { useNavigate } from "react-router-dom";
 
 const LoginRegistrationPage = () => {
     const navigate = useNavigate();
-
-    const handleLogin = () => {
-        console.log('login')
-        navigate('/home')
-    }
-
-    const handleRegistration = () => {
-        console.log('register')
-        navigate('/home')
-    }
-
     const [mode, setMode] = useState<'login' | 'register'>('login');
+
+    const [userName, setUserName] = useState('');
+    const [userEmail, setUserEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleLogin = async () => {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          password: password,
+        }),
+      });
+
+      if (!res.ok) {
+        console.log('Login failed');
+        return;
+      }
+
+      navigate('/home');
+    };
+
+    const handleRegistration = async () => {
+      if (password !== confirmPassword) {
+        console.log('Passwords do not match');
+        return;
+      }
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: userName,
+          email: userEmail,
+          password: password,
+        }),
+      });
+
+      if (!res.ok) {
+        console.log('Registration failed');
+        return;
+      }
+
+      navigate('/home');
+    };
+
 
     return (
     <section id="login_form" className="min-w-md flex justify-center items-center h-screen">
@@ -51,8 +90,12 @@ const LoginRegistrationPage = () => {
         <FieldGroup>
           {mode === 'register' && (
             <Field>
-              <FieldLabel htmlFor="userName">Full Name</FieldLabel>
-              <Input id="userName" type="text" placeholder="John Doe" className="border-2 border-[#c8d69b]" />
+              <FieldLabel htmlFor="userName">Username</FieldLabel>
+              <Input id="userName" 
+                    type="text" 
+                    placeholder="John Doe" 
+                    className="border-2 border-[#c8d69b]" 
+                    onChange={(e) => setUserName(e.target.value)} />
             </Field>
           )}
           <Field>
@@ -62,6 +105,7 @@ const LoginRegistrationPage = () => {
               type="email"
               placeholder="example@mail.com"
               className="border-2 border-[#c8d69b]"
+              onChange={(e) => setUserEmail(e.target.value)}
             />
           </Field>
           <Field>
@@ -71,6 +115,7 @@ const LoginRegistrationPage = () => {
               type="password"
               placeholder="••••••••••"
               className="border-2 border-[#c8d69b]"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <FieldDescription>
               Must be at least 8 characters long.
@@ -84,6 +129,7 @@ const LoginRegistrationPage = () => {
                 type="password"
                 placeholder="••••••••••"
                 className="border-2 border-[#c8d69b]"
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Field>
           )}
