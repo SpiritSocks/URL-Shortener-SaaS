@@ -27,6 +27,7 @@ const MainPage = () => {
         <DashboardMenu 
         isOpen={activeMenu === 'dashboard'}
         />
+        <br/>
         </>
     )
 }
