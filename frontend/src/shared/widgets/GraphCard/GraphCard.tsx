@@ -1,7 +1,7 @@
 type GraphCardProps = {
     icon: React.ComponentType<{ className?: string }>;
     title: string;
-    children: React.ReactElement;
+    children: React.ReactNode;
 };
 
 const GraphCard = ({ icon: Icon, title, children }: GraphCardProps) => {

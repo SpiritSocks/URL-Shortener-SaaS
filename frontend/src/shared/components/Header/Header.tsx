@@ -1,7 +1,7 @@
-// Header.tsx
 import { Button } from "@/components/ui/button";
-import { Link2 } from "lucide-react";
+import { Link2, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/lib/AuthContext";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
@@ -10,12 +10,16 @@ interface HeaderProps {
 }
 
 const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
-  
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleProfileClick = () => {
-
     navigate('/profile');
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -54,6 +58,14 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
             onClick={handleProfileClick}
           >
             Profile
+          </Button>
+
+          <Button
+            className={styles.button_inactive}
+            onClick={handleLogout}
+          >
+            <LogOut size={16} />
+            Logout
           </Button>
         </nav>
       </div>
