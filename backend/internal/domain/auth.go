@@ -12,18 +12,19 @@ type User struct {
 	PasswordHash string
 	CreatedAt    time.Time
 	IsAdmin      bool
+	PlanID       int64
 }
 
 type UserRepository interface {
 	Register(ctx context.Context, u *User) error
-	Login(ctx context.Context) error
-	Logout(ctx context.Context) error
+	GetByEmail(ctx context.Context, email string) (User, error)
 	GetUser(ctx context.Context, userID int64) (User, error)
+	UpdateUser(ctx context.Context, u *User) error
 }
 
 type UserService interface {
 	Register(ctx context.Context, u *User) error
-	Login(ctx context.Context) error
-	Logout(ctx context.Context) error
+	Login(ctx context.Context, email, password string) (User, error)
 	GetUser(ctx context.Context, userID int64) (User, error)
+	UpdateUser(ctx context.Context, u *User) error
 }

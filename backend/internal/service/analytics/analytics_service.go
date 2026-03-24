@@ -2,26 +2,149 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
 )
 
 type service struct {
-	repo domain.AnalyticsRepository
+	repo     domain.AnalyticsRepository
+	linkRepo domain.LinkRepository
 }
 
-func NewAnalyticsService(repo domain.AnalyticsRepository) domain.AnalyticsService {
-	return &service{repo: repo}
+func NewAnalyticsService(repo domain.AnalyticsRepository, linkRepo domain.LinkRepository) domain.AnalyticsService {
+	return &service{repo: repo, linkRepo: linkRepo}
 }
 
-func (srv *service) TrackClick(ctx context.Context) error {
-	return nil
+func (srv *service) TrackClick(ctx context.Context, event *domain.ClickEvent) error {
+	return srv.repo.TrackClick(ctx, event)
 }
 
-func (srv *service) GetLinkReport(ctx context.Context, linkID int64) (domain.ClickEvent, error) {
-	return domain.ClickEvent{}, nil
+func (srv *service) GetOverview(ctx context.Context, ownerID int64) (domain.OverviewStats, error) {
+	totalLinks, err := srv.linkRepo.CountByOwner(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	totalClicks, err := srv.repo.TotalClicksByOwner(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	clicksOver, err := srv.repo.ClicksOverTime(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	countries, err := srv.repo.CountryBreakdown(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	devices, err := srv.repo.DeviceBreakdown(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	browsers, err := srv.repo.BrowserBreakdown(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	osStats, err := srv.repo.OSBreakdown(ctx, ownerID)
+	if err != nil {
+		return domain.OverviewStats{}, err
+	}
+
+	var avgPerLink float64
+	if totalLinks > 0 {
+		avgPerLink = float64(totalClicks) / float64(totalLinks)
+	}
+
+	var avgPerDay float64
+	if len(clicksOver) > 0 {
+		avgPerDay = float64(totalClicks) / float64(len(clicksOver))
+	}
+
+	return domain.OverviewStats{
+		TotalLinks:  totalLinks,
+		TotalClicks: totalClicks,
+		AvgPerLink:  avgPerLink,
+		AvgPerDay:   avgPerDay,
+		ClicksOver:  clicksOver,
+		Countries:   countries,
+		Devices:     devices,
+		Browsers:    browsers,
+		OSStats:     osStats,
+	}, nil
 }
 
-func (srv *service) GetOverview(ctx context.Context, ownerID int64) ([]domain.ClickEvent, error) {
-	return []domain.ClickEvent{}, nil
+func (srv *service) GetAdvanced(ctx context.Context, ownerID int64) (domain.AdvancedStats, error) {
+	referers, err := srv.repo.RefererBreakdown(ctx, ownerID)
+	if err != nil {
+		return domain.AdvancedStats{}, err
+	}
+
+	hourly, err := srv.repo.HourlyBreakdown(ctx, ownerID)
+	if err != nil {
+		return domain.AdvancedStats{}, err
+	}
+
+	topLinks, err := srv.repo.TopLinks(ctx, ownerID, 10)
+	if err != nil {
+		return domain.AdvancedStats{}, err
+	}
+
+	recent, err := srv.repo.RecentClicks(ctx, ownerID, 20)
+	if err != nil {
+		return domain.AdvancedStats{}, err
+	}
+
+	return domain.AdvancedStats{
+		Referers:     referers,
+		HourlyMap:    hourly,
+		TopLinks:     topLinks,
+		RecentClicks: recent,
+	}, nil
+}
+
+func (srv *service) GetCSVExport(ctx context.Context, ownerID int64) ([]domain.CSVRow, error) {
+	return srv.repo.ExportCSV(ctx, ownerID)
+}
+
+func (srv *service) GetLinkDetail(ctx context.Context, linkID int64, slug, targetURL string, createdAt time.Time, planName string) (domain.LinkDetailStats, error) {
+	total, _ := srv.repo.TotalClicksByLink(ctx, linkID)
+	clicksToday, _ := srv.repo.ClicksByLinkPeriod(ctx, linkID, "1 day")
+	clicksWeek, _ := srv.repo.ClicksByLinkPeriod(ctx, linkID, "7 days")
+	clicksMonth, _ := srv.repo.ClicksByLinkPeriod(ctx, linkID, "30 days")
+	clicksOver, _ := srv.repo.ClicksOverTimeByLink(ctx, linkID)
+
+	stats := domain.LinkDetailStats{
+		LinkID:      linkID,
+		Slug:        slug,
+		TargetURL:   targetURL,
+		CreatedAt:   createdAt,
+		TotalClicks: total,
+		ClicksToday: clicksToday,
+		ClicksWeek:  clicksWeek,
+		ClicksMonth: clicksMonth,
+		ClicksOver:  clicksOver,
+	}
+
+	// Pro and Unlimited get full breakdowns
+	if planName == "pro" || planName == "unlimited" {
+		stats.Countries, _ = srv.repo.CountryBreakdownByLink(ctx, linkID)
+		stats.Devices, _ = srv.repo.DeviceBreakdownByLink(ctx, linkID)
+		stats.Browsers, _ = srv.repo.BrowserBreakdownByLink(ctx, linkID)
+		stats.OSStats, _ = srv.repo.OSBreakdownByLink(ctx, linkID)
+	}
+
+	// Unlimited gets advanced per-link analytics
+	if planName == "unlimited" {
+		stats.Referers, _ = srv.repo.RefererBreakdownByLink(ctx, linkID)
+		stats.HourlyMap, _ = srv.repo.HourlyBreakdownByLink(ctx, linkID)
+		stats.RecentClicks, _ = srv.repo.RecentClicksByLink(ctx, linkID, 20)
+	}
+
+	return stats, nil
 }

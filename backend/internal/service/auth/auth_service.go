@@ -18,7 +18,6 @@ func NewAuthService(repo domain.UserRepository) domain.UserService {
 }
 
 func (srv *service) Register(ctx context.Context, u *domain.User) error {
-
 	u.Username = strings.TrimSpace(u.Username)
 	u.Email = strings.TrimSpace(u.Email)
 
@@ -27,7 +26,6 @@ func (srv *service) Register(ctx context.Context, u *domain.User) error {
 	}
 
 	rawPassword := u.PasswordHash
-
 	if len(rawPassword) < 8 {
 		return errors.New("password must be at least 8 characters")
 	}
@@ -41,12 +39,33 @@ func (srv *service) Register(ctx context.Context, u *domain.User) error {
 	return srv.repo.Register(ctx, u)
 }
 
-func (srv *service) Login(ctx context.Context) error {
-	return nil
+func (srv *service) Login(ctx context.Context, email, password string) (domain.User, error) {
+	email = strings.TrimSpace(email)
+	if email == "" || password == "" {
+		return domain.User{}, errors.New("email and password are required")
+	}
+
+	user, err := srv.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return domain.User{}, domain.ErrInvalidPassword
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
+		return domain.User{}, domain.ErrInvalidPassword
+	}
+
+	return user, nil
 }
 
-func (srv *service) Logout(ctx context.Context) error { return nil }
-
 func (srv *service) GetUser(ctx context.Context, userID int64) (domain.User, error) {
-	return domain.User{}, nil
+	return srv.repo.GetUser(ctx, userID)
+}
+
+func (srv *service) UpdateUser(ctx context.Context, u *domain.User) error {
+	u.Username = strings.TrimSpace(u.Username)
+	u.Email = strings.TrimSpace(u.Email)
+	if u.Username == "" || u.Email == "" {
+		return errors.New("username and email cannot be empty")
+	}
+	return srv.repo.UpdateUser(ctx, u)
 }

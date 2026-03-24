@@ -1,23 +1,17 @@
 package service
 
 import (
-	"fmt"
 	"math/rand"
-	"path"
 )
 
-func SlugGenerator(url string) string {
+const slugLength = 7
 
-	alpha_base62 := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+func SlugGenerator(_ string) string {
+	const alphaBase62 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-	myPath := path.Base(url)
-
-	slug := make([]byte, 8)
-
-	for i := 0; i < 8; i++ {
-		slug[i] = alpha_base62[rand.Intn(62)]
+	slug := make([]byte, slugLength)
+	for i := range slug {
+		slug[i] = alphaBase62[rand.Intn(len(alphaBase62))]
 	}
-
-	fmt.Println(myPath)
 	return string(slug)
 }
