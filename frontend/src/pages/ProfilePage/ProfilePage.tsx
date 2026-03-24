@@ -8,9 +8,9 @@ import { apiUpdateMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePay
 import styles from '@/pages/ProfilePage/ProfilePage.module.css';
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free: ["Up to 3 short links", "QR code generation", "Basic link management"],
-    pro: ["Up to 20 short links", "Full analytics dashboard", "QR code generation", "Country & device tracking"],
-    unlimited: ["Unlimited short links", "Full analytics dashboard", "QR code generation", "Country & device tracking", "Priority support"],
+    free: ["Up to 5 short links", "QR code generation", "Basic link management", "Basic analytics"],
+    pro:  ["Up to 50 short links", "QR code generation", "Advanced analytics dashboard", "Browser, device & OS data"],
+    unlimited: ["Unlimited short links", "QR code generation", "Full analytics dashboard", "Browser, device & OS data", "Priority support"],
 };
 
 const PLAN_COLORS: Record<string, string> = {
@@ -245,7 +245,7 @@ const ProfilePage = () => {
                                 <ul className="space-y-2 mb-6 flex-1">
                                     {(PLAN_FEATURES[plan.name] || []).map((feature, i) => (
                                         <li key={i} className="flex items-start gap-2 text-sm">
-                                            <Check size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
+                                            <Check size={16} className="text-green-600 mt-0.5 shrink-0" />
                                             <span>{feature}</span>
                                         </li>
                                     ))}

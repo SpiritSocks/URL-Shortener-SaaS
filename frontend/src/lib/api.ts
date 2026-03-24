@@ -71,13 +71,16 @@ export interface LinkData {
   target_url: string;
   created_at: string;
   is_active: boolean;
+  custom_domain_id?: string;
 }
 
-export async function apiCreateLink(url: string): Promise<LinkData> {
+export async function apiCreateLink(url: string, customDomainId?: string): Promise<LinkData> {
+  const body: Record<string, string> = { url };
+  if (customDomainId) body.custom_domain_id = customDomainId;
   const res = await fetch(`${API_BASE}/links`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ url }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const data = await res.json();
@@ -128,6 +131,38 @@ export function getQRCodeURL(slug: string): string {
   return `${API_BASE}/qr/${slug}`;
 }
 
+// Per-link analytics
+
+export interface LinkDetailStats {
+  link_id: number;
+  slug: string;
+  target_url: string;
+  created_at: string;
+  total_clicks: number;
+  clicks_today: number;
+  clicks_week: number;
+  clicks_month: number;
+  clicks_over_time: { date: string; clicks: number }[] | null;
+  countries: { country: string; clicks: number }[] | null;
+  devices: { device: string; clicks: number }[] | null;
+  browsers: { browser: string; clicks: number }[] | null;
+  os_stats: { os: string; clicks: number }[] | null;
+  referers: { referer: string; clicks: number }[] | null;
+  hourly_map: { hour: number; clicks: number }[] | null;
+  recent_clicks: { event_id: number; slug: string; clicked_at: string; country: string; device: string; browser: string; os: string; referer: string }[] | null;
+}
+
+export interface LinkDetailResponse {
+  stats: LinkDetailStats;
+  plan_name: string;
+}
+
+export async function apiGetLinkDetail(linkId: number): Promise<LinkDetailResponse> {
+  const res = await fetch(`${API_BASE}/analytics/link/${linkId}`, { headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch link analytics');
+  return res.json();
+}
+
 // Billing
 
 export interface PlanData {
@@ -165,6 +200,64 @@ export async function apiCreatePayment(plan: string): Promise<{ redirect_url: st
 
 export function getShortURL(slug: string): string {
   return `${window.location.origin}/r/${slug}`;
+}
+
+// Custom Domains
+
+export interface CustomDomainData {
+  id: number;
+  domain: string;
+  verified: boolean;
+  ssl_status: string;
+  created_at: string;
+}
+
+export async function apiAddDomain(domain: string): Promise<CustomDomainData> {
+  const res = await fetch(`${API_BASE}/domains`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ domain }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    if (data.error === 'custom_domains_locked') {
+      throw new Error('custom_domains_locked');
+    }
+    throw new Error(data.error || 'Failed to add domain');
+  }
+  return res.json();
+}
+
+export async function apiGetDomains(): Promise<CustomDomainData[]> {
+  const res = await fetch(`${API_BASE}/domains`, { headers: authHeaders() });
+  if (!res.ok) {
+    const data = await res.json();
+    if (data.error === 'custom_domains_locked') {
+      throw new Error('custom_domains_locked');
+    }
+    throw new Error('Failed to fetch domains');
+  }
+  return res.json();
+}
+
+export async function apiVerifyDomain(id: number): Promise<{ domain: CustomDomainData; verified: boolean; message: string }> {
+  const res = await fetch(`${API_BASE}/domains/${id}/verify`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || 'Verification failed');
+  }
+  return res.json();
+}
+
+export async function apiDeleteDomain(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/domains/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error('Failed to delete domain');
 }
 
 // Advanced Analytics (Unlimited)

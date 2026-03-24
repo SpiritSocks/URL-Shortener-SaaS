@@ -83,7 +83,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
 
     const countriesData = (stats?.countries || []).map(c => ({
         name: c.country,
-        clicks: c.clicks,
+        value: c.clicks,
     }));
 
     const devicesData = (stats?.devices || []).map(d => ({
@@ -98,7 +98,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
 
     const osData = (stats?.os_stats || []).map(o => ({
         name: o.os,
-        clicks: o.clicks,
+        value: o.clicks,
     }));
 
     // Advanced data
@@ -182,7 +182,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 <GraphCard
                     icon={Globe}
                     title="Top Countries">
-                    <BarChartGraph data={countriesData} dataKey="clicks" />
+                    <BarChartGraph data={countriesData} dataKey="value" />
                 </GraphCard>
 
                 <GraphCard
@@ -200,7 +200,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 <GraphCard
                     icon={MonitorCog}
                     title="Operating System">
-                    <BarChartGraph data={osData} dataKey="clicks" />
+                    <BarChartGraph data={osData} dataKey="value" />
                 </GraphCard>
             </div>
 

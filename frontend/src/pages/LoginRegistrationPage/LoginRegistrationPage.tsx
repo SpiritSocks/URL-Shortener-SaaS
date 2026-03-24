@@ -99,6 +99,7 @@ const LoginRegistrationPage = () => {
               <Input id="userName"
                     type="text"
                     placeholder="John Doe"
+                    value={userName}
                     className="border-2 border-[#c8d69b]"
                     onChange={(e) => setUserName(e.target.value)} />
             </Field>
@@ -109,6 +110,7 @@ const LoginRegistrationPage = () => {
               id="userEmail"
               type="email"
               placeholder="example@mail.com"
+              value={userEmail}
               className="border-2 border-[#c8d69b]"
               onChange={(e) => setUserEmail(e.target.value)}
             />
@@ -119,6 +121,7 @@ const LoginRegistrationPage = () => {
               id="password"
               type="password"
               placeholder="••••••••••"
+              value={password}
               className="border-2 border-[#c8d69b]"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -133,6 +136,7 @@ const LoginRegistrationPage = () => {
                 id="confirmPassword"
                 type="password"
                 placeholder="••••••••••"
+                value={confirmPassword}
                 className="border-2 border-[#c8d69b]"
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />

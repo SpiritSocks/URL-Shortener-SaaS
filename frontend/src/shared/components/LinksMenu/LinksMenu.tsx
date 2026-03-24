@@ -1,22 +1,31 @@
 import { Button } from "@/components/ui/button";
-import { Sparkles, Trash2, Copy, QrCode, ExternalLink } from "lucide-react";
+import { Sparkles, Trash2, Copy, QrCode, ExternalLink, BarChart3, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
-import { apiCreateLink, apiGetLinks, apiDeleteLink, getQRCodeURL, getShortURL, type LinkData } from "@/lib/api";
+import { useNavigate } from "react-router-dom";
+import { apiCreateLink, apiGetLinks, apiDeleteLink, apiGetDomains, getQRCodeURL, getShortURL, type LinkData, type CustomDomainData } from "@/lib/api";
 
 type LinksMenuProps = {
   isOpen: boolean;
 }
 
 const LinksMenu = ({ isOpen }: LinksMenuProps) => {
+  const navigate = useNavigate();
   const [url, setUrl] = useState('');
   const [links, setLinks] = useState<LinkData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [qrSlug, setQrSlug] = useState<string | null>(null);
   const [copied, setCopied] = useState<number | null>(null);
+  const [domains, setDomains] = useState<CustomDomainData[]>([]);
+  const [selectedDomain, setSelectedDomain] = useState('');
 
   useEffect(() => {
-    if (isOpen) fetchLinks();
+    if (isOpen) {
+      fetchLinks();
+      apiGetDomains()
+        .then(d => setDomains(d.filter(dom => dom.verified)))
+        .catch(() => {});
+    }
   }, [isOpen]);
 
   const fetchLinks = async () => {
@@ -33,8 +42,9 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
     setError('');
     setLoading(true);
     try {
-      await apiCreateLink(url);
+      await apiCreateLink(url, selectedDomain || undefined);
       setUrl('');
+      setSelectedDomain('');
       await fetchLinks();
     } catch (err: any) {
       setError(err.message || 'Failed to create link');
@@ -52,9 +62,17 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
     }
   };
 
-  const handleCopy = (slug: string, id: number) => {
-    navigator.clipboard.writeText(getShortURL(slug));
-    setCopied(id);
+  const getDisplayURL = (link: LinkData) => {
+    if (link.custom_domain_id) {
+      const dom = domains.find(d => d.id === link.custom_domain_id);
+      if (dom) return `https://${dom.domain}/r/${link.slug}`;
+    }
+    return getShortURL(link.slug);
+  };
+
+  const handleCopy = (link: LinkData) => {
+    navigator.clipboard.writeText(getDisplayURL(link));
+    setCopied(link.id);
     setTimeout(() => setCopied(null), 2000);
   };
 
@@ -80,6 +98,21 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
           className="mt-2 w-full border-2 border-[#c8d69b] rounded-md
           px-3 py-2 text-sm sm:text-lg outline-none focus:ring-2 focus:ring-green-600/30"
         />
+        {domains.length > 0 && (
+          <div className="mt-3">
+            <label className="block text-sm sm:text-lg mb-1">Custom domain <span className="text-gray-400 text-sm">(optional)</span></label>
+            <select
+              value={selectedDomain}
+              onChange={(e) => setSelectedDomain(e.target.value)}
+              className="w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm sm:text-lg outline-none focus:ring-2 focus:ring-green-600/30 bg-white"
+            >
+              <option value="">Default (no custom domain)</option>
+              {domains.map(d => (
+                <option key={d.id} value={d.id}>{d.domain}</option>
+              ))}
+            </select>
+          </div>
+        )}
         {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
         <Button
           className="mt-3 w-full bg-[#4c6fb1] text-sm sm:text-lg"
@@ -107,13 +140,14 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
+                      {link.custom_domain_id && <Globe size={14} className="text-green-500 flex-shrink-0" />}
                       <a
-                        href={getShortURL(link.slug)}
+                        href={getDisplayURL(link)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4c6fb1] font-semibold text-sm sm:text-lg hover:underline truncate"
                       >
-                        {getShortURL(link.slug)}
+                        {getDisplayURL(link)}
                       </a>
                       <ExternalLink size={14} className="text-[#4c6fb1] flex-shrink-0" />
                     </div>
@@ -126,7 +160,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     <Button
                       variant="outline"
                       className="border-[#c8d69b] text-xs px-3"
-                      onClick={() => handleCopy(link.slug, link.id)}
+                      onClick={() => handleCopy(link)}
                     >
                       <Copy size={14} />
                       {copied === link.id ? 'Copied!' : 'Copy'}
@@ -138,6 +172,14 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     >
                       <QrCode size={14} />
                       QR
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="border-[#4c6fb1] text-[#4c6fb1] hover:bg-[#4c6fb1] hover:text-white text-xs px-3"
+                      onClick={() => navigate(`/link/${link.id}`)}
+                    >
+                      <BarChart3 size={14} />
+                      Analytics
                     </Button>
                     <Button
                       variant="outline"
