@@ -37,12 +37,6 @@ const App = () => {
           <span className="text-2xl text-[#343b1b] md:text-[46px] self-center text-center font-bold ">Shorten Links, Track Performance, Grow Your Business</span>
           <p className="text-base md:text-[20px] self-center text-center mt-4 md:mt-5">Create branded short links, generate QR codes, and track every click with comprehensive analytics. Perfect for marketing campaigns, social media, and print materials.</p>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 mt-4">
-          <Button onClick={handleLoginRegistration}>Start Free Trial</Button>
-          <Button onClick={handleLoginRegistration}>Sign In</Button>
-        </div>
-
         <div className="shadow_container w-full flex justify-center">
           <div id="preview" className="bg-white border-3 border-[#c8d69b] flex flex-col md:flex-row items-center md:items-stretch justify-around m-4 md:m-10 p-4 md:p-5 rounded-[15px] gap-4 md:gap-5 w-full max-w-4xl">
             <div className="w-full md:w-1/3 h-auto md:h-40 bg-[#fbfcef] rounded-[15px] p-3 flex flex-col items-center justify-center text-center">
