@@ -97,12 +97,8 @@ func main() {
 	api := r.Group("/api")
 	auth := api.Group("/auth")
 	{
-		auth.POST("/register", func(c *gin.Context) {
-			authHandler.Register(c.Writer, c.Request)
-		})
-		auth.POST("/login", func(c *gin.Context) {
-			authHandler.Login(c.Writer, c.Request)
-		})
+		auth.POST("/register", authHandler.Register)
+		auth.POST("/login", authHandler.Login)
 	}
 
 	// Public: Redirect short links (both /r/:slug and /:slug for custom domains)
@@ -122,14 +118,8 @@ func main() {
 	protected.Use(transport.AuthMiddleware())
 	{
 		// User
-		protected.GET("/me", func(c *gin.Context) {
-			userID := c.MustGet("user_id").(int64)
-			authHandler.GetMe(c.Writer, c.Request, userID)
-		})
-		protected.PUT("/me", func(c *gin.Context) {
-			userID := c.MustGet("user_id").(int64)
-			authHandler.UpdateMe(c.Writer, c.Request, userID)
-		})
+		protected.GET("/me", authHandler.GetMe)
+		protected.PUT("/me", authHandler.UpdateMe)
 
 		// Links
 		protected.POST("/links", linkHandler.Create)
@@ -159,9 +149,14 @@ func main() {
 
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		origin := os.Getenv("FRONTEND_URL")
+		if origin == "" {
+			origin = "http://localhost:5173"
+		}
+		c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)

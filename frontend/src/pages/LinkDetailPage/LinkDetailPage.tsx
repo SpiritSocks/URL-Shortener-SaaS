@@ -63,7 +63,11 @@ const LinkDetailPage = () => {
     const osData = (stats.os_stats || []).map(o => ({ name: o.os, value: o.clicks }));
     const referersData = (stats.referers || []).map(r => ({ name: r.referer, clicks: r.clicks }));
 
-    const daysSinceCreated = Math.max(1, Math.floor((Date.now() - new Date(stats.created_at).getTime()) / 86400000));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const created = new Date(stats.created_at);
+    created.setHours(0, 0, 0, 0);
+    const daysSinceCreated = Math.round((today.getTime() - created.getTime()) / 86400000);
 
     return (
         <div className="min-h-screen bg-[#FAFAF5] font-sans">
@@ -162,7 +166,7 @@ const LinkDetailPage = () => {
                     <StatCard
                         label="Created"
                         value={new Date(stats.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        subtitle={`${daysSinceCreated} days ago`}
+                        subtitle={daysSinceCreated === 0 ? 'today' : `${daysSinceCreated} day${daysSinceCreated === 1 ? '' : 's'} ago`}
                         icon={<Clock size={18} />}
                         iconBg="bg-[#343b1b]"
                     />

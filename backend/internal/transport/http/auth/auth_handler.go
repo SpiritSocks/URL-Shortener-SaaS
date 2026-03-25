@@ -1,9 +1,10 @@
 package http
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/dto"
@@ -18,100 +19,92 @@ func NewAuthHandler(svc domain.UserService) *Handler {
 	return &Handler{svc: svc}
 }
 
-func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Register(c *gin.Context) {
 	var req dto.UserDTO
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Println("decode error:", err)
-		writeJSONError(w, http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	user := req.ToDomain()
 
-	if err := h.svc.Register(r.Context(), &user); err != nil {
+	if err := h.svc.Register(c.Request.Context(), &user); err != nil {
 		log.Println("REGISTER ERROR:", err)
-		writeJSONError(w, http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	token, err := transport.GenerateToken(user.ID)
 	if err != nil {
-		writeJSONError(w, http.StatusInternalServerError, "failed to generate token")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate token"})
 		return
 	}
 
-	writeJSON(w, http.StatusCreated, map[string]interface{}{
+	c.JSON(http.StatusCreated, gin.H{
 		"token": token,
 		"user":  dto.ToDTO(user),
 	})
 }
 
-func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Login(c *gin.Context) {
 	var req struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeJSONError(w, http.StatusBadRequest, err.Error())
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := h.svc.Login(r.Context(), req.Email, req.Password)
+	user, err := h.svc.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
-		writeJSONError(w, http.StatusUnauthorized, "invalid email or password")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid email or password"})
 		return
 	}
 
 	token, err := transport.GenerateToken(user.ID)
 	if err != nil {
-		writeJSONError(w, http.StatusInternalServerError, "failed to generate token")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate token"})
 		return
 	}
 
-	writeJSON(w, http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusOK, gin.H{
 		"token": token,
 		"user":  dto.ToDTO(user),
 	})
 }
 
-func (h *Handler) GetMe(w http.ResponseWriter, r *http.Request, userID int64) {
-	user, err := h.svc.GetUser(r.Context(), userID)
+func (h *Handler) GetMe(c *gin.Context) {
+	userID := c.MustGet("user_id").(int64)
+	user, err := h.svc.GetUser(c.Request.Context(), userID)
 	if err != nil {
-		writeJSONError(w, http.StatusNotFound, "user not found")
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
-	writeJSON(w, http.StatusOK, dto.ToDTO(user))
+	c.JSON(http.StatusOK, dto.ToDTO(user))
 }
 
-func (h *Handler) UpdateMe(w http.ResponseWriter, r *http.Request, userID int64) {
+func (h *Handler) UpdateMe(c *gin.Context) {
+	userID := c.MustGet("user_id").(int64)
 	var req dto.UserDTO
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeJSONError(w, http.StatusBadRequest, err.Error())
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	user := req.ToDomain()
 	user.ID = userID
 
-	if err := h.svc.UpdateUser(r.Context(), &user); err != nil {
-		writeJSONError(w, http.StatusBadRequest, err.Error())
+	if err := h.svc.UpdateUser(c.Request.Context(), &user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	updated, _ := h.svc.GetUser(r.Context(), userID)
-	writeJSON(w, http.StatusOK, dto.ToDTO(updated))
-}
-
-func writeJSON(w http.ResponseWriter, status int, v any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(v)
-}
-
-func writeJSONError(w http.ResponseWriter, status int, msg string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(map[string]string{"error": msg})
+	updated, err := h.svc.GetUser(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve updated user"})
+		return
+	}
+	c.JSON(http.StatusOK, dto.ToDTO(updated))
 }

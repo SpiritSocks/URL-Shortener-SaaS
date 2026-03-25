@@ -142,6 +142,7 @@ type AnalyticsRepository interface {
 
 	// Per-link
 	TotalClicksByLink(ctx context.Context, linkID int64) (int64, error)
+	ClicksByLinkToday(ctx context.Context, linkID int64) (int64, error)
 	ClicksByLinkPeriod(ctx context.Context, linkID int64, interval string) (int64, error)
 	ClicksOverTimeByLink(ctx context.Context, linkID int64) ([]DailyClicks, error)
 	CountryBreakdownByLink(ctx context.Context, linkID int64) ([]CountryStats, error)

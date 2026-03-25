@@ -11,6 +11,13 @@ function authHeaders(): Record<string, string> {
   return headers;
 }
 
+function handleUnauthorized(res: Response): void {
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
+}
+
 export async function apiRegister(username: string, email: string, password: string) {
   const res = await fetch(`${API_BASE}/auth/register`, {
     method: 'POST',
@@ -51,7 +58,10 @@ export function isLoggedIn(): boolean {
 
 export async function apiGetMe() {
   const res = await fetch(`${API_BASE}/me`, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch user');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to fetch user');
+  }
   return res.json();
 }
 
@@ -61,7 +71,10 @@ export async function apiUpdateMe(username: string, email: string) {
     headers: authHeaders(),
     body: JSON.stringify({ username, email }),
   });
-  if (!res.ok) throw new Error('Failed to update user');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to update user');
+  }
   return res.json();
 }
 
@@ -83,6 +96,7 @@ export async function apiCreateLink(url: string, customDomainId?: string): Promi
     body: JSON.stringify(body),
   });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     throw new Error(data.error || 'Failed to create link');
   }
@@ -91,7 +105,10 @@ export async function apiCreateLink(url: string, customDomainId?: string): Promi
 
 export async function apiGetLinks(): Promise<LinkData[]> {
   const res = await fetch(`${API_BASE}/links`, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch links');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to fetch links');
+  }
   return res.json();
 }
 
@@ -100,7 +117,10 @@ export async function apiDeleteLink(id: number): Promise<void> {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (!res.ok) throw new Error('Failed to delete link');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to delete link');
+  }
 }
 
 export interface OverviewStats {
@@ -118,6 +138,7 @@ export interface OverviewStats {
 export async function apiGetAnalytics(): Promise<OverviewStats> {
   const res = await fetch(`${API_BASE}/analytics/overview`, { headers: authHeaders() });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     if (data.error === 'analytics_locked') {
       throw new Error('analytics_locked');
@@ -159,7 +180,10 @@ export interface LinkDetailResponse {
 
 export async function apiGetLinkDetail(linkId: number): Promise<LinkDetailResponse> {
   const res = await fetch(`${API_BASE}/analytics/link/${linkId}`, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch link analytics');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to fetch link analytics');
+  }
   return res.json();
 }
 
@@ -181,7 +205,10 @@ export async function apiGetPlans(): Promise<PlanData[]> {
 
 export async function apiGetUserPlan(): Promise<PlanData> {
   const res = await fetch(`${API_BASE}/billing/plan`, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch user plan');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to fetch user plan');
+  }
   return res.json();
 }
 
@@ -192,6 +219,7 @@ export async function apiCreatePayment(plan: string): Promise<{ redirect_url: st
     body: JSON.stringify({ plan }),
   });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     throw new Error(data.error || 'Payment failed');
   }
@@ -219,6 +247,7 @@ export async function apiAddDomain(domain: string): Promise<CustomDomainData> {
     body: JSON.stringify({ domain }),
   });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     if (data.error === 'custom_domains_locked') {
       throw new Error('custom_domains_locked');
@@ -231,6 +260,7 @@ export async function apiAddDomain(domain: string): Promise<CustomDomainData> {
 export async function apiGetDomains(): Promise<CustomDomainData[]> {
   const res = await fetch(`${API_BASE}/domains`, { headers: authHeaders() });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     if (data.error === 'custom_domains_locked') {
       throw new Error('custom_domains_locked');
@@ -246,6 +276,7 @@ export async function apiVerifyDomain(id: number): Promise<{ domain: CustomDomai
     headers: authHeaders(),
   });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     throw new Error(data.error || 'Verification failed');
   }
@@ -257,7 +288,10 @@ export async function apiDeleteDomain(id: number): Promise<void> {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (!res.ok) throw new Error('Failed to delete domain');
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to delete domain');
+  }
 }
 
 // Advanced Analytics (Unlimited)
@@ -281,6 +315,7 @@ export interface AdvancedStats {
 export async function apiGetAdvancedAnalytics(): Promise<AdvancedStats> {
   const res = await fetch(`${API_BASE}/analytics/advanced`, { headers: authHeaders() });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     if (data.error === 'advanced_locked') {
       throw new Error('advanced_locked');
@@ -303,6 +338,7 @@ export async function apiExportCSV(): Promise<void> {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {
+    handleUnauthorized(res);
     const data = await res.json();
     throw new Error(data.error || 'Export failed');
   }

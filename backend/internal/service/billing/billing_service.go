@@ -90,7 +90,7 @@ func (s *service) CreatePayment(ctx context.Context, userID int64, planName stri
 	secretKey := os.Getenv("YOOKASSA_SECRET_KEY")
 	returnURL := os.Getenv("YOOKASSA_RETURN_URL")
 	if returnURL == "" {
-		returnURL = "http://localhost:5173/profile"
+		return "", fmt.Errorf("YOOKASSA_RETURN_URL environment variable is not set")
 	}
 
 	priceRub := fmt.Sprintf("%.2f", float64(plan.PriceKop)/100.0)

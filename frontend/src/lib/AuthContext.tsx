@@ -37,7 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(data);
     } catch {
       setUser(null);
-      apiLogout();
     } finally {
       setLoading(false);
     }

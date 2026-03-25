@@ -280,6 +280,13 @@ func (r *AnalyticsRepository) TotalClicksByLink(ctx context.Context, linkID int6
 	return count, err
 }
 
+func (r *AnalyticsRepository) ClicksByLinkToday(ctx context.Context, linkID int64) (int64, error) {
+	q := `SELECT COUNT(*) FROM click_events WHERE link_id = $1 AND clicked_at >= CURRENT_DATE`
+	var count int64
+	err := r.Conn.QueryRowContext(ctx, q, linkID).Scan(&count)
+	return count, err
+}
+
 func (r *AnalyticsRepository) ClicksByLinkPeriod(ctx context.Context, linkID int64, interval string) (int64, error) {
 	q := `SELECT COUNT(*) FROM click_events WHERE link_id = $1 AND clicked_at >= NOW() - $2::interval`
 	var count int64

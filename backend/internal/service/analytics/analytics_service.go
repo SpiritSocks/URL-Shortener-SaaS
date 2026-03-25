@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
@@ -113,11 +114,26 @@ func (srv *service) GetCSVExport(ctx context.Context, ownerID int64) ([]domain.C
 }
 
 func (srv *service) GetLinkDetail(ctx context.Context, linkID int64, slug, targetURL string, createdAt time.Time, planName string) (domain.LinkDetailStats, error) {
-	total, _ := srv.repo.TotalClicksByLink(ctx, linkID)
-	clicksToday, _ := srv.repo.ClicksByLinkPeriod(ctx, linkID, "1 day")
-	clicksWeek, _ := srv.repo.ClicksByLinkPeriod(ctx, linkID, "7 days")
-	clicksMonth, _ := srv.repo.ClicksByLinkPeriod(ctx, linkID, "30 days")
-	clicksOver, _ := srv.repo.ClicksOverTimeByLink(ctx, linkID)
+	total, err := srv.repo.TotalClicksByLink(ctx, linkID)
+	if err != nil {
+		return domain.LinkDetailStats{}, fmt.Errorf("total clicks: %w", err)
+	}
+	clicksToday, err := srv.repo.ClicksByLinkToday(ctx, linkID)
+	if err != nil {
+		return domain.LinkDetailStats{}, fmt.Errorf("clicks today: %w", err)
+	}
+	clicksWeek, err := srv.repo.ClicksByLinkPeriod(ctx, linkID, "7 days")
+	if err != nil {
+		return domain.LinkDetailStats{}, fmt.Errorf("clicks this week: %w", err)
+	}
+	clicksMonth, err := srv.repo.ClicksByLinkPeriod(ctx, linkID, "30 days")
+	if err != nil {
+		return domain.LinkDetailStats{}, fmt.Errorf("clicks this month: %w", err)
+	}
+	clicksOver, err := srv.repo.ClicksOverTimeByLink(ctx, linkID)
+	if err != nil {
+		return domain.LinkDetailStats{}, fmt.Errorf("clicks over time: %w", err)
+	}
 
 	stats := domain.LinkDetailStats{
 		LinkID:      linkID,
@@ -133,17 +149,38 @@ func (srv *service) GetLinkDetail(ctx context.Context, linkID int64, slug, targe
 
 	// Pro and Unlimited get full breakdowns
 	if planName == "pro" || planName == "unlimited" {
-		stats.Countries, _ = srv.repo.CountryBreakdownByLink(ctx, linkID)
-		stats.Devices, _ = srv.repo.DeviceBreakdownByLink(ctx, linkID)
-		stats.Browsers, _ = srv.repo.BrowserBreakdownByLink(ctx, linkID)
-		stats.OSStats, _ = srv.repo.OSBreakdownByLink(ctx, linkID)
+		stats.Countries, err = srv.repo.CountryBreakdownByLink(ctx, linkID)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("country breakdown: %w", err)
+		}
+		stats.Devices, err = srv.repo.DeviceBreakdownByLink(ctx, linkID)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("device breakdown: %w", err)
+		}
+		stats.Browsers, err = srv.repo.BrowserBreakdownByLink(ctx, linkID)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("browser breakdown: %w", err)
+		}
+		stats.OSStats, err = srv.repo.OSBreakdownByLink(ctx, linkID)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("os breakdown: %w", err)
+		}
 	}
 
 	// Unlimited gets advanced per-link analytics
 	if planName == "unlimited" {
-		stats.Referers, _ = srv.repo.RefererBreakdownByLink(ctx, linkID)
-		stats.HourlyMap, _ = srv.repo.HourlyBreakdownByLink(ctx, linkID)
-		stats.RecentClicks, _ = srv.repo.RecentClicksByLink(ctx, linkID, 20)
+		stats.Referers, err = srv.repo.RefererBreakdownByLink(ctx, linkID)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("referer breakdown: %w", err)
+		}
+		stats.HourlyMap, err = srv.repo.HourlyBreakdownByLink(ctx, linkID)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("hourly breakdown: %w", err)
+		}
+		stats.RecentClicks, err = srv.repo.RecentClicksByLink(ctx, linkID, 20)
+		if err != nil {
+			return domain.LinkDetailStats{}, fmt.Errorf("recent clicks: %w", err)
+		}
 	}
 
 	return stats, nil

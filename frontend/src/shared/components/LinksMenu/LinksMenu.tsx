@@ -64,7 +64,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
 
   const getDisplayURL = (link: LinkData) => {
     if (link.custom_domain_id) {
-      const dom = domains.find(d => d.id === link.custom_domain_id);
+      const dom = domains.find(d => String(d.id) === link.custom_domain_id);
       if (dom) return `https://${dom.domain}/r/${link.slug}`;
     }
     return getShortURL(link.slug);
