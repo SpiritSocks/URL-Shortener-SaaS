@@ -8,6 +8,7 @@ import MainPage from '@/pages/MainPage/MainPage.tsx';
 import LoginRegistrationPage from '@/pages/LoginRegistrationPage/LoginRegistrationPage.tsx';
 import ProfilePage from '@/pages/ProfilePage/ProfilePage.tsx';
 import LinkDetailPage from '@/pages/LinkDetailPage/LinkDetailPage.tsx';
+import BioPage from '@/pages/BioPage/BioPage.tsx';
 
 import '../assets/style/index.css';
 
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
   {path: '/login', element: <LoginRegistrationPage/>},
   {path: '/profile', element: <ProfilePage/>},
   {path: '/link/:id', element: <LinkDetailPage/>},
+  {path: '/@:handle', element: <BioPage/>},
 ]);
 
 createRoot(document.getElementById('root')!).render(

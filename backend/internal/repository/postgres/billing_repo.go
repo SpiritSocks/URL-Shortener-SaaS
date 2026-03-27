@@ -16,7 +16,7 @@ func NewPlanRepository(conn *sql.DB) *PlanRepository {
 }
 
 func (r *PlanRepository) GetAll(ctx context.Context) ([]domain.Plan, error) {
-	const q = `SELECT plan_id, name, price_kop, max_links, has_analytics FROM plans ORDER BY price_kop`
+	const q = `SELECT plan_id, name, price_kop, max_links, has_analytics, max_bio_links FROM plans ORDER BY price_kop`
 	rows, err := r.Conn.QueryContext(ctx, q)
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func (r *PlanRepository) GetAll(ctx context.Context) ([]domain.Plan, error) {
 	var plans []domain.Plan
 	for rows.Next() {
 		var p domain.Plan
-		if err := rows.Scan(&p.PlanID, &p.Name, &p.PriceKop, &p.MaxLinks, &p.HasAnalytics); err != nil {
+		if err := rows.Scan(&p.PlanID, &p.Name, &p.PriceKop, &p.MaxLinks, &p.HasAnalytics, &p.MaxBioLinks); err != nil {
 			return nil, err
 		}
 		plans = append(plans, p)
@@ -35,16 +35,16 @@ func (r *PlanRepository) GetAll(ctx context.Context) ([]domain.Plan, error) {
 }
 
 func (r *PlanRepository) GetByID(ctx context.Context, planID int64) (domain.Plan, error) {
-	const q = `SELECT plan_id, name, price_kop, max_links, has_analytics FROM plans WHERE plan_id = $1`
+	const q = `SELECT plan_id, name, price_kop, max_links, has_analytics, max_bio_links FROM plans WHERE plan_id = $1`
 	var p domain.Plan
-	err := r.Conn.QueryRowContext(ctx, q, planID).Scan(&p.PlanID, &p.Name, &p.PriceKop, &p.MaxLinks, &p.HasAnalytics)
+	err := r.Conn.QueryRowContext(ctx, q, planID).Scan(&p.PlanID, &p.Name, &p.PriceKop, &p.MaxLinks, &p.HasAnalytics, &p.MaxBioLinks)
 	return p, err
 }
 
 func (r *PlanRepository) GetByName(ctx context.Context, name string) (domain.Plan, error) {
-	const q = `SELECT plan_id, name, price_kop, max_links, has_analytics FROM plans WHERE name = $1`
+	const q = `SELECT plan_id, name, price_kop, max_links, has_analytics, max_bio_links FROM plans WHERE name = $1`
 	var p domain.Plan
-	err := r.Conn.QueryRowContext(ctx, q, name).Scan(&p.PlanID, &p.Name, &p.PriceKop, &p.MaxLinks, &p.HasAnalytics)
+	err := r.Conn.QueryRowContext(ctx, q, name).Scan(&p.PlanID, &p.Name, &p.PriceKop, &p.MaxLinks, &p.HasAnalytics, &p.MaxBioLinks)
 	return p, err
 }
 

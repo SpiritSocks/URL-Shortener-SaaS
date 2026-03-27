@@ -6,9 +6,10 @@ import Header from '../../shared/components/Header/Header';
 import LinksMenu from '@/shared/components/LinksMenu/LinksMenu';
 import DashboardMenu from '@/shared/components/DashboardMenu/DashboardMenu';
 import DomainsMenu from '@/shared/components/DomainsMenu/DomainsMenu';
+import BioMenu from '@/shared/components/BioMenu/BioMenu';
 
-type Tab = 'links' | 'dashboard' | 'domains';
-const validTabs: Tab[] = ['links', 'dashboard', 'domains'];
+type Tab = 'links' | 'dashboard' | 'domains' | 'bio';
+const validTabs: Tab[] = ['links', 'dashboard', 'domains', 'bio'];
 
 const MainPage = () => {
     const navigate = useNavigate();
@@ -46,6 +47,10 @@ const MainPage = () => {
 
         <DomainsMenu
             isOpen={activeMenu === 'domains'}
+        />
+
+        <BioMenu
+            isOpen={activeMenu === 'bio'}
         />
         <br/>
         </>

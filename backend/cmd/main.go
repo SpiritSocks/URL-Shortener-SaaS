@@ -17,10 +17,12 @@ import (
 	authsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/auth"
 	billingsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/billing"
 	customdomainsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/customdomain"
+	biosvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/bio"
 	linksvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/link"
 	transport "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http"
 	authttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/auth"
 	billinghttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/billing"
+	biohttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/bio"
 	customdomainhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/customdomain"
 	linkhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/link"
 	qrhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/qr"
@@ -73,6 +75,7 @@ func main() {
 	planRepo := postgres.NewPlanRepository(db)
 	paymentRepo := postgres.NewPaymentRepository(db)
 	customDomainRepo := postgres.NewCustomDomainRepository(db)
+	bioRepo := postgres.NewBioRepository(db)
 
 	// Services
 	authService := authsvc.NewAuthService(authRepo)
@@ -80,6 +83,7 @@ func main() {
 	analyticsService := analyticssvc.NewAnalyticsService(analyticsRepo, linkRepo)
 	billingService := billingsvc.NewBillingService(planRepo, paymentRepo, authRepo)
 	customDomainService := customdomainsvc.NewCustomDomainService(customDomainRepo)
+	bioService := biosvc.NewBioService(bioRepo, linkService, billingService)
 
 	// Handlers
 	authHandler := authttp.NewAuthHandler(authService)
@@ -87,6 +91,7 @@ func main() {
 	analyticsHandler := linkhttp.NewAnalyticsHandler(analyticsService, billingService, linkService)
 	billingHandler := billinghttp.NewBillingHandler(billingService)
 	customDomainHandler := customdomainhttp.NewCustomDomainHandler(customDomainService, billingService)
+	bioHandler := biohttp.NewBioHandler(bioService, billingService)
 
 	r := gin.Default()
 
@@ -112,6 +117,9 @@ func main() {
 
 	// Public: Plans list
 	api.GET("/plans", billingHandler.GetPlans)
+
+	// Public: Bio page
+	api.GET("/bio/:handle", bioHandler.GetPublicPage)
 
 	// Protected routes
 	protected := api.Group("")
@@ -141,6 +149,14 @@ func main() {
 		protected.GET("/domains", customDomainHandler.List)
 		protected.POST("/domains/:id/verify", customDomainHandler.Verify)
 		protected.DELETE("/domains/:id", customDomainHandler.Delete)
+
+		// Bio Pages
+		protected.POST("/bio/page", bioHandler.CreatePage)
+		protected.PUT("/bio/page", bioHandler.UpdatePage)
+		protected.GET("/bio/page", bioHandler.GetMyPage)
+		protected.POST("/bio/links", bioHandler.AddBioLink)
+		protected.DELETE("/bio/links/:id", bioHandler.RemoveBioLink)
+		protected.PUT("/bio/links/reorder", bioHandler.ReorderLinks)
 	}
 
 	log.Printf("listening on :%s", port)
@@ -167,7 +183,7 @@ func corsMiddleware() gin.HandlerFunc {
 }
 
 func runMigrations(db *sql.DB) {
-	files := []string{"../migrations/001_init.sql", "../migrations/002_plans.sql", "../migrations/003_advanced_analytics.sql", "../migrations/004_custom_domains.sql", "../migrations/005_fix_domain_fk.sql"}
+	files := []string{"../migrations/001_init.sql", "../migrations/002_plans.sql", "../migrations/003_advanced_analytics.sql", "../migrations/004_custom_domains.sql", "../migrations/005_fix_domain_fk.sql", "../migrations/006_bio_pages.sql"}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)
 		if err != nil {

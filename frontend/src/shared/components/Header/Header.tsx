@@ -5,8 +5,8 @@ import { useAuth } from "@/lib/AuthContext";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
-  activeMenu: 'links' | 'dashboard' | 'domains' | null;
-  onMenuClick: (menu: 'links' | 'dashboard' | 'domains') => void;
+  activeMenu: 'links' | 'dashboard' | 'domains' | 'bio' | null;
+  onMenuClick: (menu: 'links' | 'dashboard' | 'domains' | 'bio') => void;
 }
 
 const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
@@ -58,6 +58,13 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
             onClick={() => onMenuClick("domains")}
           >
             Domains
+          </Button>
+
+          <Button
+            className={activeMenu === "bio" ? styles.button_active : styles.button_inactive}
+            onClick={() => onMenuClick("bio")}
+          >
+            Bio
           </Button>
 
           <Button

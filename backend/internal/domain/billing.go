@@ -11,6 +11,7 @@ type Plan struct {
 	PriceKop     int64  `json:"price_kop"`
 	MaxLinks     int64  `json:"max_links"`
 	HasAnalytics bool   `json:"has_analytics"`
+	MaxBioLinks  int64  `json:"max_bio_links"`
 }
 
 type Payment struct {

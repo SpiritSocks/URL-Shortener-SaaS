@@ -202,6 +202,7 @@ export interface PlanData {
   price_kop: number;
   max_links: number;
   has_analytics: boolean;
+  max_bio_links: number;
 }
 
 export async function apiGetPlans(): Promise<PlanData[]> {
@@ -356,4 +357,123 @@ export async function apiExportCSV(): Promise<void> {
   a.download = 'analytics_export.csv';
   a.click();
   window.URL.revokeObjectURL(url);
+}
+
+// Bio Pages
+
+export interface BioPageData {
+  id: number;
+  handle: string;
+  display_name: string;
+  bio_text: string;
+  avatar_url: string;
+  theme: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BioLinkData {
+  id: number;
+  link_id: number;
+  title: string;
+  slug: string;
+  target_url: string;
+  position: number;
+  is_visible: boolean;
+}
+
+export interface MyBioPageResponse {
+  exists: boolean;
+  page?: BioPageData;
+  links?: BioLinkData[];
+  max_bio_links?: number;
+}
+
+export interface PublicBioPageResponse {
+  page: BioPageData;
+  links: BioLinkData[];
+  show_branding: boolean;
+}
+
+export async function apiCreateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
+  const res = await fetch(`${API_BASE}/bio/page`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ handle, display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to create bio page');
+  }
+  return res.json();
+}
+
+export async function apiUpdateBioPage(displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
+  const res = await fetch(`${API_BASE}/bio/page`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to update bio page');
+  }
+  return res.json();
+}
+
+export async function apiGetMyBioPage(): Promise<MyBioPageResponse> {
+  const res = await fetch(`${API_BASE}/bio/page`, { headers: authHeaders() });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to fetch bio page');
+  }
+  return res.json();
+}
+
+export async function apiAddBioLink(title: string, url: string): Promise<BioLinkData> {
+  const res = await fetch(`${API_BASE}/bio/links`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ title, url }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to add bio link');
+  }
+  return res.json();
+}
+
+export async function apiRemoveBioLink(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/bio/links/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to remove bio link');
+  }
+}
+
+export async function apiReorderBioLinks(orderedIds: number[]): Promise<void> {
+  const res = await fetch(`${API_BASE}/bio/links/reorder`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ ordered_ids: orderedIds }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    throw new Error('Failed to reorder bio links');
+  }
+}
+
+export async function apiGetPublicBioPage(handle: string): Promise<PublicBioPageResponse> {
+  const res = await fetch(`${API_BASE}/bio/${handle}`);
+  if (!res.ok) throw new Error('Bio page not found');
+  return res.json();
+}
+
+export function getBioPageURL(handle: string): string {
+  return `${window.location.origin}/@${handle}`;
 }
