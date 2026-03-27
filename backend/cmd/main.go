@@ -167,7 +167,7 @@ func corsMiddleware() gin.HandlerFunc {
 }
 
 func runMigrations(db *sql.DB) {
-	files := []string{"../migrations/001_init.sql", "../migrations/002_plans.sql", "../migrations/003_advanced_analytics.sql", "../migrations/004_custom_domains.sql"}
+	files := []string{"../migrations/001_init.sql", "../migrations/002_plans.sql", "../migrations/003_advanced_analytics.sql", "../migrations/004_custom_domains.sql", "../migrations/005_fix_domain_fk.sql"}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)
 		if err != nil {

@@ -97,8 +97,8 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
             await apiDeleteDomain(id);
             setDomains(domains.filter(d => d.id !== id));
             setVerifyMessage(null);
-        } catch {
-            // ignore
+        } catch (err: any) {
+            setError(err.message || 'Failed to delete domain');
         }
     };
 
