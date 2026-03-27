@@ -191,13 +191,13 @@ func NewAnalyticsHandler(svc domain.AnalyticsService, billingSvc domain.BillingS
 func (h *AnalyticsHandler) GetOverview(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 
-	plan, err := h.billingSvc.GetUserPlan(c.Request.Context(), userID)
-	if err == nil && !plan.HasAnalytics {
-		c.JSON(http.StatusForbidden, gin.H{"error": "analytics_locked", "message": "Upgrade your plan to access analytics"})
-		return
+	plan, _ := h.billingSvc.GetUserPlan(c.Request.Context(), userID)
+	planName := plan.Name
+	if planName == "" {
+		planName = "free"
 	}
 
-	stats, err := h.analyticsSvc.GetOverview(c.Request.Context(), userID)
+	stats, err := h.analyticsSvc.GetOverview(c.Request.Context(), userID, planName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -205,6 +205,7 @@ func (h *AnalyticsHandler) GetOverview(c *gin.Context) {
 
 	w := c.Writer
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Plan-Name", planName)
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(stats)
 }
@@ -263,6 +264,11 @@ func (h *AnalyticsHandler) GetLinkDetail(c *gin.Context) {
 	planName := plan.Name
 	if planName == "" {
 		planName = "free"
+	}
+
+	if planName == "free" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "link_analytics_locked", "message": "Per-link analytics are available on Pro and Unlimited plans."})
+		return
 	}
 
 	stats, err := h.analyticsSvc.GetLinkDetail(c.Request.Context(), linkID, found.Slug, found.TargetURL, found.CreatedAt, planName)

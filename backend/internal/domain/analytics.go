@@ -156,7 +156,7 @@ type AnalyticsRepository interface {
 
 type AnalyticsService interface {
 	TrackClick(ctx context.Context, event *ClickEvent) error
-	GetOverview(ctx context.Context, ownerID int64) (OverviewStats, error)
+	GetOverview(ctx context.Context, ownerID int64, planName string) (OverviewStats, error)
 	GetAdvanced(ctx context.Context, ownerID int64) (AdvancedStats, error)
 	GetCSVExport(ctx context.Context, ownerID int64) ([]CSVRow, error)
 	GetLinkDetail(ctx context.Context, linkID int64, slug, targetURL string, createdAt time.Time, planName string) (LinkDetailStats, error)

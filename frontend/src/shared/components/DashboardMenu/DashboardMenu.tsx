@@ -16,8 +16,8 @@ import LineChartGraph from "@/shared/widgets/Graphs/LineChartGraph";
 import HeatmapGraph from "@/shared/widgets/Graphs/HeatmapGraph";
 
 import {
-    apiGetAnalytics, apiGetAdvancedAnalytics, apiGetUserPlan, apiExportCSV,
-    type OverviewStats, type AdvancedStats, type PlanData
+    apiGetAnalytics, apiGetAdvancedAnalytics, apiExportCSV,
+    type OverviewStats, type AdvancedStats, type OverviewResponse
 } from "@/lib/api";
 
 type DashboardMenuProps = {
@@ -28,23 +28,18 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
     const navigate = useNavigate();
     const [stats, setStats] = useState<OverviewStats | null>(null);
     const [advanced, setAdvanced] = useState<AdvancedStats | null>(null);
-    const [plan, setPlan] = useState<PlanData | null>(null);
-    const [locked, setLocked] = useState(false);
+    const [planName, setPlanName] = useState<string>('free');
     const [exporting, setExporting] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
-            setLocked(false);
-
-            apiGetUserPlan().then(setPlan).catch(() => {});
 
             apiGetAnalytics()
-                .then(setStats)
-                .catch((err) => {
-                    if (err.message === 'analytics_locked') {
-                        setLocked(true);
-                    }
-                });
+                .then((res: OverviewResponse) => {
+                    setStats(res.stats);
+                    setPlanName(res.plan_name);
+                })
+                .catch(() => {});
 
             apiGetAdvancedAnalytics()
                 .then(setAdvanced)
@@ -54,27 +49,8 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
 
     if (!isOpen) return null;
 
-    if (locked) {
-        return (
-            <section className="flex flex-col items-center justify-center gap-6 pt-16 px-10">
-                <div className="bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-10 flex flex-col items-center max-w-lg">
-                    <Lock size={48} className="text-[#4c6fb1] mb-4" />
-                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Analytics Locked</h2>
-                    <p className="text-gray-500 text-center mb-6">
-                        Analytics are available on the Pro and Unlimited plans. Upgrade your plan to access detailed click tracking, country breakdowns, and device analytics.
-                    </p>
-                    <Button
-                        className="bg-[#4c6fb1] text-white px-8"
-                        onClick={() => navigate('/profile')}
-                    >
-                        Upgrade Plan
-                    </Button>
-                </div>
-            </section>
-        );
-    }
-
-    const isUnlimited = plan?.name === 'unlimited';
+    const isPro = planName === 'pro' || planName === 'unlimited';
+    const isUnlimited = planName === 'unlimited';
 
     const clicksData = (stats?.clicks_over_time || []).map(d => ({
         name: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -178,6 +154,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                     <LineChartGraph data={clicksData} />
                 </GraphCard>
             </div>
+            {isPro ? (
             <div className="grid grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-6 w-full pt-10">
                 <GraphCard
                     icon={Globe}
@@ -203,6 +180,23 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                     <BarChartGraph data={osData} dataKey="value" />
                 </GraphCard>
             </div>
+            ) : (
+            <div className="mt-10">
+                <div className="bg-white border-2 border-dashed border-[#c8d69b] rounded-[15px] p-8 flex flex-col items-center">
+                    <Lock size={32} className="text-gray-400 mb-3" />
+                    <h3 className="text-lg font-bold text-[#343b1b] mb-1">Detailed Breakdowns</h3>
+                    <p className="text-gray-400 text-sm text-center mb-4 max-w-md">
+                        Upgrade to Pro to unlock country, device, browser, and OS breakdowns, plus per-link analytics.
+                    </p>
+                    <Button
+                        className="bg-[#4c6fb1] text-white"
+                        onClick={() => navigate('/profile')}
+                    >
+                        Upgrade to Pro
+                    </Button>
+                </div>
+            </div>
+            )}
 
             {/* Advanced Analytics Section — Unlimited Only */}
             {!isUnlimited ? (
@@ -211,7 +205,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                         <Lock size={32} className="text-gray-400 mb-3" />
                         <h3 className="text-lg font-bold text-[#343b1b] mb-1">Advanced Analytics</h3>
                         <p className="text-gray-400 text-sm text-center mb-4 max-w-md">
-                            Unlock referrer tracking, hourly heatmaps, per-link analytics, live click feed, and CSV export with the Unlimited plan.
+                            Unlock referrer tracking, hourly heatmaps, live click feed, and CSV export with the Unlimited plan.
                         </p>
                         <Button
                             className="bg-[#343b1b] text-white"

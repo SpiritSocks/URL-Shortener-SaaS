@@ -21,7 +21,7 @@ func (srv *service) TrackClick(ctx context.Context, event *domain.ClickEvent) er
 	return srv.repo.TrackClick(ctx, event)
 }
 
-func (srv *service) GetOverview(ctx context.Context, ownerID int64) (domain.OverviewStats, error) {
+func (srv *service) GetOverview(ctx context.Context, ownerID int64, planName string) (domain.OverviewStats, error) {
 	totalLinks, err := srv.linkRepo.CountByOwner(ctx, ownerID)
 	if err != nil {
 		return domain.OverviewStats{}, err
@@ -37,26 +37,6 @@ func (srv *service) GetOverview(ctx context.Context, ownerID int64) (domain.Over
 		return domain.OverviewStats{}, err
 	}
 
-	countries, err := srv.repo.CountryBreakdown(ctx, ownerID)
-	if err != nil {
-		return domain.OverviewStats{}, err
-	}
-
-	devices, err := srv.repo.DeviceBreakdown(ctx, ownerID)
-	if err != nil {
-		return domain.OverviewStats{}, err
-	}
-
-	browsers, err := srv.repo.BrowserBreakdown(ctx, ownerID)
-	if err != nil {
-		return domain.OverviewStats{}, err
-	}
-
-	osStats, err := srv.repo.OSBreakdown(ctx, ownerID)
-	if err != nil {
-		return domain.OverviewStats{}, err
-	}
-
 	var avgPerLink float64
 	if totalLinks > 0 {
 		avgPerLink = float64(totalClicks) / float64(totalLinks)
@@ -67,17 +47,35 @@ func (srv *service) GetOverview(ctx context.Context, ownerID int64) (domain.Over
 		avgPerDay = float64(totalClicks) / float64(len(clicksOver))
 	}
 
-	return domain.OverviewStats{
+	stats := domain.OverviewStats{
 		TotalLinks:  totalLinks,
 		TotalClicks: totalClicks,
 		AvgPerLink:  avgPerLink,
 		AvgPerDay:   avgPerDay,
 		ClicksOver:  clicksOver,
-		Countries:   countries,
-		Devices:     devices,
-		Browsers:    browsers,
-		OSStats:     osStats,
-	}, nil
+	}
+
+	// Breakdowns are available on Pro and Unlimited plans
+	if planName == "pro" || planName == "unlimited" {
+		stats.Countries, err = srv.repo.CountryBreakdown(ctx, ownerID)
+		if err != nil {
+			return domain.OverviewStats{}, err
+		}
+		stats.Devices, err = srv.repo.DeviceBreakdown(ctx, ownerID)
+		if err != nil {
+			return domain.OverviewStats{}, err
+		}
+		stats.Browsers, err = srv.repo.BrowserBreakdown(ctx, ownerID)
+		if err != nil {
+			return domain.OverviewStats{}, err
+		}
+		stats.OSStats, err = srv.repo.OSBreakdown(ctx, ownerID)
+		if err != nil {
+			return domain.OverviewStats{}, err
+		}
+	}
+
+	return stats, nil
 }
 
 func (srv *service) GetAdvanced(ctx context.Context, ownerID int64) (domain.AdvancedStats, error) {

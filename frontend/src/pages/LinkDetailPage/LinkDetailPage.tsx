@@ -20,6 +20,7 @@ const LinkDetailPage = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<LinkDetailResponse | null>(null);
     const [loading, setLoading] = useState(true);
+    const [locked, setLocked] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showQR, setShowQR] = useState(false);
 
@@ -27,7 +28,13 @@ const LinkDetailPage = () => {
         if (!id) return;
         apiGetLinkDetail(Number(id))
             .then(setData)
-            .catch(() => navigate('/home'))
+            .catch((err) => {
+                if (err.message === 'link_analytics_locked') {
+                    setLocked(true);
+                } else {
+                    navigate('/home');
+                }
+            })
             .finally(() => setLoading(false));
     }, [id]);
 
@@ -42,6 +49,28 @@ const LinkDetailPage = () => {
         return (
             <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center">
                 <p className="text-gray-400">Loading...</p>
+            </div>
+        );
+    }
+
+    if (locked) {
+        return (
+            <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center px-4">
+                <div className="bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-10 flex flex-col items-center max-w-lg text-center">
+                    <Lock size={48} className="text-[#4c6fb1] mb-4" />
+                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Per-Link Analytics</h2>
+                    <p className="text-gray-500 mb-6">
+                        Detailed per-link analytics are available on Pro and Unlimited plans. Upgrade to see clicks, country breakdowns, devices, and more for each link.
+                    </p>
+                    <div className="flex gap-3">
+                        <Button variant="outline" onClick={() => navigate('/home')}>
+                            <ArrowLeft size={14} className="mr-1" /> Back
+                        </Button>
+                        <Button className="bg-[#4c6fb1] text-white" onClick={() => navigate('/profile')}>
+                            Upgrade Plan
+                        </Button>
+                    </div>
+                </div>
             </div>
         );
     }

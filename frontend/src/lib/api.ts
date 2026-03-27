@@ -135,17 +135,20 @@ export interface OverviewStats {
   os_stats: { os: string; clicks: number }[] | null;
 }
 
-export async function apiGetAnalytics(): Promise<OverviewStats> {
+export interface OverviewResponse {
+  stats: OverviewStats;
+  plan_name: string;
+}
+
+export async function apiGetAnalytics(): Promise<OverviewResponse> {
   const res = await fetch(`${API_BASE}/analytics/overview`, { headers: authHeaders() });
   if (!res.ok) {
     handleUnauthorized(res);
-    const data = await res.json();
-    if (data.error === 'analytics_locked') {
-      throw new Error('analytics_locked');
-    }
     throw new Error('Failed to fetch analytics');
   }
-  return res.json();
+  const planName = res.headers.get('X-Plan-Name') || 'free';
+  const stats = await res.json();
+  return { stats, plan_name: planName };
 }
 
 export function getQRCodeURL(slug: string): string {
@@ -182,6 +185,10 @@ export async function apiGetLinkDetail(linkId: number): Promise<LinkDetailRespon
   const res = await fetch(`${API_BASE}/analytics/link/${linkId}`, { headers: authHeaders() });
   if (!res.ok) {
     handleUnauthorized(res);
+    const data = await res.json().catch(() => ({}));
+    if (data.error === 'link_analytics_locked') {
+      throw new Error('link_analytics_locked');
+    }
     throw new Error('Failed to fetch link analytics');
   }
   return res.json();
