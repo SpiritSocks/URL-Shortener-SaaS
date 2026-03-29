@@ -13,10 +13,10 @@ type BioMenuProps = {
 }
 
 const THEMES = [
-    { id: 'default', label: 'Classic', bg: 'bg-[#FAFAF5]', accent: 'bg-[#343b1b]' },
-    { id: 'dark', label: 'Dark', bg: 'bg-[#1a1a2e]', accent: 'bg-[#4c6fb1]' },
-    { id: 'ocean', label: 'Ocean', bg: 'bg-[#0f3460]', accent: 'bg-[#16c79a]' },
-    { id: 'sunset', label: 'Sunset', bg: 'bg-[#f8b500]', accent: 'bg-[#e74c3c]' },
+    { id: 'default', label: 'Классика', bg: 'bg-[#FAFAF5]', accent: 'bg-[#343b1b]' },
+    { id: 'dark', label: 'Тёмная', bg: 'bg-[#1a1a2e]', accent: 'bg-[#4c6fb1]' },
+    { id: 'ocean', label: 'Океан', bg: 'bg-[#0f3460]', accent: 'bg-[#16c79a]' },
+    { id: 'sunset', label: 'Закат', bg: 'bg-[#f8b500]', accent: 'bg-[#e74c3c]' },
 ];
 
 const BioMenu = ({ isOpen }: BioMenuProps) => {
@@ -76,7 +76,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             await apiCreateBioPage(handle.trim().toLowerCase(), displayName, bioText, avatarUrl, theme);
             await fetchPage();
         } catch (err: any) {
-            setError(err.message || 'Failed to create bio page');
+            setError(err.message || 'Не удалось создать био-страницу');
         } finally {
             setLoading(false);
         }
@@ -90,7 +90,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);
         } catch (err: any) {
-            setError(err.message || 'Failed to save');
+            setError(err.message || 'Не удалось сохранить');
         } finally {
             setLoading(false);
         }
@@ -110,7 +110,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             setLinkUrl('');
             await fetchPage();
         } catch (err: any) {
-            setError(err.message || 'Failed to add link');
+            setError(err.message || 'Не удалось добавить ссылку');
         } finally {
             setAddingLink(false);
         }
@@ -121,7 +121,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             await apiRemoveBioLink(id);
             setLinks(links.filter(l => l.id !== id));
         } catch (err: any) {
-            setError(err.message || 'Failed to remove link');
+            setError(err.message || 'Не удалось удалить ссылку');
         }
     };
 
@@ -154,43 +154,43 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                             <FileText color="white" />
                         </div>
-                        <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Create Your Bio Page</h3>
+                        <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Создайте свою био-страницу</h3>
                     </div>
                     <p className="text-gray-500 text-sm mb-4">
-                        Create a link-in-bio page to share all your links in one place. Choose a unique handle — your page will be available at <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">yourdomain.com/@handle</code>
+                        Создайте страницу «ссылка в био», чтобы собрать все ваши ссылки в одном месте. Выберите уникальный никнейм — ваша страница будет доступна по адресу <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">yourdomain.com/@никнейм</code>
                     </p>
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Handle</label>
+                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Никнейм</label>
                     <div className="flex items-center gap-2 mt-1">
                         <span className="text-gray-500 text-sm">@</span>
                         <input
                             type="text"
-                            placeholder="yourname"
+                            placeholder="вашеимя"
                             value={handle}
                             onChange={e => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
                             className="flex-1 border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                         />
                     </div>
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Display Name</label>
+                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Отображаемое имя</label>
                     <input
                         type="text"
-                        placeholder="Your Name"
+                        placeholder="Ваше имя"
                         value={displayName}
                         onChange={e => setDisplayName(e.target.value)}
                         className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                     />
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Bio</label>
+                    <label className="block text-sm font-medium text-[#343b1b] mt-3">О себе</label>
                     <textarea
-                        placeholder="Tell visitors about yourself..."
+                        placeholder="Расскажите о себе..."
                         value={bioText}
                         onChange={e => setBioText(e.target.value)}
                         rows={3}
                         className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30 resize-none"
                     />
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Avatar URL</label>
+                    <label className="block text-sm font-medium text-[#343b1b] mt-3">URL аватара</label>
                     <input
                         type="text"
                         placeholder="https://example.com/avatar.jpg"
@@ -199,7 +199,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                     />
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Theme</label>
+                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Тема</label>
                     <div className="flex gap-3 mt-2">
                         {THEMES.map(t => (
                             <button
@@ -224,7 +224,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         onClick={handleCreate}
                     >
                         <Plus size={16} className="mr-1" />
-                        {loading ? 'Creating...' : 'Create Bio Page'}
+                        {loading ? 'Создание...' : 'Создать био-страницу'}
                     </Button>
                 </div>
             </section>
@@ -242,7 +242,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                             <FileText color="white" />
                         </div>
-                        <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Bio Page</h3>
+                        <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Био-страница</h3>
                     </div>
                     <a
                         href={`/@${page?.handle}`}
@@ -250,7 +250,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         rel="noreferrer"
                         className="text-[#4c6fb1] text-sm hover:underline flex items-center gap-1"
                     >
-                        Preview <ExternalLink size={12} />
+                        Просмотр <ExternalLink size={12} />
                     </a>
                 </div>
 
@@ -266,7 +266,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         className="border-[#4c6fb1] text-[#4c6fb1] text-xs shrink-0"
                     >
                         {copied ? <Check size={14} /> : <Copy size={14} />}
-                        {copied ? 'Copied' : 'Copy'}
+                        {copied ? 'Скопировано' : 'Копировать'}
                     </Button>
                 </div>
 
@@ -301,7 +301,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
 
                 {/* Theme picker */}
                 <label className="block text-sm font-medium text-[#343b1b] mt-3 flex items-center gap-1">
-                    <Palette size={14} /> Theme
+                    <Palette size={14} /> Тема
                 </label>
                 <div className="flex gap-3 mt-2">
                     {THEMES.map(t => (
@@ -327,7 +327,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                     disabled={loading}
                     onClick={handleSave}
                 >
-                    {saved ? 'Saved!' : loading ? 'Saving...' : 'Save Changes'}
+                    {saved ? 'Сохранено!' : loading ? 'Сохранение...' : 'Сохранить изменения'}
                 </Button>
             </div>
         </section>
@@ -336,9 +336,9 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         <section className="flex justify-center px-4 pb-6 sm:px-6">
             <div className="w-full max-w-5xl">
                 <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">Your Bio Links</h2>
+                    <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">Ваши био-ссылки</h2>
                     <span className="text-xs text-gray-400">
-                        {links.length} / {maxBioLinks < 0 ? '∞' : maxBioLinks} links
+                        {links.length} / {maxBioLinks < 0 ? '∞' : maxBioLinks} ссылок
                     </span>
                 </div>
 
@@ -347,7 +347,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                     <div className="flex flex-col sm:flex-row gap-2">
                         <input
                             type="text"
-                            placeholder="Link title"
+                            placeholder="Название ссылки"
                             value={linkTitle}
                             onChange={e => setLinkTitle(e.target.value)}
                             className="flex-1 border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
@@ -366,7 +366,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                             onClick={handleAddLink}
                         >
                             <Plus size={14} className="mr-1" />
-                            {addingLink ? 'Adding...' : 'Add'}
+                            {addingLink ? 'Добавление...' : 'Добавить'}
                         </Button>
                     </div>
                 </div>
@@ -375,8 +375,8 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 {links.length === 0 ? (
                     <div className="flex flex-col justify-center items-center bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-6">
                         <FileText size={32} className="text-gray-300 mb-2" />
-                        <h2 className="text-[#343b1b] font-bold text-sm sm:text-xl">No bio links yet</h2>
-                        <p className="text-gray-500 text-sm">Add links above to display on your bio page</p>
+                        <h2 className="text-[#343b1b] font-bold text-sm sm:text-xl">Пока нет био-ссылок</h2>
+                        <p className="text-gray-500 text-sm">Добавьте ссылки выше для отображения на вашей био-странице</p>
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2">

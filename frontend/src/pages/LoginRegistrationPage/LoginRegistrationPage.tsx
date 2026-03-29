@@ -92,7 +92,7 @@ const LoginRegistrationPage = () => {
         await refreshUser();
         navigate('/home');
       } catch (err: any) {
-        setError(err.message || 'Login failed');
+        setError(err.message || 'Ошибка входа');
       } finally {
         setLoading(false);
       }
@@ -102,7 +102,7 @@ const LoginRegistrationPage = () => {
       setError('');
 
       if (password !== confirmPassword) {
-        setError('Passwords do not match');
+        setError('Пароли не совпадают');
         return;
       }
 
@@ -112,7 +112,7 @@ const LoginRegistrationPage = () => {
         await refreshUser();
         navigate('/home');
       } catch (err: any) {
-        setError(err.message || 'Registration failed');
+        setError(err.message || 'Ошибка регистрации');
       } finally {
         setLoading(false);
       }
@@ -131,13 +131,13 @@ const LoginRegistrationPage = () => {
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
               </svg>
             </div>
-            <span className="text-white text-xl font-medium">Url Shortener</span>
+            <span className="text-white text-xl font-medium">Linxie</span>
           </div>
           <h1 className="text-white text-4xl font-medium leading-snug mb-3">
-            Short links.<br />Real insights.
+            Короткие ссылки.<br />Реальная аналитика.
           </h1>
           <p className="text-white/50 text-sm leading-relaxed">
-            Track every click, understand your audience, grow your reach.
+            Отслеживайте каждый клик, изучайте аудиторию, расширяйте охват.
           </p>
         </div>
       </div>
@@ -147,7 +147,7 @@ const LoginRegistrationPage = () => {
           onClick={() => navigate('/')}
           className="absolute top-6 left-6"
         >
-          &larr; Back
+          &larr; Назад
         </Button>
         <FieldSet className="w-full p-6 border-3 border-[#c8d69b] rounded-xl bg-white">
           <FieldGroup className="flex flex-row justify-center items-center gap-3 mb-4">
@@ -156,14 +156,14 @@ const LoginRegistrationPage = () => {
               className={`flex-1 ${mode === 'login' ? 'bg-[#3971b8] text-white' : 'bg-white text-black border-[#c8d69b]'}`}
               onClick={() => { setMode('login'); setError(''); }}
             >
-              Login
+              Вход
             </Button>
             <Button
               variant={mode === 'register' ? 'default' : 'outline'}
               className={`flex-1 ${mode === 'register' ? 'bg-[#3971b8] text-white' : 'bg-white text-black border-[#c8d69b]'}`}
               onClick={() => { setMode('register'); setError(''); }}
             >
-              Register
+              Регистрация
             </Button>
           </FieldGroup>
           <FieldSeparator />
@@ -175,35 +175,35 @@ const LoginRegistrationPage = () => {
             )}
             {mode === 'register' && (
               <Field>
-                <FieldLabel htmlFor="userName">Username</FieldLabel>
-                <Input id="userName" type="text" placeholder="John Doe" value={userName}
+                <FieldLabel htmlFor="userName">Имя пользователя</FieldLabel>
+                <Input id="userName" type="text" placeholder="Иван Иванов" value={userName}
                   className="border-2 border-[#c8d69b]" onChange={(e) => setUserName(e.target.value)} />
               </Field>
             )}
             <Field>
-              <FieldLabel htmlFor="userEmail">Email Address</FieldLabel>
+              <FieldLabel htmlFor="userEmail">Эл. почта</FieldLabel>
               <Input id="userEmail" type="email" placeholder="example@mail.com" value={userEmail}
                 className="border-2 border-[#c8d69b]" onChange={(e) => setUserEmail(e.target.value)} />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="password">Пароль</FieldLabel>
               <Input id="password" type="password" placeholder="••••••••••" value={password}
                 className="border-2 border-[#c8d69b]" onChange={(e) => setPassword(e.target.value)} />
-              <FieldDescription>Must be at least 8 characters long.</FieldDescription>
+              <FieldDescription>Минимум 8 символов.</FieldDescription>
             </Field>
             {mode === 'register' && (
               <Field>
-                <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
+                <FieldLabel htmlFor="confirmPassword">Подтвердите пароль</FieldLabel>
                 <Input id="confirmPassword" type="password" placeholder="••••••••••" value={confirmPassword}
                   className="border-2 border-[#c8d69b]" onChange={(e) => setConfirmPassword(e.target.value)} />
               </Field>
             )}
             <Button className="bg-[#3971b8] w-full" disabled={loading}
               onClick={mode === 'login' ? handleLogin : handleRegistration}>
-              {loading ? 'Please wait...' : (mode === 'login' ? 'Login' : 'Register')}
+              {loading ? 'Подождите...' : (mode === 'login' ? 'Войти' : 'Зарегистрироваться')}
             </Button>
           </FieldGroup>
-          <FieldSeparator>Or continue with</FieldSeparator>
+          <FieldSeparator>Или войти через</FieldSeparator>
           <FieldGroup className="grid grid-cols-3 gap-3">
             <Button className="bg-transparent border-2 border-[#c8d69b] text-black">Google</Button>
             <Button className="bg-transparent border-2 border-[#c8d69b] text-black">Github</Button>

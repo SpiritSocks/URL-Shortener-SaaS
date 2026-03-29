@@ -53,7 +53,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
     const isUnlimited = planName === 'unlimited';
 
     const clicksData = (stats?.clicks_over_time || []).map(d => ({
-        name: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        name: new Date(d.date).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' }),
         clicks: d.clicks,
     }));
 
@@ -90,7 +90,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
         try {
             await apiExportCSV();
         } catch {
-            alert('Export failed. Make sure you have an Unlimited plan.');
+            alert('Ошибка экспорта. Убедитесь, что у вас тариф Unlimited.');
         } finally {
             setExporting(false);
         }
@@ -100,7 +100,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
         <>
         <section id="analytics-section" className="flex flex-col items-center gap-6 sm:gap-10 pt-4 px-4 sm:px-10">
             <div className="flex items-center gap-4">
-                <h1 className="font-bold text-md sm:text-3xl text-[#343b1b]">Your Analytics</h1>
+                <h1 className="font-bold text-md sm:text-3xl text-[#343b1b]">Ваша аналитика</h1>
                 {isUnlimited && (
                     <Button
                         variant="outline"
@@ -110,39 +110,42 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                         disabled={exporting}
                     >
                         <Download size={14} className="mr-1" />
-                        {exporting ? 'Exporting...' : 'Export CSV'}
+                        {exporting ? 'Экспорт...' : 'Экспорт CSV'}
                     </Button>
                 )}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center gap-4 sm:gap-6 lg:gap-10 w-full max-w-5xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 w-full max-w-6xl mx-auto">
+            <AnalyticsCard_small
+                icon={Link2}
+                title="Всего ссылок"
+                text={String(stats?.total_links ?? 0)}
+                icon_bgColor="bg-[#c8d69b]"
+                icon_color=""
+            />
 
-                <AnalyticsCard_small
-                    icon={Link2}
-                    title="Total Links"
-                    text={String(stats?.total_links ?? 0)}
-                    icon_bgColor="bg-[#c8d69b]"
-                    icon_color="" />
+            <AnalyticsCard_small
+                icon={MousePointerClick}
+                title="Всего кликов"
+                text={String(stats?.total_clicks ?? 0)}
+                icon_bgColor="bg-[#4c6fb1]"
+                icon_color="text-white"
+            />
 
-                <AnalyticsCard_small
-                    icon={MousePointerClick}
-                    title="Total Clicks"
-                    text={String(stats?.total_clicks ?? 0)}
-                    icon_bgColor="bg-[#4c6fb1]"
-                    icon_color="text-white" />
+            <AnalyticsCard_small
+                icon={TrendingUp}
+                title="Среднее на ссылку"
+                text={(stats?.avg_per_link ?? 0).toFixed(1)}
+                icon_bgColor="bg-[#f6e6a5]"
+                icon_color=""
+            />
 
-                <AnalyticsCard_small
-                    icon={TrendingUp}
-                    title="Avg. Per Link"
-                    text={(stats?.avg_per_link ?? 0).toFixed(1)}
-                    icon_bgColor="bg-[#f6e6a5]"
-                    icon_color="" />
-
-                <AnalyticsCard_small
-                    icon={Calendar}
-                    title="Avg. Per Day"
-                    text={(stats?.avg_per_day ?? 0).toFixed(1)}
-                    icon_bgColor="bg-[#4c6fb1]"
-                    icon_color="text-white" />
+            <AnalyticsCard_small
+                icon={Calendar}
+                title="Среднее в день"
+                text={(stats?.avg_per_day ?? 0).toFixed(1)}
+                icon_bgColor="bg-[#4c6fb1]"
+                icon_color="text-white"
+            />
             </div>
         </section>
 
@@ -150,7 +153,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             <div>
                 <GraphCard
                     icon={TrendingUp}
-                    title="Clicks Over Time">
+                    title="Клики по времени">
                     <LineChartGraph data={clicksData} />
                 </GraphCard>
             </div>
@@ -158,25 +161,25 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             <div className="grid grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-6 w-full pt-10">
                 <GraphCard
                     icon={Globe}
-                    title="Top Countries">
+                    title="Топ стран">
                     <BarChartGraph data={countriesData} dataKey="value" />
                 </GraphCard>
 
                 <GraphCard
                     icon={Smartphone}
-                    title="Device Types">
+                    title="Типы устройств">
                     <PieChartGraph data={devicesData} />
                 </GraphCard>
 
                 <GraphCard
                     icon={ComputerIcon}
-                    title="Browser Distribution">
+                    title="Распределение браузеров">
                     <PieChartGraph data={browsersData} />
                 </GraphCard>
 
                 <GraphCard
                     icon={MonitorCog}
-                    title="Operating System">
+                    title="Операционные системы">
                     <BarChartGraph data={osData} dataKey="value" />
                 </GraphCard>
             </div>
@@ -184,15 +187,15 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             <div className="mt-10">
                 <div className="bg-white border-2 border-dashed border-[#c8d69b] rounded-[15px] p-8 flex flex-col items-center">
                     <Lock size={32} className="text-gray-400 mb-3" />
-                    <h3 className="text-lg font-bold text-[#343b1b] mb-1">Detailed Breakdowns</h3>
+                    <h3 className="text-lg font-bold text-[#343b1b] mb-1">Подробная статистика</h3>
                     <p className="text-gray-400 text-sm text-center mb-4 max-w-md">
-                        Upgrade to Pro to unlock country, device, browser, and OS breakdowns, plus per-link analytics.
+                        Перейдите на тариф Pro, чтобы разблокировать статистику по странам, устройствам, браузерам и ОС, а также аналитику по каждой ссылке.
                     </p>
                     <Button
                         className="bg-[#4c6fb1] text-white"
                         onClick={() => navigate('/profile')}
                     >
-                        Upgrade to Pro
+                        Перейти на Pro
                     </Button>
                 </div>
             </div>
@@ -203,15 +206,15 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 <div className="mt-10 mb-10">
                     <div className="bg-white border-3 border-dashed border-[#c8d69b] rounded-[15px] p-8 flex flex-col items-center">
                         <Lock size={32} className="text-gray-400 mb-3" />
-                        <h3 className="text-lg font-bold text-[#343b1b] mb-1">Advanced Analytics</h3>
+                        <h3 className="text-lg font-bold text-[#343b1b] mb-1">Расширенная аналитика</h3>
                         <p className="text-gray-400 text-sm text-center mb-4 max-w-md">
-                            Unlock referrer tracking, hourly heatmaps, live click feed, and CSV export with the Unlimited plan.
+                            Разблокируйте отслеживание источников, почасовые тепловые карты, ленту кликов и экспорт CSV с тарифом Unlimited.
                         </p>
                         <Button
                             className="bg-[#343b1b] text-white"
                             onClick={() => navigate('/profile')}
                         >
-                            Upgrade to Unlimited
+                            Перейти на Unlimited
                         </Button>
                     </div>
                 </div>
@@ -221,21 +224,21 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                         <div className="bg-[#343b1b] text-white text-xs px-3 py-1 rounded-full font-medium">
                             Unlimited
                         </div>
-                        <h2 className="text-xl font-bold text-[#343b1b]">Advanced Analytics</h2>
+                        <h2 className="text-xl font-bold text-[#343b1b]">Расширенная аналитика</h2>
                     </div>
 
                     <div className="grid grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-6 w-full">
                         {/* Referrer Sources */}
                         <GraphCard
                             icon={ExternalLink}
-                            title="Referrer Sources">
+                            title="Источники переходов">
                             <BarChartGraph data={referersData} dataKey="clicks" />
                         </GraphCard>
 
                         {/* Hourly Heatmap */}
                         <GraphCard
                             icon={Clock}
-                            title="Clicks by Hour (Last 30 days)">
+                            title="Клики по часам (за 30 дней)">
                             <HeatmapGraph data={hourlyData} />
                         </GraphCard>
                     </div>
@@ -246,7 +249,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                             <div className="p-2 rounded-lg bg-[#f6e6a5]">
                                 <Trophy size={18} />
                             </div>
-                            <h3 className="font-semibold text-[15px]">Top Performing Links</h3>
+                            <h3 className="font-semibold text-[15px]">Лучшие ссылки</h3>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
@@ -254,8 +257,8 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                                     <tr className="text-left text-gray-500 border-b">
                                         <th className="pb-2 font-medium">#</th>
                                         <th className="pb-2 font-medium">Slug</th>
-                                        <th className="pb-2 font-medium">Target URL</th>
-                                        <th className="pb-2 font-medium text-right">Clicks</th>
+                                        <th className="pb-2 font-medium">Целевой URL</th>
+                                        <th className="pb-2 font-medium text-right">Клики</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -276,7 +279,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                                     ))}
                                     {(!advanced?.top_links || advanced.top_links.length === 0) && (
                                         <tr>
-                                            <td colSpan={4} className="py-6 text-center text-gray-400">No links yet</td>
+                                            <td colSpan={4} className="py-6 text-center text-gray-400">Пока нет ссылок</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -290,7 +293,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                             <div className="p-2 rounded-lg bg-[#4c6fb1]">
                                 <Activity size={18} className="text-white" />
                             </div>
-                            <h3 className="font-semibold text-[15px]">Recent Clicks</h3>
+                            <h3 className="font-semibold text-[15px]">Последние клики</h3>
                         </div>
                         <div className="space-y-2 max-h-[400px] overflow-y-auto">
                             {(advanced?.recent_clicks || []).map((click) => (
@@ -327,7 +330,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                                 </div>
                             ))}
                             {(!advanced?.recent_clicks || advanced.recent_clicks.length === 0) && (
-                                <p className="text-gray-400 text-sm text-center py-6">No clicks recorded yet</p>
+                                <p className="text-gray-400 text-sm text-center py-6">Кликов пока не зафиксировано</p>
                             )}
                         </div>
                     </div>

@@ -8,9 +8,9 @@ import { apiUpdateMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePay
 import styles from '@/pages/ProfilePage/ProfilePage.module.css';
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free: ["Up to 5 short links", "QR code generation", "Basic link management", "Basic analytics"],
-    pro:  ["Up to 50 short links", "QR code generation", "Advanced analytics dashboard", "Browser, device & OS data"],
-    unlimited: ["Unlimited short links", "QR code generation", "Full analytics dashboard", "Browser, device & OS data", "Priority support"],
+    free: ["До 5 коротких ссылок", "Генерация QR-кодов", "Базовое управление ссылками", "Базовая аналитика"],
+    pro:  ["До 50 коротких ссылок", "Генерация QR-кодов", "Расширенная аналитика", "Данные о браузерах, устройствах и ОС"],
+    unlimited: ["Безлимитные ссылки", "Генерация QR-кодов", "Полная аналитика", "Данные о браузерах, устройствах и ОС", "Приоритетная поддержка"],
 };
 
 const PLAN_COLORS: Record<string, string> = {
@@ -80,15 +80,15 @@ const ProfilePage = () => {
                 setCurrentPlan(updatedPlan);
             }
         } catch (err: any) {
-            alert(err.message || 'Payment failed');
+            alert(err.message || 'Ошибка оплаты');
         } finally {
             setPaymentLoading(null);
         }
     };
 
     const formatPrice = (kop: number) => {
-        if (kop === 0) return "Free";
-        return `${(kop / 100).toFixed(0)} RUB/mo`;
+        if (kop === 0) return "Бесплатно";
+        return `${(kop / 100).toFixed(0)} ₽/мес`;
     };
 
     return (
@@ -99,11 +99,11 @@ const ProfilePage = () => {
                 onClick={() => navigate('/home')}
                 className="self-start mb-2 -ml-2"
             >
-                &larr; Back
+                &larr; Назад
             </Button>
             <div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Profile</h1>
-                <p>Manage your account information and preferences</p>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Профиль</h1>
+                <p>Управляйте информацией аккаунта и настройками</p>
             </div>
 
             {/* User info and stats */}
@@ -127,7 +127,7 @@ const ProfilePage = () => {
                                     disabled={saving}
                                     onClick={handleSave}
                                 >
-                                    {saving ? 'Saving...' : 'Save'}
+                                    {saving ? 'Сохранение...' : 'Сохранить'}
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -137,7 +137,7 @@ const ProfilePage = () => {
                                         setEmail(user?.email || '');
                                     }}
                                 >
-                                    Cancel
+                                    Отмена
                                 </Button>
                             </div>
                         ) : (
@@ -145,13 +145,13 @@ const ProfilePage = () => {
                                 className="bg-[#111111] hover:bg-black text-white"
                                 onClick={() => setEditing(true)}
                             >
-                                Edit
+                                Изменить
                             </Button>
                         )}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full justify-center">
                         <div>
-                            <h3>Name</h3>
+                            <h3>Имя</h3>
                             <input
                                 className={styles.profile_input}
                                 type="text"
@@ -162,7 +162,7 @@ const ProfilePage = () => {
                             />
                         </div>
                         <div>
-                            <h3>Email</h3>
+                            <h3>Эл. почта</h3>
                             <input
                                 className={styles.profile_input}
                                 type="email"
@@ -175,41 +175,41 @@ const ProfilePage = () => {
                     </div>
                 </div>
                 <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
-                    <span className="font-medium mb-3">Account Stats</span>
+                    <span className="font-medium mb-3">Статистика аккаунта</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Total Links</span>
+                            <span className="text-gray-500">Всего ссылок</span>
                             <span className="font-semibold">{totalLinks}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Total Clicks</span>
+                            <span className="text-gray-500">Всего кликов</span>
                             <span className="font-semibold">{totalClicks}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Member Since</span>
+                            <span className="text-gray-500">Дата регистрации</span>
                             <span className="font-semibold">
-                                {user?.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}
+                                {user?.created_at ? new Date(user.created_at).toLocaleDateString('ru-RU') : '-'}
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
-                    <span className="font-medium mb-3">Current Plan</span>
+                    <span className="font-medium mb-3">Текущий тариф</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Plan</span>
+                            <span className="text-gray-500">Тариф</span>
                             <span className="font-semibold text-[#4c6fb1] capitalize">{currentPlan?.name || 'Free'}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Links Limit</span>
+                            <span className="text-gray-500">Лимит ссылок</span>
                             <span className="font-semibold">
-                                {currentPlan?.max_links === -1 ? 'Unlimited' : (currentPlan?.max_links ?? 3)}
+                                {currentPlan?.max_links === -1 ? 'Безлимит' : (currentPlan?.max_links ?? 3)}
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Analytics</span>
+                            <span className="text-gray-500">Аналитика</span>
                             <span className={`font-semibold ${currentPlan?.has_analytics ? 'text-green-600' : 'text-red-500'}`}>
-                                {currentPlan?.has_analytics ? 'Enabled' : 'Disabled'}
+                                {currentPlan?.has_analytics ? 'Включена' : 'Отключена'}
                             </span>
                         </div>
                     </div>
@@ -218,8 +218,8 @@ const ProfilePage = () => {
 
             {/* Plan Selection */}
             <div className="mt-6">
-                <h2 className="text-xl md:text-2xl font-bold mb-2">Choose Your Plan</h2>
-                <p className="text-gray-500 mb-6">Select the plan that best fits your needs</p>
+                <h2 className="text-xl md:text-2xl font-bold mb-2">Выберите тариф</h2>
+                <p className="text-gray-500 mb-6">Выберите тариф, который лучше всего подходит вам</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {plans.map((plan) => {
@@ -233,7 +233,7 @@ const ProfilePage = () => {
                             >
                                 {plan.name === 'pro' && (
                                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4c6fb1] text-white text-xs px-3 py-1 rounded-full font-medium">
-                                        Popular
+                                        Популярный
                                     </div>
                                 )}
 
@@ -253,7 +253,7 @@ const ProfilePage = () => {
 
                                 {isCurrent ? (
                                     <Button disabled className="w-full bg-[#c8d69b] text-[#343b1b]">
-                                        Current Plan
+                                        Текущий тариф
                                     </Button>
                                 ) : (
                                     <Button
@@ -261,8 +261,8 @@ const ProfilePage = () => {
                                         disabled={paymentLoading !== null}
                                         onClick={() => handleSelectPlan(plan.name)}
                                     >
-                                        {paymentLoading === plan.name ? 'Processing...' : (
-                                            plan.price_kop === 0 ? 'Switch to Free' : 'Upgrade'
+                                        {paymentLoading === plan.name ? 'Обработка...' : (
+                                            plan.price_kop === 0 ? 'Перейти на бесплатный' : 'Обновить'
                                         )}
                                     </Button>
                                 )}

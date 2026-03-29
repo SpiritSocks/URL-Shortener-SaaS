@@ -48,7 +48,7 @@ const LinkDetailPage = () => {
     if (loading) {
         return (
             <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center">
-                <p className="text-gray-400">Loading...</p>
+                <p className="text-gray-400">Загрузка...</p>
             </div>
         );
     }
@@ -58,16 +58,16 @@ const LinkDetailPage = () => {
             <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center px-4">
                 <div className="bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-10 flex flex-col items-center max-w-lg text-center">
                     <Lock size={48} className="text-[#4c6fb1] mb-4" />
-                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Per-Link Analytics</h2>
+                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Аналитика по ссылке</h2>
                     <p className="text-gray-500 mb-6">
-                        Detailed per-link analytics are available on Pro and Unlimited plans. Upgrade to see clicks, country breakdowns, devices, and more for each link.
+                        Подробная аналитика по каждой ссылке доступна на тарифах Pro и Unlimited. Обновите тариф, чтобы видеть клики, географию, устройства и многое другое.
                     </p>
                     <div className="flex gap-3">
                         <Button variant="outline" onClick={() => navigate('/home')}>
-                            <ArrowLeft size={14} className="mr-1" /> Back
+                            <ArrowLeft size={14} className="mr-1" /> Назад
                         </Button>
                         <Button className="bg-[#4c6fb1] text-white" onClick={() => navigate('/profile')}>
-                            Upgrade Plan
+                            Обновить тариф
                         </Button>
                     </div>
                 </div>
@@ -82,7 +82,7 @@ const LinkDetailPage = () => {
     const hasUnlimited = plan_name === 'unlimited';
 
     const clicksData = (stats.clicks_over_time || []).map(d => ({
-        name: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        name: new Date(d.date).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' }),
         clicks: d.clicks,
     }));
 
@@ -105,7 +105,7 @@ const LinkDetailPage = () => {
                 <div className="flex items-center gap-2 text-sm">
                     <button onClick={() => navigate('/home')} className="text-[#4c6fb1] hover:underline flex items-center gap-1">
                         <ArrowLeft size={14} />
-                        Your links
+                        Ваши ссылки
                     </button>
                     <span className="text-gray-400">/</span>
                     <span className="text-gray-600">{stats.slug}</span>
@@ -131,7 +131,7 @@ const LinkDetailPage = () => {
                         <div className="flex items-center gap-6">
                             <div className="text-center">
                                 <p className="text-3xl font-bold text-[#343b1b]">{stats.total_clicks.toLocaleString()}</p>
-                                <p className="text-xs text-gray-400">total clicks</p>
+                                <p className="text-xs text-gray-400">всего кликов</p>
                             </div>
                             <div className="flex gap-2">
                                 <Button
@@ -140,7 +140,7 @@ const LinkDetailPage = () => {
                                     onClick={handleCopy}
                                 >
                                     <Copy size={14} />
-                                    {copied ? 'Copied!' : 'Copy'}
+                                    {copied ? 'Скопировано!' : 'Копировать'}
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -166,7 +166,7 @@ const LinkDetailPage = () => {
                                 download={`qr-${stats.slug}.png`}
                                 className="text-[#4c6fb1] text-sm hover:underline"
                             >
-                                Download QR Code
+                                Скачать QR-код
                             </a>
                         </div>
                     )}
@@ -175,34 +175,34 @@ const LinkDetailPage = () => {
                 {/* Stats Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <StatCard
-                        label="Clicks today"
+                        label="Клики сегодня"
                         value={stats.clicks_today}
                         icon={<MousePointerClick size={18} />}
                         iconBg="bg-[#4c6fb1]"
                     />
                     <StatCard
-                        label="This week"
+                        label="За неделю"
                         value={stats.clicks_week}
                         icon={<Calendar size={18} />}
                         iconBg="bg-[#c8d69b]"
                     />
                     <StatCard
-                        label="This month"
+                        label="За месяц"
                         value={stats.clicks_month}
                         icon={<Calendar size={18} />}
                         iconBg="bg-[#f6e6a5]"
                     />
                     <StatCard
-                        label="Created"
-                        value={new Date(stats.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        subtitle={daysSinceCreated === 0 ? 'today' : `${daysSinceCreated} day${daysSinceCreated === 1 ? '' : 's'} ago`}
+                        label="Создано"
+                        value={new Date(stats.created_at).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        subtitle={daysSinceCreated === 0 ? 'сегодня' : `${daysSinceCreated} дн. назад`}
                         icon={<Clock size={18} />}
                         iconBg="bg-[#343b1b]"
                     />
                 </div>
 
                 {/* Clicks Over Time - Free tier */}
-                <GraphCard icon={MousePointerClick} title="Clicks Over Time">
+                <GraphCard icon={MousePointerClick} title="Клики по времени">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="text-[10px] font-medium border border-green-500 text-green-600 px-2 py-0.5 rounded-full">FREE</span>
                     </div>
@@ -212,36 +212,36 @@ const LinkDetailPage = () => {
                 {/* Pro-locked section */}
                 {hasPro ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <GraphCard icon={Globe} title="Country Breakdown">
+                        <GraphCard icon={Globe} title="География кликов">
                             <BarChartGraph data={countriesData} dataKey="value" />
                         </GraphCard>
-                        <GraphCard icon={Smartphone} title="Devices">
+                        <GraphCard icon={Smartphone} title="Устройства">
                             <PieChartGraph data={devicesData} />
                         </GraphCard>
-                        <GraphCard icon={ComputerIcon} title="Browsers">
+                        <GraphCard icon={ComputerIcon} title="Браузеры">
                             <PieChartGraph data={browsersData} />
                         </GraphCard>
-                        <GraphCard icon={MonitorCog} title="Operating Systems">
+                        <GraphCard icon={MonitorCog} title="Операционные системы">
                             <BarChartGraph data={osData} dataKey="value" />
                         </GraphCard>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <LockedCard
-                            title="Country breakdown"
-                            description="See which countries your clicks come from. Know your audience."
+                            title="География кликов"
+                            description="Узнайте, из каких стран приходят клики. Знайте свою аудиторию."
                             planLabel="Pro"
                             onUpgrade={() => navigate('/profile')}
                         />
                         <LockedCard
-                            title="Devices"
-                            description="Mobile vs desktop breakdown with browser stats."
+                            title="Устройства"
+                            description="Статистика по мобильным и десктопным устройствам с данными о браузерах."
                             planLabel="Pro"
                             onUpgrade={() => navigate('/profile')}
                         />
                         <LockedCard
-                            title="Referrers"
-                            description="Where are your clicks coming from? Social, email, direct?"
+                            title="Источники"
+                            description="Откуда приходят клики? Соцсети, почта, прямые переходы?"
                             planLabel="Pro"
                             onUpgrade={() => navigate('/profile')}
                         />
@@ -252,10 +252,10 @@ const LinkDetailPage = () => {
                 {hasUnlimited ? (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <GraphCard icon={ExternalLink} title="Referrer Sources">
+                            <GraphCard icon={ExternalLink} title="Источники переходов">
                                 <BarChartGraph data={referersData} />
                             </GraphCard>
-                            <GraphCard icon={Clock} title="Clicks by Hour">
+                            <GraphCard icon={Clock} title="Клики по часам">
                                 <HeatmapGraph data={stats.hourly_map || []} />
                             </GraphCard>
                         </div>
@@ -263,7 +263,7 @@ const LinkDetailPage = () => {
                         {/* Recent Clicks Feed */}
                         {stats.recent_clicks && stats.recent_clicks.length > 0 && (
                             <div className="bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-5">
-                                <h3 className="font-semibold text-[#343b1b] mb-4">Recent Clicks</h3>
+                                <h3 className="font-semibold text-[#343b1b] mb-4">Последние клики</h3>
                                 <div className="max-h-[400px] overflow-y-auto space-y-2">
                                     {stats.recent_clicks.map((click) => (
                                         <div
@@ -289,14 +289,14 @@ const LinkDetailPage = () => {
                 ) : hasPro ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <LockedCard
-                            title="Referrer Sources"
-                            description="Track where your traffic comes from — social, email, or direct."
+                            title="Источники переходов"
+                            description="Отслеживайте, откуда приходит трафик — соцсети, почта или прямые переходы."
                             planLabel="Unlimited"
                             onUpgrade={() => navigate('/profile')}
                         />
                         <LockedCard
-                            title="Hourly Heatmap"
-                            description="See when your audience is most active throughout the day."
+                            title="Почасовая тепловая карта"
+                            description="Узнайте, когда ваша аудитория наиболее активна в течение дня."
                             planLabel="Unlimited"
                             onUpgrade={() => navigate('/profile')}
                         />
@@ -350,7 +350,7 @@ const LockedCard = ({ title, description, planLabel, onUpgrade }: {
             className="border-white text-white hover:bg-white hover:text-[#343b1b]"
             onClick={onUpgrade}
         >
-            Upgrade to {planLabel}
+            Перейти на {planLabel}
         </Button>
     </div>
 );

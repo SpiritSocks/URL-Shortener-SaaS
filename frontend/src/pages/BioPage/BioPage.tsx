@@ -67,8 +67,8 @@ const BioPage = () => {
         return (
             <div className="min-h-screen bg-[#FAFAF5] flex flex-col items-center justify-center gap-4">
                 <h1 className="text-4xl font-bold text-[#343b1b]">404</h1>
-                <p className="text-gray-500">This bio page doesn't exist.</p>
-                <a href="/" className="text-[#4c6fb1] hover:underline text-sm">Go to homepage</a>
+                <p className="text-gray-500">Эта био-страница не существует.</p>
+                <a href="/" className="text-[#4c6fb1] hover:underline text-sm">На главную</a>
             </div>
         );
     }
@@ -119,7 +119,7 @@ const BioPage = () => {
                 </div>
 
                 {links.length === 0 && (
-                    <p className={`${t.subtext} text-sm`}>No links yet.</p>
+                    <p className={`${t.subtext} text-sm`}>Пока нет ссылок.</p>
                 )}
 
                 {/* Branding footer */}
@@ -128,7 +128,7 @@ const BioPage = () => {
                         href="/"
                         className={`mt-8 text-xs ${t.footer} hover:opacity-80 transition-opacity`}
                     >
-                        Powered by URL Shortener
+                        Powered by Linxie
                     </a>
                 )}
             </div>

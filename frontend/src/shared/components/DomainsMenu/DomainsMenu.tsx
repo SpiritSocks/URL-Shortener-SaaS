@@ -48,15 +48,15 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
             <section className="flex flex-col items-center justify-center gap-6 pt-16 px-10">
                 <div className="bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-10 flex flex-col items-center max-w-lg">
                     <Lock size={48} className="text-[#4c6fb1] mb-4" />
-                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Custom Domains Locked</h2>
+                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Свои домены заблокированы</h2>
                     <p className="text-gray-500 text-center mb-6">
-                        Custom domains are available on the Pro and Unlimited plans. Upgrade your plan to use your own branded short links.
+                        Свои домены доступны на тарифах Pro и Unlimited. Обновите тариф, чтобы использовать брендированные короткие ссылки.
                     </p>
                     <Button
                         className="bg-[#4c6fb1] text-white px-8"
                         onClick={() => navigate('/profile')}
                     >
-                        Upgrade Plan
+                        Обновить тариф
                     </Button>
                 </div>
             </section>
@@ -73,7 +73,7 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
             const updated = await apiGetDomains();
             setDomains(updated);
         } catch (err: any) {
-            setError(err.message || 'Failed to add domain');
+            setError(err.message || 'Не удалось добавить домен');
         } finally {
             setLoading(false);
         }
@@ -88,14 +88,14 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
             const updated = await apiGetDomains();
             setDomains(updated);
         } catch (err: any) {
-            setVerifyMessage({ id, text: err.message || 'Verification failed', ok: false });
+            setVerifyMessage({ id, text: err.message || 'Проверка не удалась', ok: false });
         } finally {
             setVerifyingId(null);
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!window.confirm('Delete this domain? This cannot be undone.')) return;
+        if (!window.confirm('Удалить этот домен? Это действие нельзя отменить.')) return;
         setDeletingId(id);
         setDeleteError(null);
         try {
@@ -103,7 +103,7 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
             setDomains(domains.filter(d => d.id !== id));
             setVerifyMessage(null);
         } catch (err: any) {
-            setDeleteError({ id, text: err.message || 'Failed to delete domain' });
+            setDeleteError({ id, text: err.message || 'Не удалось удалить домен' });
         } finally {
             setDeletingId(null);
         }
@@ -118,19 +118,19 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
 
     const statusLabel = (d: CustomDomainData) => {
         if (d.verified) {
-            return <span className="text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full">Verified</span>;
+            return <span className="text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full">Подтверждён</span>;
         }
-        return <span className="text-amber-600 text-xs font-medium bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>;
+        return <span className="text-amber-600 text-xs font-medium bg-amber-50 px-2 py-0.5 rounded-full">Ожидание</span>;
     };
 
     const sslLabel = (d: CustomDomainData) => {
         if (d.ssl_status === 'active') {
-            return <span className="text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full">SSL Active</span>;
+            return <span className="text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full">SSL активен</span>;
         }
         if (d.ssl_status === 'failed') {
-            return <span className="text-red-600 text-xs font-medium bg-red-50 px-2 py-0.5 rounded-full">SSL Failed</span>;
+            return <span className="text-red-600 text-xs font-medium bg-red-50 px-2 py-0.5 rounded-full">SSL ошибка</span>;
         }
-        return <span className="text-gray-500 text-xs font-medium bg-gray-100 px-2 py-0.5 rounded-full">SSL Pending</span>;
+        return <span className="text-gray-500 text-xs font-medium bg-gray-100 px-2 py-0.5 rounded-full">SSL ожидание</span>;
     };
 
     return (
@@ -141,9 +141,9 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
                     <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                         <Globe color="white" />
                     </div>
-                    <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Add Custom Domain</h3>
+                    <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Добавить свой домен</h3>
                 </div>
-                <label className="block mt-3 text-sm sm:text-lg">Enter your domain</label>
+                <label className="block mt-3 text-sm sm:text-lg">Введите ваш домен</label>
                 <input
                     type="text"
                     placeholder="go.yourbrand.com"
@@ -160,7 +160,7 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
                     onClick={handleAdd}
                 >
                     <Plus size={16} className="mr-1" />
-                    {loading ? 'Adding...' : 'Add Domain'}
+                    {loading ? 'Добавление...' : 'Добавить домен'}
                 </Button>
             </div>
         </section>
@@ -169,22 +169,22 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
             <div className="w-full max-w-5xl">
                 {/* Setup instructions */}
                 <div className="bg-[#fbfcef] border-2 border-dashed border-[#c8d69b] rounded-[15px] p-4 sm:p-5 mb-6">
-                    <h4 className="font-semibold text-[#343b1b] text-sm sm:text-base mb-2">How to set up your custom domain</h4>
+                    <h4 className="font-semibold text-[#343b1b] text-sm sm:text-base mb-2">Как настроить свой домен</h4>
                     <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                        <li>Add your domain above (e.g. <code className="bg-white px-1.5 py-0.5 rounded text-xs">go.yourbrand.com</code>)</li>
-                        <li>Go to your DNS provider and add a <strong>CNAME</strong> record pointing to your app domain</li>
-                        <li>Click <strong>Verify</strong> below once the DNS has propagated (can take up to 48h)</li>
-                        <li>Once verified, create links with your custom domain and share branded short URLs</li>
+                        <li>Добавьте домен выше (например, <code className="bg-white px-1.5 py-0.5 rounded text-xs">go.yourbrand.com</code>)</li>
+                        <li>Перейдите к DNS-провайдеру и добавьте <strong>CNAME</strong> запись, указывающую на домен приложения</li>
+                        <li>Нажмите <strong>Проверить</strong> ниже после распространения DNS (может занять до 48 ч)</li>
+                        <li>После подтверждения создавайте ссылки со своим доменом и делитесь брендированными короткими URL</li>
                     </ol>
                 </div>
 
-                <h1 className="text-[#343b1b] font-bold text-sm sm:text-3xl mb-3">Your Domains</h1>
+                <h1 className="text-[#343b1b] font-bold text-sm sm:text-3xl mb-3">Ваши домены</h1>
 
                 {domains.length === 0 ? (
                     <div className="flex flex-col justify-center items-center bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-4 sm:p-6">
                         <Globe size={32} className="text-gray-300 mb-2" />
-                        <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">No custom domains yet</h2>
-                        <p className="text-gray-500 text-sm">Add your first custom domain to start using branded short links</p>
+                        <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">Пока нет своих доменов</h2>
+                        <p className="text-gray-500 text-sm">Добавьте первый свой домен, чтобы начать использовать брендированные короткие ссылки</p>
                     </div>
                 ) : (
                     <div className="flex flex-col gap-3">
@@ -201,7 +201,7 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
                                             {sslLabel(d)}
                                         </div>
                                         <p className="text-gray-400 text-xs mt-1">
-                                            Added {new Date(d.created_at).toLocaleDateString()}
+                                            Добавлен {new Date(d.created_at).toLocaleDateString('ru-RU')}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -213,7 +213,7 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
                                                 disabled={verifyingId === d.id}
                                             >
                                                 <RefreshCw size={14} className={verifyingId === d.id ? 'animate-spin' : ''} />
-                                                {verifyingId === d.id ? 'Checking...' : 'Verify'}
+                                                {verifyingId === d.id ? 'Проверка...' : 'Проверить'}
                                             </Button>
                                         )}
                                         <Button

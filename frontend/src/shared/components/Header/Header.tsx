@@ -31,10 +31,10 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
           </div>
           <div className="min-w-0">
             <h1 className="font-bold text-white text-2xl sm:text-3xl lg:text-[42px] leading-tight">
-              Url Shortener
+              Linxie
             </h1>
             <p className="text-[#f6e6a5] text-sm sm:text-base">
-              Create short links
+              Создавайте короткие ссылки
             </p>
           </div>
         </div>
@@ -43,35 +43,35 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
             className={activeMenu === "links" ? styles.button_active : styles.button_inactive}
             onClick={() => onMenuClick("links")}
           >
-            Links
+            Ссылки
           </Button>
 
           <Button
             className={activeMenu === "dashboard" ? styles.button_active : styles.button_inactive}
             onClick={() => onMenuClick("dashboard")}
           >
-            Dashboard
+            Аналитика
           </Button>
 
           <Button
             className={activeMenu === "domains" ? styles.button_active : styles.button_inactive}
             onClick={() => onMenuClick("domains")}
           >
-            Domains
+            Домены
           </Button>
 
           <Button
             className={activeMenu === "bio" ? styles.button_active : styles.button_inactive}
             onClick={() => onMenuClick("bio")}
           >
-            Bio
+            Био
           </Button>
 
           <Button
             className={styles.button_inactive}
             onClick={handleProfileClick}
           >
-            Profile
+            Профиль
           </Button>
 
           <Button
@@ -79,7 +79,7 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
             onClick={handleLogout}
           >
             <LogOut size={16} />
-            Logout
+            Выйти
           </Button>
         </nav>
       </div>

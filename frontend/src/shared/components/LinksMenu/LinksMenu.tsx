@@ -86,9 +86,9 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
             <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                 <Sparkles color="white"/>
             </div>
-          <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Create Short Link</h3>
+          <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Создать короткую ссылку</h3>
         </div>
-        <label className="block mt-3 text-sm sm:text-lg">Enter your long url</label>
+        <label className="block mt-3 text-sm sm:text-lg">Введите длинную ссылку</label>
         <input
           type="text"
           placeholder="https://example.com/your-very-long-url"
@@ -100,13 +100,13 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
         />
         {domains.length > 0 && (
           <div className="mt-3">
-            <label className="block text-sm sm:text-lg mb-1">Custom domain <span className="text-gray-400 text-sm">(optional)</span></label>
+            <label className="block text-sm sm:text-lg mb-1">Свой домен <span className="text-gray-400 text-sm">(необязательно)</span></label>
             <select
               value={selectedDomain}
               onChange={(e) => setSelectedDomain(e.target.value)}
               className="w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm sm:text-lg outline-none focus:ring-2 focus:ring-green-600/30 bg-white"
             >
-              <option value="">Default (no custom domain)</option>
+              <option value="">По умолчанию (без своего домена)</option>
               {domains.map(d => (
                 <option key={d.id} value={d.id}>{d.domain}</option>
               ))}
@@ -119,19 +119,19 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
           disabled={loading}
           onClick={handleShorten}
         >
-          {loading ? 'Creating...' : 'Shorten URL'}
+          {loading ? 'Создание...' : 'Сократить ссылку'}
         </Button>
       </div>
     </section>
 
     <section className="flex justify-center items-center px-4 pb-6 mt-4">
       <div className="flex flex-col w-full max-w-5xl gap-2">
-        <h1 className="text-[#343b1b] font-bold text-sm sm:text-3xl">Your links</h1>
+        <h1 className="text-[#343b1b] font-bold text-sm sm:text-3xl">Ваши ссылки</h1>
 
         {links.length === 0 ? (
           <div className="flex flex-col justify-center items-center bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-4 sm:p-6">
-            <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">No links yet</h2>
-            <p>Create your first short link to get started with tracking and analytics</p>
+            <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">Пока нет ссылок</h2>
+            <p>Создайте первую короткую ссылку, чтобы начать отслеживание и аналитику</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -153,7 +153,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     </div>
                     <p className="text-gray-500 text-xs sm:text-sm truncate mt-1">{link.target_url}</p>
                     <p className="text-gray-400 text-xs mt-1">
-                      Created {new Date(link.created_at).toLocaleDateString()}
+                      Создано {new Date(link.created_at).toLocaleDateString('ru-RU')}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
@@ -163,7 +163,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       onClick={() => handleCopy(link)}
                     >
                       <Copy size={14} />
-                      {copied === link.id ? 'Copied!' : 'Copy'}
+                      {copied === link.id ? 'Скопировано!' : 'Копировать'}
                     </Button>
                     <Button
                       variant="outline"
@@ -179,7 +179,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       onClick={() => navigate(`/link/${link.id}`)}
                     >
                       <BarChart3 size={14} />
-                      Analytics
+                      Аналитика
                     </Button>
                     <Button
                       variant="outline"
@@ -198,13 +198,13 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       alt={`QR code for ${link.slug}`}
                       className="w-48 h-48 border rounded-lg"
                     />
-                    <p className="text-gray-500 text-xs">Scan or download this QR code</p>
+                    <p className="text-gray-500 text-xs">Отсканируйте или скачайте QR-код</p>
                     <a
                       href={getQRCodeURL(link.slug)}
                       download={`qr-${link.slug}.png`}
                       className="text-[#4c6fb1] text-sm hover:underline"
                     >
-                      Download QR Code
+                      Скачать QR-код
                     </a>
                   </div>
                 )}
