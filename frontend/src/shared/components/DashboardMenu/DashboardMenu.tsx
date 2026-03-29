@@ -98,7 +98,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
 
     return (
         <>
-        <section id="analytics-section" className="flex flex-col items-center gap-10 pt-4 px-10">
+        <section id="analytics-section" className="flex flex-col items-center gap-6 sm:gap-10 pt-4 px-4 sm:px-10">
             <div className="flex items-center gap-4">
                 <h1 className="font-bold text-md sm:text-3xl text-[#343b1b]">Your Analytics</h1>
                 {isUnlimited && (
@@ -114,7 +114,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                     </Button>
                 )}
             </div>
-            <div className="flex flex-col flex-wrap sm:flex-row md:flex-row lg:flex-row justify-center gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center gap-4 sm:gap-6 lg:gap-10 w-full max-w-5xl">
 
                 <AnalyticsCard_small
                     icon={Link2}
@@ -146,7 +146,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             </div>
         </section>
 
-        <section id="graph-section" className="min-h-screen mt-10 px-10">
+        <section id="graph-section" className="min-h-screen mt-6 sm:mt-10 px-4 sm:px-10">
             <div>
                 <GraphCard
                     icon={TrendingUp}
@@ -294,17 +294,17 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                         </div>
                         <div className="space-y-2 max-h-[400px] overflow-y-auto">
                             {(advanced?.recent_clicks || []).map((click) => (
-                                <div key={click.event_id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-green-500" />
-                                        <div>
-                                            <div className="flex items-center gap-2">
+                                <div key={click.event_id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-gray-100 gap-2">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+                                        <div className="min-w-0">
+                                            <div className="flex flex-wrap items-center gap-2">
                                                 <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">/r/{click.slug}</code>
                                                 <span className="text-xs text-gray-400">
                                                     {new Date(click.clicked_at).toLocaleString()}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center gap-2 mt-1 text-[11px] text-gray-500">
+                                            <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1 text-[11px] text-gray-500">
                                                 <span className="flex items-center gap-1">
                                                     <Globe size={10} /> {click.country}
                                                 </span>
@@ -317,7 +317,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="text-xs text-gray-400 max-w-[200px] truncate">
+                                    <div className="text-xs text-gray-400 max-w-full sm:max-w-[200px] truncate pl-5 sm:pl-0">
                                         {click.referer === 'Direct' ? (
                                             <span className="text-green-600 font-medium">Direct</span>
                                         ) : (

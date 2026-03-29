@@ -93,7 +93,7 @@ const ProfilePage = () => {
 
     return (
         <div className="min-h-screen bg-[#FAFAF5] font-sans">
-        <section className="flex flex-col max-w-[70%] mx-auto justify-center gap-5 mt-10 pb-16">
+        <section className="flex flex-col max-w-[95%] sm:max-w-[85%] lg:max-w-[70%] mx-auto justify-center gap-5 mt-6 sm:mt-10 pb-16 px-2 sm:px-0">
             <Button
                 variant="ghost"
                 onClick={() => navigate('/home')}
@@ -102,14 +102,14 @@ const ProfilePage = () => {
                 &larr; Back
             </Button>
             <div>
-                <h1 className="text-sm md:text-3xl font-bold">Profile</h1>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Profile</h1>
                 <p>Manage your account information and preferences</p>
             </div>
 
             {/* User info and stats */}
-            <div className="grid grid-cols-3 grid-rows-2 gap-4 min-h-100 min-w-auto">
-                <div className="col-span-2 row-span-2 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-6">
-                    <div className="flex justify-between mb-8">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-2 gap-4 min-w-auto">
+                <div className="lg:col-span-2 lg:row-span-2 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row justify-between gap-3 mb-6 sm:mb-8">
                         <div className="flex flex-row items-center gap-3">
                             <img
                                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || 'User'}`}
@@ -149,7 +149,7 @@ const ProfilePage = () => {
                             </Button>
                         )}
                     </div>
-                    <div className="grid grid-cols-2 gap-3 w-full justify-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full justify-center">
                         <div>
                             <h3>Name</h3>
                             <input
@@ -174,7 +174,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
+                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
                     <span className="font-medium mb-3">Account Stats</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">
@@ -193,7 +193,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
+                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
                     <span className="font-medium mb-3">Current Plan</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">

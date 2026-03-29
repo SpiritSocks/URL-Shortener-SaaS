@@ -26,8 +26,8 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
     <header className="w-full bg-[#343b1b]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3 sm:gap-5 min-w-0">
-          <div className="size-10 flex items-center">
-            <Link2 size={50} color="white" />
+          <div className="size-8 sm:size-10 flex items-center">
+            <Link2 className="w-8 h-8 sm:w-10 sm:h-10" color="white" />
           </div>
           <div className="min-w-0">
             <h1 className="font-bold text-white text-2xl sm:text-3xl lg:text-[42px] leading-tight">

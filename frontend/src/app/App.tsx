@@ -21,7 +21,7 @@ const App = () => {
     <header className="w-full bg-white flex flex-wrap items-center justify-between py-3 px-4 md:py-4 md:px-8">
       <div className="flex items-center gap-3">
         <div className="size-10 flex items-center justify-center">
-          <Link2 size={100} color="#3971b8"/>
+          <Link2 className="w-8 h-8 sm:w-10 sm:h-10" color="#3971b8"/>
         </div>
         <h1 className="font-bold text-lg md:text-[42px] text-[#343b1b]">Url Shortener</h1>
       </div>
@@ -52,7 +52,7 @@ const App = () => {
             </div>
 
             <div className="w-full md:w-1/3 h-auto md:h-40 bg-[#fbfcef] rounded-[15px] flex items-center justify-center">
-              <QrCode size={100} color="#4c6fb1" />
+              <QrCode className="w-16 h-16 sm:w-24 sm:h-24" color="#4c6fb1" />
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ const App = () => {
 
       <section id="cards" className="bg-white py-10">
         <div className="self-center flex flex-col gap-2 items-center mb-8 px-4">
-          <h2 className="text-[42px] sm:text-2xl font-bold">Everything you need to succeed</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-[42px] font-bold text-center">Everything you need to succeed</h2>
           <p className="text-gray-600 text-sm sm:text-base text-center max-w-2xl">
             Powerful features designed for modern marketers and businesses
           </p>
@@ -146,8 +146,8 @@ const App = () => {
         </div>
       </section>
     </main>
-    <footer className="flex flex-row items-center h-[120px] bg-[#343b1b] text-[#ebe6d2] px-5">
-      <h2 className="font-bold text-[42px] text-[#f7f4ea]">Url Shortener</h2>
+    <footer className="flex flex-row items-center h-[80px] sm:h-[120px] bg-[#343b1b] text-[#ebe6d2] px-4 sm:px-5">
+      <h2 className="font-bold text-xl sm:text-3xl md:text-[42px] text-[#f7f4ea]">Url Shortener</h2>
     </footer>
     </>
   )

@@ -151,7 +151,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             <section className="flex justify-center px-4 pb-6 sm:px-6">
                 <div className="w-full max-w-2xl bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1]">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                             <FileText color="white" />
                         </div>
                         <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Create Your Bio Page</h3>
@@ -239,7 +239,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             <div className="w-full max-w-5xl bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1]">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                             <FileText color="white" />
                         </div>
                         <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Bio Page</h3>

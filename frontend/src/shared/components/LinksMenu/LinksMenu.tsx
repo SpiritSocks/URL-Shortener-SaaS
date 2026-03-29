@@ -83,7 +83,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
     <section className="flex justify-center px-4 pb-6 sm:px-6">
       <div className="w-full max-w-5xl bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
         <div className="flex items-center gap-3">
-            <div className="sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1]">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
                 <Sparkles color="white"/>
             </div>
           <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Create Short Link</h3>
@@ -156,7 +156,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       Created {new Date(link.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
                     <Button
                       variant="outline"
                       className="border-[#c8d69b] text-xs px-3"
