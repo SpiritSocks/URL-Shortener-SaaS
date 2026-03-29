@@ -15,6 +15,8 @@ import { useAuth } from "@/lib/AuthContext";
 import { tsParticles } from "@tsparticles/engine";
 import { loadLinksPreset } from "@tsparticles/preset-links";
 
+import { Eye, EyeOff } from "lucide-react";
+
 const ParticleNetwork = () => {
   const initialized = useRef(false);
 
@@ -84,6 +86,11 @@ const LoginRegistrationPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const passwordsDoNotMatch = mode === "register" && confirmPassword.length > 0 && password !== confirmPassword;
+
     const handleLogin = async () => {
       setError('');
       setLoading(true);
@@ -101,7 +108,7 @@ const LoginRegistrationPage = () => {
     const handleRegistration = async () => {
       setError('');
 
-      if (password !== confirmPassword) {
+      if (passwordsDoNotMatch) {
         setError('Пароли не совпадают');
         return;
       }
@@ -117,6 +124,7 @@ const LoginRegistrationPage = () => {
         setLoading(false);
       }
     };
+
   
   return (
     <div className="flex h-screen">
@@ -141,7 +149,10 @@ const LoginRegistrationPage = () => {
           </p>
         </div>
       </div>
-      <section id="login_form" className="w-full md:w-[480px] relative flex flex-col justify-center h-full bg-white border-l border-[#c8d69b] px-10">
+      <section
+        id="login_form"
+        className="w-full md:w-[480px] relative flex flex-col justify-start md:justify-center min-h-screen bg-white border-l border-[#c8d69b] px-4 sm:px-6 md:px-10 pt-20 md:pt-0 pb-6"
+      >
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
@@ -149,8 +160,8 @@ const LoginRegistrationPage = () => {
         >
           &larr; Назад
         </Button>
-        <FieldSet className="w-full p-6 border-3 border-[#c8d69b] rounded-xl bg-white">
-          <FieldGroup className="flex flex-row justify-center items-center gap-3 mb-4">
+        <FieldSet className="w-full p-4 sm:p-5 md:p-6 border-3 border-[#c8d69b] rounded-xl bg-white">
+            <FieldGroup className="flex flex-row justify-center items-center gap-3 mb-4">
             <Button
               variant={mode === 'login' ? 'default' : 'outline'}
               className={`flex-1 ${mode === 'login' ? 'bg-[#3971b8] text-white' : 'bg-white text-black border-[#c8d69b]'}`}
@@ -187,15 +198,47 @@ const LoginRegistrationPage = () => {
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Пароль</FieldLabel>
-              <Input id="password" type="password" placeholder="••••••••••" value={password}
-                className="border-2 border-[#c8d69b]" onChange={(e) => setPassword(e.target.value)} />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••••"
+                  value={password}
+                  className="border-2 border-[#c8d69b] pr-12"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-[#6b7280]"
+                  aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               <FieldDescription>Минимум 8 символов.</FieldDescription>
             </Field>
             {mode === 'register' && (
               <Field>
                 <FieldLabel htmlFor="confirmPassword">Подтвердите пароль</FieldLabel>
-                <Input id="confirmPassword" type="password" placeholder="••••••••••" value={confirmPassword}
-                  className="border-2 border-[#c8d69b]" onChange={(e) => setConfirmPassword(e.target.value)} />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="••••••••••"
+                    value={confirmPassword}
+                    className="border-2 border-[#c8d69b] pr-12"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-[#6b7280]"
+                    aria-label={showConfirmPassword ? "Скрыть пароль" : "Показать пароль"}
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </Field>
             )}
             <Button className="bg-[#3971b8] w-full" disabled={loading}
