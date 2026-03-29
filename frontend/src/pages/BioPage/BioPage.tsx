@@ -38,10 +38,14 @@ const THEME_STYLES: Record<string, { bg: string; text: string; subtext: string; 
 };
 
 const BioPage = () => {
-    const { handle } = useParams<{ handle: string }>();
+    // Route is '/:handle' — for bio pages the URL is /@user123, so the param
+    // includes the '@'. Strip it to get the raw handle for the API call.
+    const { handle: rawParam } = useParams<{ handle: string }>();
+    const handle = rawParam?.startsWith('@') ? rawParam.slice(1) : null;
+
     const [data, setData] = useState<PublicBioPageResponse | null>(null);
-    const [notFound, setNotFound] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(!handle);
+    const [loading, setLoading] = useState(!!handle);
 
     useEffect(() => {
         if (!handle) return;

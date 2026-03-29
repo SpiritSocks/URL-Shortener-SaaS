@@ -266,11 +266,6 @@ func (h *AnalyticsHandler) GetLinkDetail(c *gin.Context) {
 		planName = "free"
 	}
 
-	if planName == "free" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "link_analytics_locked", "message": "Per-link analytics are available on Pro and Unlimited plans."})
-		return
-	}
-
 	stats, err := h.analyticsSvc.GetLinkDetail(c.Request.Context(), linkID, found.Slug, found.TargetURL, found.CreatedAt, planName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

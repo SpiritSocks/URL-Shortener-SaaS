@@ -44,8 +44,8 @@ const ProfilePage = () => {
     useEffect(() => {
         apiGetAnalytics()
             .then(stats => {
-                setTotalLinks(stats.total_links);
-                setTotalClicks(stats.total_clicks);
+                setTotalLinks(stats.stats.total_links);
+                setTotalClicks(stats.stats.total_clicks);
             })
             .catch(() => {});
 

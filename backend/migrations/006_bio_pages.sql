@@ -27,6 +27,6 @@ CREATE TABLE IF NOT EXISTS bio_links (
 CREATE INDEX IF NOT EXISTS idx_bio_links_page ON bio_links(bio_page_id);
 
 ALTER TABLE plans ADD COLUMN IF NOT EXISTS max_bio_links BIGINT NOT NULL DEFAULT 5;
-UPDATE plans SET max_bio_links = 5 WHERE name = 'free';
+UPDATE plans SET max_bio_links = 3 WHERE name = 'free';
 UPDATE plans SET max_bio_links = 20 WHERE name = 'pro';
 UPDATE plans SET max_bio_links = -1 WHERE name = 'unlimited';

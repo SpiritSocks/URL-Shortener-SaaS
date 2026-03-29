@@ -29,7 +29,8 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load("../.env")
+	_ = godotenv.Load("../.env")  // local dev
+	_ = godotenv.Load(".env")     // docker
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
@@ -61,8 +62,15 @@ func main() {
 	db.SetMaxIdleConns(5)
 	db.SetConnMaxLifetime(5 * time.Minute)
 
-	if err := db.Ping(); err != nil {
-		log.Fatal(err)
+	for i := 0; i < 30; i++ {
+		if err := db.Ping(); err == nil {
+			break
+		}
+		if i == 29 {
+			log.Fatal("could not connect to database after 30 attempts")
+		}
+		log.Printf("waiting for database... (%d/30)", i+1)
+		time.Sleep(time.Second)
 	}
 
 	// Run migrations
@@ -183,7 +191,19 @@ func corsMiddleware() gin.HandlerFunc {
 }
 
 func runMigrations(db *sql.DB) {
-	files := []string{"../migrations/001_init.sql", "../migrations/002_plans.sql", "../migrations/003_advanced_analytics.sql", "../migrations/004_custom_domains.sql", "../migrations/005_fix_domain_fk.sql", "../migrations/006_bio_pages.sql"}
+	// Try ./migrations first (Docker), fall back to ../migrations (local dev)
+	migrationDir := "./migrations"
+	if _, err := os.Stat(migrationDir); os.IsNotExist(err) {
+		migrationDir = "../migrations"
+	}
+	files := []string{
+		migrationDir + "/001_init.sql",
+		migrationDir + "/002_plans.sql",
+		migrationDir + "/003_advanced_analytics.sql",
+		migrationDir + "/004_custom_domains.sql",
+		migrationDir + "/005_fix_domain_fk.sql",
+		migrationDir + "/006_bio_pages.sql",
+	}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)
 		if err != nil {

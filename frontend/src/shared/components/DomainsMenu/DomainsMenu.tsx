@@ -21,6 +21,8 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
     const [plan, setPlan] = useState<PlanData | null>(null);
     const [verifyingId, setVerifyingId] = useState<number | null>(null);
     const [verifyMessage, setVerifyMessage] = useState<{ id: number; text: string; ok: boolean } | null>(null);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [deleteError, setDeleteError] = useState<{ id: number; text: string } | null>(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -93,12 +95,17 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
     };
 
     const handleDelete = async (id: number) => {
+        if (!window.confirm('Delete this domain? This cannot be undone.')) return;
+        setDeletingId(id);
+        setDeleteError(null);
         try {
             await apiDeleteDomain(id);
             setDomains(domains.filter(d => d.id !== id));
             setVerifyMessage(null);
         } catch (err: any) {
-            setError(err.message || 'Failed to delete domain');
+            setDeleteError({ id, text: err.message || 'Failed to delete domain' });
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -213,8 +220,9 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
                                             variant="outline"
                                             className="border-red-300 text-red-500 hover:bg-red-50 text-xs px-3"
                                             onClick={() => handleDelete(d.id)}
+                                            disabled={deletingId === d.id}
                                         >
-                                            <Trash2 size={14} />
+                                            <Trash2 size={14} className={deletingId === d.id ? 'animate-pulse' : ''} />
                                         </Button>
                                     </div>
                                 </div>
@@ -230,6 +238,12 @@ const DomainsMenu = ({ isOpen }: DomainsMenuProps) => {
                                             : <XCircle size={16} />
                                         }
                                         {verifyMessage.text}
+                                    </div>
+                                )}
+                                {deleteError && deleteError.id === d.id && (
+                                    <div className="mt-3 p-3 rounded-lg text-sm flex items-center gap-2 bg-red-50 text-red-700 border border-red-200">
+                                        <XCircle size={16} />
+                                        {deleteError.text}
                                     </div>
                                 )}
                             </div>

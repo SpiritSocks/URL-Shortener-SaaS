@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: shortlink_saas
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  backend:
+    image: spiritsocks/url-shortener-backend:latest
+    environment:
+      PORT: "8080"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: shortlink_saas
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+    expose:
+      - "8080"
+    depends_on:
+      - db
+
+  frontend:
+    image: spiritsocks/url-shortener-frontend:latest
+    expose:
+      - "80"
+
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pg_data:
+  caddy_data:
+  caddy_config:
