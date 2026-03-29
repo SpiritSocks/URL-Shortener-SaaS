@@ -20,8 +20,9 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: shortlink_saas
       JWT_SECRET: ${JWT_SECRET}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      FRONTEND_URL: ${FRONTEND_URL:-https://linxie.ru}
       APP_DOMAIN: ${APP_DOMAIN:-linxie.ru}
+      BASE_URL: ${BASE_URL:-https://linxie.ru}
     expose:
       - "8080"
     depends_on:
