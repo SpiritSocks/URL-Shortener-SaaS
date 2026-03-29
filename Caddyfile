@@ -1,4 +1,4 @@
-https://linxie.ru {
+linxie.ru {
     handle /api/* {
         reverse_proxy backend:8080
     }
