@@ -246,12 +246,6 @@ const LoginRegistrationPage = () => {
               {loading ? 'Подождите...' : (mode === 'login' ? 'Войти' : 'Зарегистрироваться')}
             </Button>
           </FieldGroup>
-          <FieldSeparator>Или войти через</FieldSeparator>
-          <FieldGroup className="grid grid-cols-3 gap-3">
-            <Button className="bg-transparent border-2 border-[#c8d69b] text-black">Google</Button>
-            <Button className="bg-transparent border-2 border-[#c8d69b] text-black">Github</Button>
-            <Button className="bg-transparent border-2 border-[#c8d69b] text-black">VK</Button>
-          </FieldGroup>
         </FieldSet>
       </section>
     </div>
