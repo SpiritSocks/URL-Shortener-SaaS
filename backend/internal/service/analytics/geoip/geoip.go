@@ -11,7 +11,7 @@ import (
 var client = &http.Client{Timeout: 2 * time.Second}
 
 type ipAPIResponse struct {
-	Country string `json:"country"`
+	CountryCode string `json:"countryCode"`
 }
 
 func LookupCountry(ip string) string {
@@ -19,15 +19,15 @@ func LookupCountry(ip string) string {
 		return "Local"
 	}
 
-	resp, err := client.Get(fmt.Sprintf("http://ip-api.com/json/%s?fields=country", ip))
+	resp, err := client.Get(fmt.Sprintf("http://ip-api.com/json/%s?fields=countryCode", ip))
 	if err != nil {
 		return "Unknown"
 	}
 	defer resp.Body.Close()
 
 	var result ipAPIResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil || result.Country == "" {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil || result.CountryCode == "" {
 		return "Unknown"
 	}
-	return result.Country
+	return result.CountryCode
 }

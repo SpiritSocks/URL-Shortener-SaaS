@@ -32,15 +32,15 @@ const PieChartGraph = ({ data }: PieChartGraphProps) => {
                         nameKey="name"
                         cx="50%"
                         cy="50%"
-                        outerRadius={100}
+                        outerRadius="80%"
+                        labelLine={false}
                         label={(props: any) => `${props.name} ${((props.percent ?? 0) * 100).toFixed(0)}%`}
                     >
                         {data.map((_, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip formatter={(value) => [value, "Клики"]} />
                 </PieChart>
             </ResponsiveContainer>
         </div>

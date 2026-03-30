@@ -11,7 +11,7 @@ const GraphCard = ({ icon: Icon, title, children }: GraphCardProps) => {
                 <Icon className="text-[#4c6fb1] w-5 h-5 md:w-6 md:h-6" />
                 <h2 className="text-small md:text-2xl font-semibold text-[#343b1b]">{title}</h2>
             </div>
-            <div className="grow overflow-hidden">
+            <div className="grow">
                 {children}
             </div>
         </div>

@@ -19,6 +19,7 @@ import {
     apiGetAnalytics, apiGetAdvancedAnalytics, apiExportCSV,
     type OverviewStats, type AdvancedStats, type OverviewResponse
 } from "@/lib/api";
+import { toCountryCode } from "@/lib/utils";
 
 type DashboardMenuProps = {
     isOpen: boolean;
@@ -58,7 +59,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
     }));
 
     const countriesData = (stats?.countries || []).map(c => ({
-        name: c.country,
+        name: toCountryCode(c.country),
         value: c.clicks,
     }));
 
@@ -309,7 +310,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                                             </div>
                                             <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1 text-[11px] text-gray-500">
                                                 <span className="flex items-center gap-1">
-                                                    <Globe size={10} /> {click.country}
+                                                    <Globe size={10} /> {toCountryCode(click.country)}
                                                 </span>
                                                 <span>•</span>
                                                 <span>{click.device}</span>

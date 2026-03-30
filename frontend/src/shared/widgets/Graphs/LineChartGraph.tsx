@@ -26,14 +26,13 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
         <ResponsiveContainer width="100%" height={300}>
             <LineChart
                 data={data}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 10, right: 16, left: 0, bottom: 24 }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="clicks" stroke="#4c6fb1" activeDot={{ r: 8 }} />
+                <XAxis dataKey="name" tickMargin={8} interval="preserveStartEnd" tick={{ fontSize: 12 }} />
+                <YAxis tickMargin={6} width={32} tick={{ fontSize: 12 }} />
+                <Tooltip formatter={(value) => [value, "Клики"]} />
+                <Line type="monotone" dataKey="clicks" name="Клики" stroke="#4c6fb1" activeDot={{ r: 8 }} />
             </LineChart>
         </ResponsiveContainer>
     )

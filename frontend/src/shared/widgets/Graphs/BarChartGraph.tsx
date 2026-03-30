@@ -26,13 +26,12 @@ const BarChartGraph = ({ data, dataKey = "clicks" }: BarChartGraphProps) => {
   return (
     <div style={{ height: '300px', width: '100%' }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+        <BarChart data={data} margin={{ top: 10, right: 16, left: 0, bottom: 24 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey={dataKey} fill="#4c6fb1" radius={[10, 10, 0, 0]} />
+          <XAxis dataKey="name" tickMargin={8} interval="preserveStartEnd" tick={{ fontSize: 12 }} />
+          <YAxis tickMargin={6} width={32} tick={{ fontSize: 12 }} />
+          <Tooltip formatter={(value) => [value, "Клики"]} />
+          <Bar dataKey={dataKey} name="Клики" fill="#4c6fb1" radius={[10, 10, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -14,6 +14,7 @@ import PieChartGraph from "@/shared/widgets/Graphs/PieChartGraph";
 import HeatmapGraph from "@/shared/widgets/Graphs/HeatmapGraph";
 
 import { apiGetLinkDetail, getShortURL, getQRCodeURL, type LinkDetailResponse } from "@/lib/api";
+import { toCountryCode } from "@/lib/utils";
 
 const LinkDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -86,7 +87,7 @@ const LinkDetailPage = () => {
         clicks: d.clicks,
     }));
 
-    const countriesData = (stats.countries || []).map(c => ({ name: c.country, value: c.clicks }));
+    const countriesData = (stats.countries || []).map(c => ({ name: toCountryCode(c.country), value: c.clicks }));
     const devicesData = (stats.devices || []).map(d => ({ name: d.device, value: d.clicks }));
     const browsersData = (stats.browsers || []).map(b => ({ name: b.browser, value: b.clicks }));
     const osData = (stats.os_stats || []).map(o => ({ name: o.os, value: o.clicks }));
@@ -274,7 +275,7 @@ const LinkDetailPage = () => {
                                                 {new Date(click.clicked_at).toLocaleString()}
                                             </span>
                                             <span className="bg-[#c8d69b] text-[#343b1b] px-2 py-0.5 rounded text-xs font-medium">
-                                                {click.country}
+                                                {toCountryCode(click.country)}
                                             </span>
                                             <span className="text-gray-600 text-xs">{click.device}</span>
                                             <span className="text-gray-600 text-xs">{click.browser}</span>

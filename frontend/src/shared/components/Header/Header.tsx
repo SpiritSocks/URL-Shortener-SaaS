@@ -38,7 +38,7 @@ const Header = ({ activeMenu, onMenuClick }: HeaderProps) => {
             </p>
           </div>
         </div>
-        <nav className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 lg:gap-6 items-center justify-start md:justify-end">
+        <nav className="grid grid-cols-2 w-full gap-2 items-center sm:w-auto sm:flex sm:flex-wrap sm:gap-3 md:gap-4 lg:gap-6 sm:justify-start md:justify-end">
           <Button
             className={activeMenu === "links" ? styles.button_active : styles.button_inactive}
             onClick={() => onMenuClick("links")}
