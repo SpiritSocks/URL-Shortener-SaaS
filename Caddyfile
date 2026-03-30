@@ -5,6 +5,10 @@
 }
 
 :80, :443 {
+    tls {
+        on_demand
+    }
+
     handle /api/* {
         reverse_proxy backend:8080
     }
@@ -15,9 +19,5 @@
 
     handle {
         reverse_proxy frontend:80
-    }
-
-    tls {
-        on_demand
     }
 }
