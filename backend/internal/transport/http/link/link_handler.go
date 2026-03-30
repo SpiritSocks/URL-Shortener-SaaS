@@ -179,13 +179,14 @@ func linkToJSON(l domain.Link) map[string]interface{} {
 // ==================== Analytics Handler ====================
 
 type AnalyticsHandler struct {
-	analyticsSvc domain.AnalyticsService
-	billingSvc   domain.BillingService
-	linkSvc      domain.LinkService
+	analyticsSvc    domain.AnalyticsService
+	billingSvc      domain.BillingService
+	linkSvc         domain.LinkService
+	customDomainSvc domain.CustomDomainService
 }
 
-func NewAnalyticsHandler(svc domain.AnalyticsService, billingSvc domain.BillingService, linkSvc domain.LinkService) *AnalyticsHandler {
-	return &AnalyticsHandler{analyticsSvc: svc, billingSvc: billingSvc, linkSvc: linkSvc}
+func NewAnalyticsHandler(svc domain.AnalyticsService, billingSvc domain.BillingService, linkSvc domain.LinkService, customDomainSvc domain.CustomDomainService) *AnalyticsHandler {
+	return &AnalyticsHandler{analyticsSvc: svc, billingSvc: billingSvc, linkSvc: linkSvc, customDomainSvc: customDomainSvc}
 }
 
 func (h *AnalyticsHandler) GetOverview(c *gin.Context) {
@@ -272,10 +273,20 @@ func (h *AnalyticsHandler) GetLinkDetail(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	resp := gin.H{
 		"stats":     stats,
 		"plan_name": planName,
-	})
+	}
+	if found.CustomDomainID != nil {
+		resp["custom_domain_id"] = *found.CustomDomainID
+		if h.customDomainSvc != nil {
+			if cd, err := h.customDomainSvc.GetByID(c.Request.Context(), *found.CustomDomainID); err == nil {
+				resp["custom_domain"] = cd.Domain
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *AnalyticsHandler) ExportCSV(c *gin.Context) {

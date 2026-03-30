@@ -179,6 +179,8 @@ export interface LinkDetailStats {
 export interface LinkDetailResponse {
   stats: LinkDetailStats;
   plan_name: string;
+  custom_domain_id?: string;
+  custom_domain?: string;
 }
 
 export async function apiGetLinkDetail(linkId: number): Promise<LinkDetailResponse> {

@@ -96,7 +96,7 @@ func main() {
 	// Handlers
 	authHandler := authttp.NewAuthHandler(authService)
 	linkHandler := linkhttp.NewLinkHandler(linkService, analyticsService, billingService, customDomainService)
-	analyticsHandler := linkhttp.NewAnalyticsHandler(analyticsService, billingService, linkService)
+	analyticsHandler := linkhttp.NewAnalyticsHandler(analyticsService, billingService, linkService, customDomainService)
 	billingHandler := billinghttp.NewBillingHandler(billingService)
 	customDomainHandler := customdomainhttp.NewCustomDomainHandler(customDomainService, billingService)
 	bioHandler := biohttp.NewBioHandler(bioService, billingService)

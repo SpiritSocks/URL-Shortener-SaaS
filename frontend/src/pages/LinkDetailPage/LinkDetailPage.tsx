@@ -41,7 +41,10 @@ const LinkDetailPage = () => {
 
     const handleCopy = () => {
         if (!data) return;
-        navigator.clipboard.writeText(getShortURL(data.stats.slug));
+        const shortUrl = data.custom_domain
+            ? `https://${data.custom_domain}/r/${data.stats.slug}`
+            : getShortURL(data.stats.slug);
+        navigator.clipboard.writeText(shortUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
@@ -82,6 +85,10 @@ const LinkDetailPage = () => {
     const hasPro = plan_name === 'pro' || plan_name === 'unlimited';
     const hasUnlimited = plan_name === 'unlimited';
 
+    const displayUrl = data.custom_domain
+        ? `https://${data.custom_domain}/r/${stats.slug}`
+        : getShortURL(stats.slug);
+
     const clicksData = (stats.clicks_over_time || []).map(d => ({
         name: new Date(d.date).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' }),
         clicks: d.clicks,
@@ -118,12 +125,12 @@ const LinkDetailPage = () => {
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                                 <a
-                                    href={getShortURL(stats.slug)}
+                                    href={displayUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-[#4c6fb1] font-bold text-lg sm:text-xl hover:underline truncate"
                                 >
-                                    {getShortURL(stats.slug)}
+                                    {displayUrl}
                                 </a>
                                 <ExternalLink size={16} className="text-[#4c6fb1] flex-shrink-0" />
                             </div>

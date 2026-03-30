@@ -81,6 +81,10 @@ func (s *service) GetByDomain(ctx context.Context, domainName string) (domain.Cu
 	return s.repo.GetByDomain(ctx, domainName)
 }
 
+func (s *service) GetByID(ctx context.Context, id string) (domain.CustomDomain, error) {
+	return s.repo.GetByID(ctx, id)
+}
+
 func checkCNAME(domainName, expectedTarget string) bool {
 	cname, err := net.LookupCNAME(domainName)
 	if err != nil {

@@ -30,4 +30,5 @@ type CustomDomainService interface {
 	Verify(ctx context.Context, id string, userID int64) (CustomDomain, error)
 	Delete(ctx context.Context, id string, userID int64) error
 	GetByDomain(ctx context.Context, domain string) (CustomDomain, error)
+	GetByID(ctx context.Context, id string) (CustomDomain, error)
 }
