@@ -4,7 +4,6 @@ import {
     Pie,
     Cell,
     Tooltip,
-    Legend,
 } from 'recharts';
 
 const COLORS = ['#4c6fb1', '#c8d69b', '#f6e6a5', '#343b1b', '#8884d8', '#82ca9d'];
