@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS plans (
 
 INSERT INTO plans (name, price_kop, max_links, has_analytics) VALUES
     ('free', 0, 3, FALSE),
-    ('pro', 29900, 20, TRUE),
-    ('unlimited', 59900, -1, TRUE)
+    ('pro', 9900, 20, TRUE),
+    ('unlimited', 29900, -1, TRUE)
 ON CONFLICT (name) DO NOTHING;
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS plan_id BIGINT REFERENCES plans(plan_id) DEFAULT 1;

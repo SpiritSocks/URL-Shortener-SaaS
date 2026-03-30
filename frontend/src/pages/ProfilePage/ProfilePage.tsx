@@ -9,8 +9,8 @@ import styles from '@/pages/ProfilePage/ProfilePage.module.css';
 
 const PLAN_FEATURES: Record<string, string[]> = {
     free: ["До 5 коротких ссылок", "Генерация QR-кодов", "Базовое управление ссылками", "Базовая аналитика"],
-    pro:  ["До 50 коротких ссылок", "Генерация QR-кодов", "Расширенная аналитика", "Данные о браузерах, устройствах и ОС"],
-    unlimited: ["Безлимитные ссылки", "Генерация QR-кодов", "Полная аналитика", "Данные о браузерах, устройствах и ОС", "Приоритетная поддержка"],
+    pro:  ["До 50 коротких ссылок", "Генерация QR-кодов", "Расширенная управление ссылками", "Расширенная аналитика", "Кастомные домены", "Безлимитный био"],
+    unlimited: ["Безлимитные ссылки", "Генерация QR-кодов", "Расширенная управление ссылками","Ультимативная аналитика", "Кастомные домены", "Безлимитный био"],
 };
 
 const PLAN_COLORS: Record<string, string> = {
@@ -74,7 +74,6 @@ const ProfilePage = () => {
             if (result.redirect_url) {
                 window.location.href = result.redirect_url;
             } else {
-                // Free plan, assigned directly
                 await refreshUser();
                 const updatedPlan = await apiGetUserPlan();
                 setCurrentPlan(updatedPlan);
@@ -174,7 +173,8 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
+                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex 
+                flex-col items-start justify-start text-[13px]">
                     <span className="font-medium mb-3">Статистика аккаунта</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">
@@ -193,7 +193,8 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col items-start justify-start text-[13px]">
+                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col 
+                items-start justify-start text-[13px]">
                     <span className="font-medium mb-3">Текущий тариф</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">
@@ -227,12 +228,14 @@ const ProfilePage = () => {
                         return (
                             <div
                                 key={plan.plan_id}
-                                className={`relative bg-white border-3 ${isCurrent ? 'border-[#c8d69b]' : PLAN_COLORS[plan.name] || 'border-gray-200'} shadow-md rounded-[15px] p-6 flex flex-col transition-all ${
+                                className={`relative bg-white border-3 ${isCurrent ? 'border-[#c8d69b]' : PLAN_COLORS[plan.name] || 'border-gray-200'} 
+                                shadow-md rounded-[15px] p-6 flex flex-col transition-all ${
                                     plan.name === 'pro' ? 'ring-2 ring-[#4c6fb1] ring-offset-2' : ''
                                 }`}
                             >
                                 {plan.name === 'pro' && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4c6fb1] text-white text-xs px-3 py-1 rounded-full font-medium">
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4c6fb1] text-white text-xs px-3 py-1 rounded-full 
+                                    font-medium">
                                         Популярный
                                     </div>
                                 )}
@@ -262,7 +265,7 @@ const ProfilePage = () => {
                                         onClick={() => handleSelectPlan(plan.name)}
                                     >
                                         {paymentLoading === plan.name ? 'Обработка...' : (
-                                            plan.price_kop === 0 ? 'Перейти на бесплатный' : 'Обновить'
+                                            plan.price_kop === 0 ? 'Перейти на бесплатный' : 'Перейти'
                                         )}
                                     </Button>
                                 )}
