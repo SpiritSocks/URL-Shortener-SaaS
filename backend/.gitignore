@@ -26,15 +26,7 @@ go.work.sum
 
 # env file
 .env
-.env.*
-*.env
-!.env.example
-!.env.sample
-
-# Build output
-bin/
-tmp/
 
 # Editor/IDE
-.idea/
-.vscode/
+# .idea/
+# .vscode/

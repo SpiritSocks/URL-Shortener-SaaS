@@ -11,15 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
-.env.*
-*.env
-!.env.example
-!.env.sample
-.eslintcache
-.stylelintcache
-.vite
-coverage
 
 # Editor directories and files
 .vscode/*
