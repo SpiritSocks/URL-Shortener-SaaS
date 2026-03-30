@@ -16,8 +16,8 @@ import (
 	analyticssvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/analytics"
 	authsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/auth"
 	billingsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/billing"
-	customdomainsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/customdomain"
 	biosvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/bio"
+	customdomainsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/customdomain"
 	linksvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/link"
 	transport "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http"
 	authttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/auth"
@@ -29,8 +29,8 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load("../.env")  // local dev
-	_ = godotenv.Load(".env")     // docker
+	_ = godotenv.Load("../.env") // local dev
+	_ = godotenv.Load(".env")    // docker
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
@@ -128,6 +128,9 @@ func main() {
 
 	// Public: Bio page
 	api.GET("/bio/:handle", bioHandler.GetPublicPage)
+
+	// Public: Custom domain TLS ask (Caddy on-demand)
+	api.GET("/custom-domains/ask", customDomainHandler.Ask)
 
 	// Protected routes
 	protected := api.Group("")

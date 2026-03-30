@@ -2,7 +2,10 @@ package customdomain
 
 import (
 	"errors"
+	"net"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
 	"github.com/gin-gonic/gin"
@@ -137,6 +140,46 @@ func (h *Handler) Delete(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "domain deleted"})
+}
+
+// Ask is used by Caddy on-demand TLS to decide whether to issue a certificate.
+// It returns 200 only for verified custom domains or the main app domain.
+func (h *Handler) Ask(c *gin.Context) {
+	domainName := strings.ToLower(strings.TrimSpace(c.Query("domain")))
+	if domainName == "" {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if strings.HasSuffix(domainName, ".") {
+		domainName = strings.TrimSuffix(domainName, ".")
+	}
+
+	if strings.Contains(domainName, ":") {
+		if host, _, err := net.SplitHostPort(domainName); err == nil {
+			domainName = host
+		} else {
+			parts := strings.Split(domainName, ":")
+			domainName = parts[0]
+		}
+	}
+
+	appDomain := strings.ToLower(strings.TrimSpace(os.Getenv("APP_DOMAIN")))
+	if appDomain != "" {
+		appDomain = strings.TrimSuffix(appDomain, ".")
+		if domainName == appDomain || domainName == "www."+appDomain {
+			c.Status(http.StatusOK)
+			return
+		}
+	}
+
+	d, err := h.svc.GetByDomain(c.Request.Context(), domainName)
+	if err != nil || !d.Verified {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
 
 func domainToJSON(d domain.CustomDomain) map[string]interface{} {

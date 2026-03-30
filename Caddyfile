@@ -1,4 +1,10 @@
-linxie.ru {
+{
+    on_demand_tls {
+        ask http://backend:8080/api/custom-domains/ask
+    }
+}
+
+:80, :443 {
     handle /api/* {
         reverse_proxy backend:8080
     }
@@ -9,5 +15,9 @@ linxie.ru {
 
     handle {
         reverse_proxy frontend:80
+    }
+
+    tls {
+        on_demand
     }
 }
