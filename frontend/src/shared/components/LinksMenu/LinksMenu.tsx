@@ -163,7 +163,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       onClick={() => handleCopy(link)}
                     >
                       <Copy size={14} />
-                      {copied === link.id ? 'Скопировано!' : 'Копировать'}
+                      <span className="hidden sm:inline">{copied === link.id ? 'Скопировано!' : 'Копировать'}</span>
                     </Button>
                     <Button
                       variant="outline"
@@ -171,7 +171,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       onClick={() => setQrSlug(qrSlug === link.slug ? null : link.slug)}
                     >
                       <QrCode size={14} />
-                      QR
+                      <span className="hidden sm:inline">QR</span>
                     </Button>
                     <Button
                       variant="outline"
@@ -179,7 +179,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                       onClick={() => navigate(`/link/${link.id}`)}
                     >
                       <BarChart3 size={14} />
-                      Аналитика
+                      <span className="hidden sm:inline">Аналитика</span>
                     </Button>
                     <Button
                       variant="outline"
