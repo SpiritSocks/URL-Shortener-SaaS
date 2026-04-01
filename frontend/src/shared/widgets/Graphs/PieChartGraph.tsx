@@ -6,7 +6,7 @@ import {
     Tooltip,
 } from 'recharts';
 
-const COLORS = ['#4c6fb1', '#c8d69b', '#f6e6a5', '#343b1b', '#8884d8', '#82ca9d'];
+const COLORS = ['#5c7a2a', '#d8e4b8', '#d97706', '#1e3a2f', '#8884d8', '#82ca9d'];
 const RADIAN = Math.PI / 180;
 
 type PieChartGraphProps = {
@@ -23,7 +23,7 @@ const renderPieLabel = (props: any) => {
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     const label = `${truncateLabel(String(name))} ${((percent ?? 0) * 100).toFixed(0)}%`;
     return (
-        <text x={x} y={y} fill="#1f2937" textAnchor="middle" dominantBaseline="central" fontSize={12}>
+        <text x={x} y={y} fill="#1e3a2f" textAnchor="middle" dominantBaseline="central" fontSize={12}>
             {label}
         </text>
     );

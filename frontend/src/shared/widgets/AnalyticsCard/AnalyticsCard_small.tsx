@@ -10,7 +10,7 @@ type AnalyticsCard_smallProps = {
 
 const AnalyticsCard_small = ({ icon: Icon, title, text, icon_bgColor, icon_color }: AnalyticsCard_smallProps) => {
     return (
-        <section className="bg-white w-full min-h-[120px] sm:min-h-[150px] border-3 border-[#c8d69b] shadow-md flex flex-col justify-center p-4 sm:p-5 rounded-[15px]">
+        <section className="bg-white w-full min-h-[120px] sm:min-h-[150px] border-3 border-border shadow-md flex flex-col justify-center p-4 sm:p-5 rounded-[15px]">
             <div className="flex flex-row gap-3 items-center">
                 <div className={`${icon_bgColor} w-11 h-11 flex justify-center items-center rounded-[6px]`}>
                     <Icon className={icon_color} />

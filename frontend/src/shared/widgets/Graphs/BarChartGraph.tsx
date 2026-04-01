@@ -30,7 +30,7 @@ const BarChartGraph = ({ data, dataKey = "clicks" }: BarChartGraphProps) => {
           <XAxis dataKey="name" tickMargin={8} interval="preserveStartEnd" tick={{ fontSize: 12 }} />
           <YAxis tickMargin={6} width={32} tick={{ fontSize: 12 }} />
           <Tooltip formatter={(value) => [value, "Клики"]} />
-          <Bar dataKey={dataKey} name="Клики" fill="#4c6fb1" radius={[10, 10, 0, 0]} />
+          <Bar dataKey={dataKey} name="Клики" fill="#5c7a2a" radius={[10, 10, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

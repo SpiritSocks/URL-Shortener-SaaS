@@ -149,18 +149,18 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
     if (!exists) {
         return (
             <section className="flex justify-center px-4 pb-6 sm:px-6">
-                <div className="w-full max-w-2xl bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
+                <div className="w-full max-w-2xl bg-white border-2 border-border shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-primary shrink-0">
                             <FileText color="white" />
                         </div>
-                        <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Создайте свою био-страницу</h3>
+                        <h3 className="text-foreground font-semibold text-base sm:text-3xl">Создайте свою био-страницу</h3>
                     </div>
                     <p className="text-gray-500 text-sm mb-4">
                         Создайте страницу «ссылка в био», чтобы собрать все ваши ссылки в одном месте. Выберите уникальный никнейм — ваша страница будет доступна по адресу <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">yourdomain.com/@никнейм</code>
                     </p>
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Никнейм</label>
+                    <label className="block text-sm font-medium text-foreground mt-3">Никнейм</label>
                     <div className="flex items-center gap-2 mt-1">
                         <span className="text-gray-500 text-sm">@</span>
                         <input
@@ -168,45 +168,45 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                             placeholder="вашеимя"
                             value={handle}
                             onChange={e => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
-                            className="flex-1 border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                            className="flex-1 border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                         />
                     </div>
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Отображаемое имя</label>
+                    <label className="block text-sm font-medium text-foreground mt-3">Отображаемое имя</label>
                     <input
                         type="text"
                         placeholder="Ваше имя"
                         value={displayName}
                         onChange={e => setDisplayName(e.target.value)}
-                        className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                        className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                     />
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">О себе</label>
+                    <label className="block text-sm font-medium text-foreground mt-3">О себе</label>
                     <textarea
                         placeholder="Расскажите о себе..."
                         value={bioText}
                         onChange={e => setBioText(e.target.value)}
                         rows={3}
-                        className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30 resize-none"
+                        className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30 resize-none"
                     />
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">URL аватара</label>
+                    <label className="block text-sm font-medium text-foreground mt-3">URL аватара</label>
                     <input
                         type="text"
                         placeholder="https://example.com/avatar.jpg"
                         value={avatarUrl}
                         onChange={e => setAvatarUrl(e.target.value)}
-                        className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                        className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                     />
 
-                    <label className="block text-sm font-medium text-[#343b1b] mt-3">Тема</label>
+                    <label className="block text-sm font-medium text-foreground mt-3">Тема</label>
                     <div className="flex gap-3 mt-2">
                         {THEMES.map(t => (
                             <button
                                 key={t.id}
                                 onClick={() => setTheme(t.id)}
                                 className={`flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
-                                    theme === t.id ? 'border-[#4c6fb1] bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                                    theme === t.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'
                                 }`}
                             >
                                 <div className={`w-8 h-8 rounded-md ${t.bg} border`}>
@@ -219,7 +219,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
 
                     {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                     <Button
-                        className="mt-4 w-full bg-[#4c6fb1] text-sm sm:text-lg"
+                        className="mt-4 w-full bg-primary text-sm sm:text-lg"
                         disabled={loading || !handle.trim()}
                         onClick={handleCreate}
                     >
@@ -236,26 +236,26 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         <>
         {/* Page settings */}
         <section className="flex justify-center px-4 pb-4 sm:px-6">
-            <div className="w-full max-w-5xl bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
+            <div className="w-full max-w-5xl bg-white border-2 border-border shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-primary shrink-0">
                             <FileText color="white" />
                         </div>
-                        <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Био-страница</h3>
+                        <h3 className="text-foreground font-semibold text-base sm:text-3xl">Био-страница</h3>
                     </div>
                     <a
                         href={`/@${page?.handle}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[#4c6fb1] text-sm hover:underline flex items-center gap-1"
+                        className="text-[var(--color-link)] text-sm hover:underline flex items-center gap-1"
                     >
                         Просмотр <ExternalLink size={12} />
                     </a>
                 </div>
 
                 {/* Public URL */}
-                <div className="flex items-center gap-2 mb-4 bg-[#fbfcef] border border-[#c8d69b] rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2 mb-4 bg-background border border-border rounded-lg px-3 py-2">
                     <span className="text-sm text-gray-500 truncate flex-1">
                         {page ? getBioPageURL(page.handle) : ''}
                     </span>
@@ -263,7 +263,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         variant="outline"
                         size="sm"
                         onClick={handleCopyUrl}
-                        className="border-[#4c6fb1] text-[#4c6fb1] text-xs shrink-0"
+                        className="border-primary text-[var(--color-link)] text-xs shrink-0"
                     >
                         {copied ? <Check size={14} /> : <Copy size={14} />}
                         {copied ? 'Скопировано' : 'Копировать'}
@@ -273,34 +273,34 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 {/* Editable fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-[#343b1b]">Display Name</label>
+                        <label className="block text-sm font-medium text-foreground">Display Name</label>
                         <input
                             type="text"
                             value={displayName}
                             onChange={e => setDisplayName(e.target.value)}
-                            className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                            className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-[#343b1b]">Avatar URL</label>
+                        <label className="block text-sm font-medium text-foreground">Avatar URL</label>
                         <input
                             type="text"
                             value={avatarUrl}
                             onChange={e => setAvatarUrl(e.target.value)}
-                            className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                            className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                         />
                     </div>
                 </div>
-                <label className="block text-sm font-medium text-[#343b1b] mt-3">Bio</label>
+                <label className="block text-sm font-medium text-foreground mt-3">Bio</label>
                 <textarea
                     value={bioText}
                     onChange={e => setBioText(e.target.value)}
                     rows={3}
-                    className="mt-1 w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30 resize-none"
+                    className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30 resize-none"
                 />
 
                 {/* Theme picker */}
-                <label className="block text-sm font-medium text-[#343b1b] mt-3 flex items-center gap-1">
+                <label className="block text-sm font-medium text-foreground mt-3 flex items-center gap-1">
                     <Palette size={14} /> Тема
                 </label>
                 <div className="flex gap-3 mt-2">
@@ -309,7 +309,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                             key={t.id}
                             onClick={() => setTheme(t.id)}
                             className={`flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
-                                theme === t.id ? 'border-[#4c6fb1] bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                                theme === t.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'
                             }`}
                         >
                             <div className={`w-8 h-8 rounded-md ${t.bg} border`}>
@@ -323,7 +323,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
                 <Button
-                    className="mt-4 w-full bg-[#343b1b] text-sm"
+                    className="mt-4 w-full bg-[var(--color-navbar)] text-sm"
                     disabled={loading}
                     onClick={handleSave}
                 >
@@ -336,21 +336,21 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         <section className="flex justify-center px-4 pb-6 sm:px-6">
             <div className="w-full max-w-5xl">
                 <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">Ваши био-ссылки</h2>
+                    <h2 className="text-foreground font-bold text-sm sm:text-2xl">Ваши био-ссылки</h2>
                     <span className="text-xs text-gray-400">
                         {links.length} / {maxBioLinks < 0 ? '∞' : maxBioLinks} ссылок
                     </span>
                 </div>
 
                 {/* Add link form */}
-                <div className="bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-4 sm:p-5 mb-4">
+                <div className="bg-white border-2 border-border shadow-md rounded-[15px] p-4 sm:p-5 mb-4">
                     <div className="flex flex-col sm:flex-row gap-2">
                         <input
                             type="text"
                             placeholder="Название ссылки"
                             value={linkTitle}
                             onChange={e => setLinkTitle(e.target.value)}
-                            className="flex-1 border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                            className="flex-1 border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                         />
                         <input
                             type="text"
@@ -358,10 +358,10 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                             value={linkUrl}
                             onChange={e => setLinkUrl(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' && handleAddLink()}
-                            className="flex-1 border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                            className="flex-1 border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
                         />
                         <Button
-                            className="bg-[#4c6fb1] text-sm shrink-0"
+                            className="bg-primary text-sm shrink-0"
                             disabled={addingLink || !linkTitle.trim() || !linkUrl.trim()}
                             onClick={handleAddLink}
                         >
@@ -373,15 +373,15 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
 
                 {/* Links list */}
                 {links.length === 0 ? (
-                    <div className="flex flex-col justify-center items-center bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-6">
+                    <div className="flex flex-col justify-center items-center bg-white border-2 border-border shadow-md rounded-[15px] p-6">
                         <FileText size={32} className="text-gray-300 mb-2" />
-                        <h2 className="text-[#343b1b] font-bold text-sm sm:text-xl">Пока нет био-ссылок</h2>
+                        <h2 className="text-foreground font-bold text-sm sm:text-xl">Пока нет био-ссылок</h2>
                         <p className="text-gray-500 text-sm">Добавьте ссылки выше для отображения на вашей био-странице</p>
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2">
                         {links.map((link, index) => (
-                            <div key={link.id} className="bg-white border-2 border-[#c8d69b] shadow-sm rounded-[15px] p-4 flex items-center gap-3">
+                            <div key={link.id} className="bg-white border-2 border-border shadow-sm rounded-[15px] p-4 flex items-center gap-3">
                                 <div className="flex flex-col gap-1">
                                     <button
                                         onClick={() => handleMoveLink(index, 'up')}
@@ -399,9 +399,9 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                     </button>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-sm text-[#343b1b] truncate">{link.title}</p>
+                                    <p className="font-semibold text-sm text-foreground truncate">{link.title}</p>
                                     <p className="text-xs text-gray-400 truncate">{link.target_url}</p>
-                                    <p className="text-xs text-[#4c6fb1] mt-0.5">{getShortURL(link.slug)}</p>
+                                    <p className="text-xs text-[var(--color-link)] mt-0.5">{getShortURL(link.slug)}</p>
                                 </div>
                                 <Button
                                     variant="outline"

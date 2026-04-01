@@ -1,3 +1,3 @@
 .profile_input, textarea {
-    background-color: #fbfcef;
+    background-color: var(--color-card);
 }

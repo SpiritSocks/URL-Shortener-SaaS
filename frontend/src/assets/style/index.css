@@ -42,38 +42,58 @@
 }
 
 :root {
+    /* ============================================
+       App Color Palette — edit these to retheme
+       ============================================ */
+    --color-navbar:           #1e3a2f; /* Navbar / dark surfaces        */
+    --color-navbar-hover:     #2d4d3e; /* Navbar button hover           */
+    --color-page-bg:          #f5f2e8; /* Page background               */
+    --color-card:             #ffffff; /* Cards and inputs              */
+    --color-primary:          #5c7a2a; /* Primary buttons / active      */
+    --color-border:           #d8e4b8; /* Card and input borders        */
+    --color-link:             #3a6e9e; /* Short link text               */
+    --color-text-primary:     #1e3a2f; /* Primary text                  */
+    --color-text-muted:       #6b7a5e; /* Muted text                    */
+    --color-text-placeholder: #a8b89a; /* Placeholder text              */
+    --color-success:          #15803d; /* Success                       */
+    --color-error:            #b91c1c; /* Error                         */
+    --color-warning:          #d97706; /* Warning                       */
+
+    /* ============================================
+       Tailwind / shadcn theme mappings
+       ============================================ */
     --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
+    --background: var(--color-page-bg);
+    --foreground: var(--color-text-primary);
+    --card: var(--color-card);
+    --card-foreground: var(--color-text-primary);
+    --popover: var(--color-card);
+    --popover-foreground: var(--color-text-primary);
+    --primary: var(--color-primary);
+    --primary-foreground: var(--color-page-bg);
+    --secondary: var(--color-border);
+    --secondary-foreground: var(--color-text-primary);
+    --muted: var(--color-border);
+    --muted-foreground: var(--color-text-muted);
+    --accent: var(--color-border);
+    --accent-foreground: var(--color-text-primary);
+    --destructive: var(--color-error);
+    --border: var(--color-border);
+    --input: var(--color-border);
+    --ring: var(--color-text-placeholder);
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --sidebar: var(--color-navbar);
+    --sidebar-foreground: var(--color-page-bg);
+    --sidebar-primary: var(--color-primary);
+    --sidebar-primary-foreground: var(--color-page-bg);
+    --sidebar-accent: var(--color-navbar-hover);
+    --sidebar-accent-foreground: var(--color-page-bg);
+    --sidebar-border: var(--color-border);
+    --sidebar-ring: var(--color-text-placeholder);
 }
 
 .dark {
@@ -120,7 +140,7 @@
 }
 
 body {
-  background-color: #fbfcef;
+  background-color: var(--color-page-bg);
 }
 
 .cards_grid {

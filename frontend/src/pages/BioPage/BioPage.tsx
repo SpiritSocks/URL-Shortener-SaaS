@@ -4,10 +4,10 @@ import { apiGetPublicBioPage, type PublicBioPageResponse } from "@/lib/api";
 
 const THEME_STYLES: Record<string, { bg: string; text: string; subtext: string; btn: string; btnText: string; footer: string }> = {
     default: {
-        bg: 'bg-[#FAFAF5]',
-        text: 'text-[#343b1b]',
+        bg: 'bg-background',
+        text: 'text-foreground',
         subtext: 'text-gray-500',
-        btn: 'bg-[#343b1b] hover:bg-[#414927]',
+        btn: 'bg-[var(--color-navbar)] hover:bg-[var(--color-navbar-hover)]',
         btnText: 'text-white',
         footer: 'text-gray-400',
     },
@@ -57,7 +57,7 @@ const BioPage = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
             </div>
         );
@@ -65,10 +65,10 @@ const BioPage = () => {
 
     if (notFound || !data) {
         return (
-            <div className="min-h-screen bg-[#FAFAF5] flex flex-col items-center justify-center gap-4">
-                <h1 className="text-4xl font-bold text-[#343b1b]">404</h1>
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+                <h1 className="text-4xl font-bold text-foreground">404</h1>
                 <p className="text-gray-500">Эта био-страница не существует.</p>
-                <a href="/" className="text-[#4c6fb1] hover:underline text-sm">На главную</a>
+                <a href="/" className="text-[var(--color-link)] hover:underline text-sm">На главную</a>
             </div>
         );
     }

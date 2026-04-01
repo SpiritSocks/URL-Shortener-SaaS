@@ -18,11 +18,11 @@ const HeatmapGraph = ({ data }: HeatmapProps) => {
     const getIntensity = (clicks: number) => {
         if (clicks === 0) return 'bg-gray-100';
         const ratio = clicks / maxClicks;
-        if (ratio < 0.2) return 'bg-[#e8edc8]';
-        if (ratio < 0.4) return 'bg-[#c8d69b]';
-        if (ratio < 0.6) return 'bg-[#a3b86c]';
-        if (ratio < 0.8) return 'bg-[#7a9a44]';
-        return 'bg-[#4c6fb1]';
+        if (ratio < 0.2) return 'bg-[#eef4d8]';
+        if (ratio < 0.4) return 'bg-[var(--color-border)]';
+        if (ratio < 0.6) return 'bg-[#a8c46a]';
+        if (ratio < 0.8) return 'bg-[#7a9a40]';
+        return 'bg-primary';
     };
 
     return (
@@ -44,10 +44,10 @@ const HeatmapGraph = ({ data }: HeatmapProps) => {
             <div className="flex items-center gap-2 justify-end mt-1">
                 <span className="text-[10px] text-gray-400">Less</span>
                 <div className="w-3 h-3 rounded-sm bg-gray-100" />
-                <div className="w-3 h-3 rounded-sm bg-[#e8edc8]" />
-                <div className="w-3 h-3 rounded-sm bg-[#c8d69b]" />
-                <div className="w-3 h-3 rounded-sm bg-[#a3b86c]" />
-                <div className="w-3 h-3 rounded-sm bg-[#4c6fb1]" />
+                <div className="w-3 h-3 rounded-sm bg-[#eef4d8]" />
+                <div className="w-3 h-3 rounded-sm bg-[var(--color-border)]" />
+                <div className="w-3 h-3 rounded-sm bg-[#a8c46a]" />
+                <div className="w-3 h-3 rounded-sm bg-primary" />
                 <span className="text-[10px] text-gray-400">More</span>
             </div>
         </div>

@@ -31,7 +31,7 @@ const ParticleNetwork = () => {
           preset: "links",
           fullScreen: { enable: false },
           background: {
-            color: "#2d3319"
+            color: "#1e3a2f"
           },
           particles: {
             number: { value: 60 },
@@ -125,7 +125,7 @@ const LoginRegistrationPage = () => {
       }
     };
 
-  
+
   return (
     <div className="flex h-screen">
       <div className="hidden md:flex flex-1 relative overflow-hidden">
@@ -151,7 +151,7 @@ const LoginRegistrationPage = () => {
       </div>
       <section
         id="login_form"
-        className="w-full md:w-[480px] relative flex flex-col justify-start md:justify-center min-h-screen bg-white border-l border-[#c8d69b] px-4 sm:px-6 md:px-10 pt-20 md:pt-0 pb-6"
+        className="w-full md:w-[480px] relative flex flex-col justify-start md:justify-center min-h-screen bg-white border-l border-border px-4 sm:px-6 md:px-10 pt-20 md:pt-0 pb-6"
       >
         <Button
           variant="ghost"
@@ -160,18 +160,18 @@ const LoginRegistrationPage = () => {
         >
           &larr; Назад
         </Button>
-        <FieldSet className="w-full p-4 sm:p-5 md:p-6 border-3 border-[#c8d69b] rounded-xl bg-white">
+        <FieldSet className="w-full p-4 sm:p-5 md:p-6 border-3 border-border rounded-xl bg-white">
             <FieldGroup className="flex flex-row justify-center items-center gap-3 mb-4">
             <Button
               variant={mode === 'login' ? 'default' : 'outline'}
-              className={`flex-1 ${mode === 'login' ? 'bg-[#3971b8] text-white' : 'bg-white text-black border-[#c8d69b]'}`}
+              className={`flex-1 ${mode === 'login' ? 'bg-primary text-white' : 'bg-white text-black border-border'}`}
               onClick={() => { setMode('login'); setError(''); }}
             >
               Вход
             </Button>
             <Button
               variant={mode === 'register' ? 'default' : 'outline'}
-              className={`flex-1 ${mode === 'register' ? 'bg-[#3971b8] text-white' : 'bg-white text-black border-[#c8d69b]'}`}
+              className={`flex-1 ${mode === 'register' ? 'bg-primary text-white' : 'bg-white text-black border-border'}`}
               onClick={() => { setMode('register'); setError(''); }}
             >
               Регистрация
@@ -188,13 +188,13 @@ const LoginRegistrationPage = () => {
               <Field>
                 <FieldLabel htmlFor="userName">Имя пользователя</FieldLabel>
                 <Input id="userName" type="text" placeholder="Иван Иванов" value={userName}
-                  className="border-2 border-[#c8d69b]" onChange={(e) => setUserName(e.target.value)} />
+                  className="border-2 border-border" onChange={(e) => setUserName(e.target.value)} />
               </Field>
             )}
             <Field>
               <FieldLabel htmlFor="userEmail">Эл. почта</FieldLabel>
               <Input id="userEmail" type="email" placeholder="example@mail.com" value={userEmail}
-                className="border-2 border-[#c8d69b]" onChange={(e) => setUserEmail(e.target.value)} />
+                className="border-2 border-border" onChange={(e) => setUserEmail(e.target.value)} />
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Пароль</FieldLabel>
@@ -204,13 +204,13 @@ const LoginRegistrationPage = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••••"
                   value={password}
-                  className="border-2 border-[#c8d69b] pr-12"
+                  className="border-2 border-border pr-12"
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-[#6b7280]"
+                  className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-muted-foreground"
                   aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -227,13 +227,13 @@ const LoginRegistrationPage = () => {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••••"
                     value={confirmPassword}
-                    className="border-2 border-[#c8d69b] pr-12"
+                    className="border-2 border-border pr-12"
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-[#6b7280]"
+                    className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-muted-foreground"
                     aria-label={showConfirmPassword ? "Скрыть пароль" : "Показать пароль"}
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -241,7 +241,7 @@ const LoginRegistrationPage = () => {
                 </div>
               </Field>
             )}
-            <Button className="bg-[#3971b8] w-full" disabled={loading}
+            <Button className="bg-primary w-full" disabled={loading}
               onClick={mode === 'login' ? handleLogin : handleRegistration}>
               {loading ? 'Подождите...' : (mode === 'login' ? 'Войти' : 'Зарегистрироваться')}
             </Button>

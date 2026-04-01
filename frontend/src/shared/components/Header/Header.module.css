@@ -1,6 +1,6 @@
 .button_active{
-  background-color: #3971b8;
-  color: #fbfcee;
+  background-color: var(--color-primary);
+  color: var(--color-page-bg);
   border-radius: 10px;
   font-weight: 400;
   width: auto;
@@ -14,7 +14,7 @@
 
 .button_inactive{
   background-color: transparent;
-  color: #fbfcee;
+  color: var(--color-page-bg);
   border-radius: 10px;
   font-weight: 400;
 
@@ -28,7 +28,7 @@
 }
 
 .button_inactive:hover{
-  background-color: #414927;
+  background-color: var(--color-navbar-hover);
   transition: background-color 0.3s ease-in-out;
   cursor: pointer;
 }

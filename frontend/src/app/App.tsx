@@ -21,9 +21,9 @@ const App = () => {
     <header className="w-full bg-white flex flex-wrap items-center justify-between py-3 px-4 md:py-4 md:px-8">
       <div className="flex items-center gap-3">
         <div className="size-10 flex items-center justify-center">
-          <Link2 className="w-8 h-8 sm:w-10 sm:h-10" color="#3971b8"/>
+          <Link2 className="w-8 h-8 sm:w-10 sm:h-10" color="#5c7a2a"/>
         </div>
-        <h1 className="font-bold text-lg md:text-[42px] text-[#343b1b]">Linxie</h1>
+        <h1 className="font-bold text-lg md:text-[42px] text-foreground">Linxie</h1>
       </div>
 
       <nav className="flex items-center gap-3 md:gap-7 mt-3 md:mt-0">
@@ -33,25 +33,25 @@ const App = () => {
     <main>
       <section id="information" className="flex flex-col items-center px-4 md:px-0">
         <div className="w-full max-w-5xl mt-5 flex flex-col md:h-[25vh]">
-          <span className="text-2xl text-[#343b1b] md:text-[46px] self-center text-center font-bold ">Сокращайте ссылки, отслеживайте результаты, развивайте бизнес</span>
+          <span className="text-2xl text-foreground md:text-[46px] self-center text-center font-bold ">Сокращайте ссылки, отслеживайте результаты, развивайте бизнес</span>
           <p className="text-base md:text-[20px] self-center text-center mt-4 md:mt-5">Создавайте брендированные короткие ссылки, генерируйте QR-коды и отслеживайте каждый клик с помощью подробной аналитики. Идеально для маркетинговых кампаний, соцсетей и печатных материалов.</p>
         </div>
         <div className="shadow_container w-full flex justify-center">
-          <div id="preview" className="bg-white border-3 border-[#c8d69b] flex flex-col md:flex-row items-center md:items-stretch justify-around m-4 md:m-10 p-4 md:p-5 rounded-[15px] gap-4 md:gap-5 w-full max-w-4xl">
-            <div className="w-full md:w-1/3 h-auto md:h-40 bg-[#fbfcef] rounded-[15px] p-3 flex flex-col items-center justify-center text-center">
+          <div id="preview" className="bg-white border-3 border-border flex flex-col md:flex-row items-center md:items-stretch justify-around m-4 md:m-10 p-4 md:p-5 rounded-[15px] gap-4 md:gap-5 w-full max-w-4xl">
+            <div className="w-full md:w-1/3 h-auto md:h-40 bg-background rounded-[15px] p-3 flex flex-col items-center justify-center text-center">
               <h2 className="text-lg md:text-xl">Исходная ссылка</h2>
               <p className="text-gray-400 truncate max-w-full">https://exampleUrl.com/very-long-url...</p>
               <h2 className="mt-3 text-lg md:text-xl">Короткая ссылка</h2>
-              <p className="text-[#4c6fb1] font-bold">short.link/abc123</p>
+              <p className="text-[var(--color-link)] font-bold">short.link/abc123</p>
             </div>
 
-            <div className="w-full md:w-1/3 h-auto md:h-40 bg-[#fbfcef] rounded-[15px] p-3 flex flex-col items-center justify-center relative">
-              <p className="text-3xl md:text-4xl font-semibold text-[#4c6fb1]">2547</p>
+            <div className="w-full md:w-1/3 h-auto md:h-40 bg-background rounded-[15px] p-3 flex flex-col items-center justify-center relative">
+              <p className="text-3xl md:text-4xl font-semibold text-[var(--color-link)]">2547</p>
               <p>Всего кликов</p>
             </div>
 
-            <div className="w-full md:w-1/3 h-auto md:h-40 bg-[#fbfcef] rounded-[15px] flex items-center justify-center">
-              <QrCode className="w-16 h-16 sm:w-24 sm:h-24" color="#4c6fb1" />
+            <div className="w-full md:w-1/3 h-auto md:h-40 bg-background rounded-[15px] flex items-center justify-center">
+              <QrCode className="w-16 h-16 sm:w-24 sm:h-24" color="#3a6e9e" />
             </div>
           </div>
         </div>
@@ -74,8 +74,8 @@ const App = () => {
         </div>
       </section>
 
-      <section id="last_part" className="bg-[#f7f4ea]">
-        <div className="flex flex-col sm:flex-row items-center justify-evenly gap-4 py-6 sm:h-[120px] bg-[#343b1b] text-[#ebe6d2] text-sm sm:text-lg font-medium px-4">
+      <section id="last_part" className="bg-background">
+        <div className="flex flex-col sm:flex-row items-center justify-evenly gap-4 py-6 sm:h-[120px] bg-[var(--color-navbar)] text-[var(--color-page-bg)] text-sm sm:text-lg font-medium px-4">
           <p>10K+ активных пользователей</p>
           <p>500K+ созданных ссылок</p>
           <p>5M+ отслеженных кликов</p>
@@ -92,7 +92,7 @@ const App = () => {
 
             <div className="space-y-8">
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#4c6fb1]">
+                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary">
                   <MousePointerClick color="white"/>
                 </div>
                 <div>
@@ -104,7 +104,7 @@ const App = () => {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#4c6fb1]">
+                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary">
                   <Zap color="white"/>
                 </div>
                 <div>
@@ -116,7 +116,7 @@ const App = () => {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#4c6fb1]">
+                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary">
                   <Shield color="white"/>
                 </div>
                 <div>
@@ -130,13 +130,13 @@ const App = () => {
           </article>
 
           <article className="w-full md:w-1/2">
-            <div className="bg-[#4c6fb1] text-white rounded-2xl p-6 md:p-10 h-full flex flex-col justify-center">
+            <div className="bg-primary text-white rounded-2xl p-6 md:p-10 h-full flex flex-col justify-center">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">Готовы начать?</h3>
-              <p className="text-blue-100 mb-8">
+              <p className="text-white/80 mb-8">
                 Присоединяйтесь к тысячам компаний, которые используют Linxie для отслеживания маркетинговых кампаний и расширения охвата.
               </p>
-              <button className="bg-white text-[#4c6fb1] font-semibold py-3 px-6 rounded-lg flex
-              items-center justify-center gap-2 hover:bg-blue-50 transition w-full"
+              <button className="bg-white text-primary font-semibold py-3 px-6 rounded-lg flex
+              items-center justify-center gap-2 hover:bg-white/90 transition w-full"
               onClick={handleLoginRegistration}>
                 Создать бесплатный аккаунт →
               </button>
@@ -145,8 +145,8 @@ const App = () => {
         </div>
       </section>
     </main>
-    <footer className="flex flex-row items-center h-[80px] sm:h-[120px] bg-[#343b1b] text-[#ebe6d2] px-4 sm:px-5">
-      <h2 className="font-bold text-xl sm:text-3xl md:text-[42px] text-[#f7f4ea]">Linxie</h2>
+    <footer className="flex flex-row items-center h-[80px] sm:h-[120px] bg-[var(--color-navbar)] text-[var(--color-page-bg)] px-4 sm:px-5">
+      <h2 className="font-bold text-xl sm:text-3xl md:text-[42px] text-[var(--color-page-bg)]">Linxie</h2>
     </footer>
     </>
   )

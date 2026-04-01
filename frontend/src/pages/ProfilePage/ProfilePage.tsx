@@ -15,8 +15,8 @@ const PLAN_FEATURES: Record<string, string[]> = {
 
 const PLAN_COLORS: Record<string, string> = {
     free: "border-gray-300",
-    pro: "border-[#4c6fb1]",
-    unlimited: "border-[#343b1b]",
+    pro: "border-primary",
+    unlimited: "border-[var(--color-navbar)]",
 };
 
 const ProfilePage = () => {
@@ -91,7 +91,7 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#FAFAF5] font-sans">
+        <div className="min-h-screen bg-background font-sans">
         <section className="flex flex-col max-w-[95%] sm:max-w-[85%] lg:max-w-[70%] mx-auto justify-center gap-5 mt-6 sm:mt-10 pb-16 px-2 sm:px-0">
             <Button
                 variant="ghost"
@@ -107,7 +107,7 @@ const ProfilePage = () => {
 
             {/* User info and stats */}
             <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-2 gap-4 min-w-auto">
-                <div className="lg:col-span-2 lg:row-span-2 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-4 sm:p-6">
+                <div className="lg:col-span-2 lg:row-span-2 bg-white border-border border-3 shadow-md rounded-[15px] p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row justify-between gap-3 mb-6 sm:mb-8">
                         <div className="flex flex-row items-center gap-3">
                             <img
@@ -115,14 +115,14 @@ const ProfilePage = () => {
                                 alt={user?.username || 'User'}
                                 className="w-8 h-8 rounded-full"
                             />
-                            <h2 className="text-[15px] font-medium text-[#111111]">
+                            <h2 className="text-[15px] font-medium text-foreground">
                                 {user?.username || 'User'}
                             </h2>
                         </div>
                         {editing ? (
                             <div className="flex gap-2">
                                 <Button
-                                    className="bg-[#4c6fb1] text-white"
+                                    className="bg-primary text-white"
                                     disabled={saving}
                                     onClick={handleSave}
                                 >
@@ -141,7 +141,7 @@ const ProfilePage = () => {
                             </div>
                         ) : (
                             <Button
-                                className="bg-[#111111] hover:bg-black text-white"
+                                className="bg-foreground hover:bg-black text-white"
                                 onClick={() => setEditing(true)}
                             >
                                 Изменить
@@ -173,7 +173,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex 
+                <div className="lg:col-start-3 bg-white border-border border-3 shadow-md rounded-[15px] p-5 flex
                 flex-col items-start justify-start text-[13px]">
                     <span className="font-medium mb-3">Статистика аккаунта</span>
                     <div className="space-y-2 w-full">
@@ -193,13 +193,13 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="lg:col-start-3 bg-white border-[#c8d69b] border-3 shadow-md rounded-[15px] p-5 flex flex-col 
+                <div className="lg:col-start-3 bg-white border-border border-3 shadow-md rounded-[15px] p-5 flex flex-col
                 items-start justify-start text-[13px]">
                     <span className="font-medium mb-3">Текущий тариф</span>
                     <div className="space-y-2 w-full">
                         <div className="flex justify-between">
                             <span className="text-gray-500">Тариф</span>
-                            <span className="font-semibold text-[#4c6fb1] capitalize">{currentPlan?.name || 'Free'}</span>
+                            <span className="font-semibold text-[var(--color-link)] capitalize">{currentPlan?.name || 'Free'}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-gray-500">Лимит ссылок</span>
@@ -228,13 +228,13 @@ const ProfilePage = () => {
                         return (
                             <div
                                 key={plan.plan_id}
-                                className={`relative bg-white border-3 ${isCurrent ? 'border-[#c8d69b]' : PLAN_COLORS[plan.name] || 'border-gray-200'} 
+                                className={`relative bg-white border-3 ${isCurrent ? 'border-border' : PLAN_COLORS[plan.name] || 'border-gray-200'}
                                 shadow-md rounded-[15px] p-6 flex flex-col transition-all ${
-                                    plan.name === 'pro' ? 'ring-2 ring-[#4c6fb1] ring-offset-2' : ''
+                                    plan.name === 'pro' ? 'ring-2 ring-primary ring-offset-2' : ''
                                 }`}
                             >
                                 {plan.name === 'pro' && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4c6fb1] text-white text-xs px-3 py-1 rounded-full 
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-3 py-1 rounded-full
                                     font-medium">
                                         Популярный
                                     </div>
@@ -255,12 +255,12 @@ const ProfilePage = () => {
                                 </ul>
 
                                 {isCurrent ? (
-                                    <Button disabled className="w-full bg-[#c8d69b] text-[#343b1b]">
+                                    <Button disabled className="w-full bg-[var(--color-border)] text-foreground">
                                         Текущий тариф
                                     </Button>
                                 ) : (
                                     <Button
-                                        className={`w-full ${plan.name === 'pro' ? 'bg-[#4c6fb1]' : plan.name === 'unlimited' ? 'bg-[#343b1b]' : 'bg-gray-700'} text-white`}
+                                        className={`w-full ${plan.name === 'pro' ? 'bg-primary' : plan.name === 'unlimited' ? 'bg-[var(--color-navbar)]' : 'bg-gray-700'} text-white`}
                                         disabled={paymentLoading !== null}
                                         onClick={() => handleSelectPlan(plan.name)}
                                     >

@@ -51,7 +51,7 @@ const LinkDetailPage = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <p className="text-gray-400">Загрузка...</p>
             </div>
         );
@@ -59,10 +59,10 @@ const LinkDetailPage = () => {
 
     if (locked) {
         return (
-            <div className="min-h-screen bg-[#FAFAF5] flex items-center justify-center px-4">
-                <div className="bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-10 flex flex-col items-center max-w-lg text-center">
-                    <Lock size={48} className="text-[#4c6fb1] mb-4" />
-                    <h2 className="text-2xl font-bold text-[#343b1b] mb-2">Аналитика по ссылке</h2>
+            <div className="min-h-screen bg-background flex items-center justify-center px-4">
+                <div className="bg-white border-2 border-border shadow-md rounded-[15px] p-10 flex flex-col items-center max-w-lg text-center">
+                    <Lock size={48} className="text-[var(--color-link)] mb-4" />
+                    <h2 className="text-2xl font-bold text-foreground mb-2">Аналитика по ссылке</h2>
                     <p className="text-gray-500 mb-6">
                         Подробная аналитика по каждой ссылке доступна на тарифах Pro и Unlimited. Обновите тариф, чтобы видеть клики, географию, устройства и многое другое.
                     </p>
@@ -70,7 +70,7 @@ const LinkDetailPage = () => {
                         <Button variant="outline" onClick={() => navigate('/home')}>
                             <ArrowLeft size={14} className="mr-1" /> Назад
                         </Button>
-                        <Button className="bg-[#4c6fb1] text-white" onClick={() => navigate('/profile')}>
+                        <Button className="bg-primary text-white" onClick={() => navigate('/profile')}>
                             Обновить тариф
                         </Button>
                     </div>
@@ -107,11 +107,11 @@ const LinkDetailPage = () => {
     const daysSinceCreated = Math.round((today.getTime() - created.getTime()) / 86400000);
 
     return (
-        <div className="min-h-screen bg-[#FAFAF5] font-sans">
+        <div className="min-h-screen bg-background font-sans">
             <section className="flex flex-col max-w-6xl mx-auto px-4 pt-8 pb-16 gap-6">
                 {/* Breadcrumb */}
                 <div className="flex items-center gap-2 text-sm">
-                    <button onClick={() => navigate('/home')} className="text-[#4c6fb1] hover:underline flex items-center gap-1">
+                    <button onClick={() => navigate('/home')} className="text-[var(--color-link)] hover:underline flex items-center gap-1">
                         <ArrowLeft size={14} />
                         Ваши ссылки
                     </button>
@@ -120,7 +120,7 @@ const LinkDetailPage = () => {
                 </div>
 
                 {/* Link Header Card */}
-                <div className="bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-6">
+                <div className="bg-white border-3 border-border shadow-md rounded-[15px] p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
@@ -128,23 +128,23 @@ const LinkDetailPage = () => {
                                     href={displayUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[#4c6fb1] font-bold text-lg sm:text-xl hover:underline truncate"
+                                    className="text-[var(--color-link)] font-bold text-lg sm:text-xl hover:underline truncate"
                                 >
                                     {displayUrl}
                                 </a>
-                                <ExternalLink size={16} className="text-[#4c6fb1] flex-shrink-0" />
+                                <ExternalLink size={16} className="text-[var(--color-link)] flex-shrink-0" />
                             </div>
                             <p className="text-gray-500 text-sm truncate">{stats.target_url}</p>
                         </div>
                         <div className="flex items-center gap-6">
                             <div className="text-center">
-                                <p className="text-3xl font-bold text-[#343b1b]">{stats.total_clicks.toLocaleString()}</p>
+                                <p className="text-3xl font-bold text-foreground">{stats.total_clicks.toLocaleString()}</p>
                                 <p className="text-xs text-gray-400">всего кликов</p>
                             </div>
                             <div className="flex gap-2">
                                 <Button
                                     variant="outline"
-                                    className="border-[#c8d69b] text-sm"
+                                    className="border-border text-sm"
                                     onClick={handleCopy}
                                 >
                                     <Copy size={14} />
@@ -152,7 +152,7 @@ const LinkDetailPage = () => {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="border-[#c8d69b] text-sm"
+                                    className="border-border text-sm"
                                     onClick={() => setShowQR(!showQR)}
                                 >
                                     <QrCode size={14} />
@@ -163,7 +163,7 @@ const LinkDetailPage = () => {
                     </div>
 
                     {showQR && (
-                        <div className="mt-4 flex flex-col items-center gap-2 border-t border-[#c8d69b] pt-4">
+                        <div className="mt-4 flex flex-col items-center gap-2 border-t border-border pt-4">
                             <img
                                 src={getQRCodeURL(stats.slug)}
                                 alt={`QR code for ${stats.slug}`}
@@ -172,7 +172,7 @@ const LinkDetailPage = () => {
                             <a
                                 href={getQRCodeURL(stats.slug)}
                                 download={`qr-${stats.slug}.png`}
-                                className="text-[#4c6fb1] text-sm hover:underline"
+                                className="text-[var(--color-link)] text-sm hover:underline"
                             >
                                 Скачать QR-код
                             </a>
@@ -186,26 +186,26 @@ const LinkDetailPage = () => {
                         label="Клики сегодня"
                         value={stats.clicks_today}
                         icon={<MousePointerClick size={18} />}
-                        iconBg="bg-[#4c6fb1]"
+                        iconBg="bg-primary"
                     />
                     <StatCard
                         label="За неделю"
                         value={stats.clicks_week}
                         icon={<Calendar size={18} />}
-                        iconBg="bg-[#c8d69b]"
+                        iconBg="bg-[var(--color-border)]"
                     />
                     <StatCard
                         label="За месяц"
                         value={stats.clicks_month}
                         icon={<Calendar size={18} />}
-                        iconBg="bg-[#f6e6a5]"
+                        iconBg="bg-amber-100"
                     />
                     <StatCard
                         label="Создано"
                         value={new Date(stats.created_at).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric', year: 'numeric' })}
                         subtitle={daysSinceCreated === 0 ? 'сегодня' : `${daysSinceCreated} дн. назад`}
                         icon={<Clock size={18} />}
-                        iconBg="bg-[#343b1b]"
+                        iconBg="bg-[var(--color-navbar)]"
                     />
                 </div>
 
@@ -270,24 +270,24 @@ const LinkDetailPage = () => {
 
                         {/* Recent Clicks Feed */}
                         {stats.recent_clicks && stats.recent_clicks.length > 0 && (
-                            <div className="bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-5">
-                                <h3 className="font-semibold text-[#343b1b] mb-4">Последние клики</h3>
+                            <div className="bg-white border-3 border-border shadow-md rounded-[15px] p-5">
+                                <h3 className="font-semibold text-foreground mb-4">Последние клики</h3>
                                 <div className="max-h-[400px] overflow-y-auto space-y-2">
                                     {stats.recent_clicks.map((click) => (
                                         <div
                                             key={click.event_id}
-                                            className="flex flex-wrap items-center gap-3 text-sm px-3 py-2 bg-[#fbfcef] rounded-lg border border-[#e8edc8]"
+                                            className="flex flex-wrap items-center gap-3 text-sm px-3 py-2 bg-background rounded-lg border border-border"
                                         >
                                             <span className="text-gray-400 text-xs">
                                                 {new Date(click.clicked_at).toLocaleString()}
                                             </span>
-                                            <span className="bg-[#c8d69b] text-[#343b1b] px-2 py-0.5 rounded text-xs font-medium">
+                                            <span className="bg-[var(--color-border)] text-foreground px-2 py-0.5 rounded text-xs font-medium">
                                                 {toCountryCode(click.country)}
                                             </span>
                                             <span className="text-gray-600 text-xs">{click.device}</span>
                                             <span className="text-gray-600 text-xs">{click.browser}</span>
                                             <span className="text-gray-600 text-xs">{click.os}</span>
-                                            <span className="text-[#4c6fb1] text-xs">{click.referer}</span>
+                                            <span className="text-[var(--color-link)] text-xs">{click.referer}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -323,17 +323,17 @@ const StatCard = ({ label, value, subtitle, icon, iconBg }: {
     icon: React.ReactNode;
     iconBg: string;
 }) => (
-    <div className="bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-5">
+    <div className="bg-white border-3 border-border shadow-md rounded-[15px] p-5">
         <div className="flex items-center gap-2 mb-3">
             <div className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center text-white`}>
                 {icon}
             </div>
         </div>
         <p className="text-xs text-gray-400">{label}</p>
-        <p className="text-2xl font-bold text-[#343b1b]">
+        <p className="text-2xl font-bold text-foreground">
             {typeof value === 'number' ? value.toLocaleString() : value}
         </p>
-        {subtitle && <p className="text-xs text-[#4c6fb1] mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-[var(--color-link)] mt-1">{subtitle}</p>}
     </div>
 );
 
@@ -344,18 +344,18 @@ const LockedCard = ({ title, description, planLabel, onUpgrade }: {
     planLabel: string;
     onUpgrade: () => void;
 }) => (
-    <div className="bg-[#343b1b] text-white rounded-[15px] p-6 flex flex-col items-center text-center">
-        <Lock size={28} className="text-[#f6e6a5] mb-3" />
+    <div className="bg-[var(--color-navbar)] text-white rounded-[15px] p-6 flex flex-col items-center text-center">
+        <Lock size={28} className="text-amber-200 mb-3" />
         <h3 className="font-bold text-lg mb-1">
             {title}
-            <span className="ml-2 text-[10px] font-medium border border-[#4c6fb1] text-[#4c6fb1] bg-white px-2 py-0.5 rounded-full">
+            <span className="ml-2 text-[10px] font-medium border border-primary text-[var(--color-link)] bg-white px-2 py-0.5 rounded-full">
                 {planLabel}
             </span>
         </h3>
         <p className="text-gray-300 text-sm mb-4">{description}</p>
         <Button
             variant="outline"
-            className="border-white text-white hover:bg-white hover:text-[#343b1b]"
+            className="border-white text-white hover:bg-white hover:text-foreground"
             onClick={onUpgrade}
         >
             Перейти на {planLabel}

@@ -81,12 +81,12 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
   return (
     <>
     <section className="flex justify-center px-4 pb-6 sm:px-6">
-      <div className="w-full max-w-5xl bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
+      <div className="w-full max-w-5xl bg-white border-2 border-border shadow-md rounded-[15px] mt-6 p-4 sm:p-6">
         <div className="flex items-center gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-[#4c6fb1] shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-primary shrink-0">
                 <Sparkles color="white"/>
             </div>
-          <h3 className="text-[#343b1b] font-semibold text-base sm:text-3xl">Создать короткую ссылку</h3>
+          <h3 className="text-foreground font-semibold text-base sm:text-3xl">Создать короткую ссылку</h3>
         </div>
         <label className="block mt-3 text-sm sm:text-lg">Введите длинную ссылку</label>
         <input
@@ -95,7 +95,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleShorten()}
-          className="mt-2 w-full border-2 border-[#c8d69b] rounded-md
+          className="mt-2 w-full border-2 border-border rounded-md
           px-3 py-2 text-sm sm:text-lg outline-none focus:ring-2 focus:ring-green-600/30"
         />
         {domains.length > 0 && (
@@ -104,7 +104,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
             <select
               value={selectedDomain}
               onChange={(e) => setSelectedDomain(e.target.value)}
-              className="w-full border-2 border-[#c8d69b] rounded-md px-3 py-2 text-sm sm:text-lg outline-none focus:ring-2 focus:ring-green-600/30 bg-white"
+              className="w-full border-2 border-border rounded-md px-3 py-2 text-sm sm:text-lg outline-none focus:ring-2 focus:ring-green-600/30 bg-white"
             >
               <option value="">По умолчанию (без своего домена)</option>
               {domains.map(d => (
@@ -115,7 +115,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
         )}
         {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
         <Button
-          className="mt-3 w-full bg-[#4c6fb1] text-sm sm:text-lg"
+          className="mt-3 w-full bg-primary text-sm sm:text-lg"
           disabled={loading}
           onClick={handleShorten}
         >
@@ -126,17 +126,17 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
 
     <section className="flex justify-center items-center px-4 pb-6 mt-4">
       <div className="flex flex-col w-full max-w-5xl gap-2">
-        <h1 className="text-[#343b1b] font-bold text-sm sm:text-3xl">Ваши ссылки</h1>
+        <h1 className="text-foreground font-bold text-sm sm:text-3xl">Ваши ссылки</h1>
 
         {links.length === 0 ? (
-          <div className="flex flex-col justify-center items-center bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-4 sm:p-6">
-            <h2 className="text-[#343b1b] font-bold text-sm sm:text-2xl">Пока нет ссылок</h2>
+          <div className="flex flex-col justify-center items-center bg-white border-2 border-border shadow-md rounded-[15px] p-4 sm:p-6">
+            <h2 className="text-foreground font-bold text-sm sm:text-2xl">Пока нет ссылок</h2>
             <p>Создайте первую короткую ссылку, чтобы начать отслеживание и аналитику</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
             {links.map((link) => (
-              <div key={link.id} className="bg-white border-2 border-[#c8d69b] shadow-md rounded-[15px] p-4 sm:p-5">
+              <div key={link.id} className="bg-white border-2 border-border shadow-md rounded-[15px] p-4 sm:p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -145,11 +145,11 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                         href={getDisplayURL(link)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#4c6fb1] font-semibold text-sm sm:text-lg hover:underline truncate"
+                        className="text-[var(--color-link)] font-semibold text-sm sm:text-lg hover:underline truncate"
                       >
                         {getDisplayURL(link)}
                       </a>
-                      <ExternalLink size={14} className="text-[#4c6fb1] flex-shrink-0" />
+                      <ExternalLink size={14} className="text-[var(--color-link)] flex-shrink-0" />
                     </div>
                     <p className="text-gray-500 text-xs sm:text-sm truncate mt-1">{link.target_url}</p>
                     <p className="text-gray-400 text-xs mt-1">
@@ -159,7 +159,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                   <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
                     <Button
                       variant="outline"
-                      className="border-[#c8d69b] text-xs px-3"
+                      className="border-border text-xs px-3"
                       onClick={() => handleCopy(link)}
                     >
                       <Copy size={14} />
@@ -167,7 +167,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-[#c8d69b] text-xs px-3"
+                      className="border-border text-xs px-3"
                       onClick={() => setQrSlug(qrSlug === link.slug ? null : link.slug)}
                     >
                       <QrCode size={14} />
@@ -175,7 +175,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-[#4c6fb1] text-[#4c6fb1] hover:bg-[#4c6fb1] hover:text-white text-xs px-3"
+                      className="border-primary text-[var(--color-link)] hover:bg-primary hover:text-white text-xs px-3"
                       onClick={() => navigate(`/link/${link.id}`)}
                     >
                       <BarChart3 size={14} />
@@ -192,7 +192,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                 </div>
 
                 {qrSlug === link.slug && (
-                  <div className="mt-4 flex flex-col items-center gap-2 border-t border-[#c8d69b] pt-4">
+                  <div className="mt-4 flex flex-col items-center gap-2 border-t border-border pt-4">
                     <img
                       src={getQRCodeURL(link.slug)}
                       alt={`QR code for ${link.slug}`}
@@ -202,7 +202,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     <a
                       href={getQRCodeURL(link.slug)}
                       download={`qr-${link.slug}.png`}
-                      className="text-[#4c6fb1] text-sm hover:underline"
+                      className="text-[var(--color-link)] text-sm hover:underline"
                     >
                       Скачать QR-код
                     </a>

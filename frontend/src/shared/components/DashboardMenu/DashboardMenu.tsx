@@ -101,12 +101,12 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
         <>
         <section id="analytics-section" className="flex flex-col items-center gap-6 sm:gap-10 pt-4 px-4 sm:px-10">
             <div className="flex items-center gap-4">
-                <h1 className="font-bold text-md sm:text-3xl text-[#343b1b]">Ваша аналитика</h1>
+                <h1 className="font-bold text-md sm:text-3xl text-foreground">Ваша аналитика</h1>
                 {isUnlimited && (
                     <Button
                         variant="outline"
                         size="sm"
-                        className="border-[#4c6fb1] text-[#4c6fb1] hover:bg-[#4c6fb1] hover:text-white"
+                        className="border-primary text-[var(--color-link)] hover:bg-primary hover:text-white"
                         onClick={handleExportCSV}
                         disabled={exporting}
                     >
@@ -120,7 +120,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 icon={Link2}
                 title="Всего ссылок"
                 text={String(stats?.total_links ?? 0)}
-                icon_bgColor="bg-[#c8d69b]"
+                icon_bgColor="bg-[var(--color-border)]"
                 icon_color=""
             />
 
@@ -128,7 +128,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 icon={MousePointerClick}
                 title="Всего кликов"
                 text={String(stats?.total_clicks ?? 0)}
-                icon_bgColor="bg-[#4c6fb1]"
+                icon_bgColor="bg-primary"
                 icon_color="text-white"
             />
 
@@ -136,7 +136,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 icon={TrendingUp}
                 title="Среднее на ссылку"
                 text={(stats?.avg_per_link ?? 0).toFixed(1)}
-                icon_bgColor="bg-[#f6e6a5]"
+                icon_bgColor="bg-amber-100"
                 icon_color=""
             />
 
@@ -144,7 +144,7 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                 icon={Calendar}
                 title="Среднее в день"
                 text={(stats?.avg_per_day ?? 0).toFixed(1)}
-                icon_bgColor="bg-[#4c6fb1]"
+                icon_bgColor="bg-primary"
                 icon_color="text-white"
             />
             </div>
@@ -186,14 +186,14 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             </div>
             ) : (
             <div className="mt-10">
-                <div className="bg-white border-2 border-dashed border-[#c8d69b] rounded-[15px] p-8 flex flex-col items-center">
+                <div className="bg-white border-2 border-dashed border-border rounded-[15px] p-8 flex flex-col items-center">
                     <Lock size={32} className="text-gray-400 mb-3" />
-                    <h3 className="text-lg font-bold text-[#343b1b] mb-1">Подробная статистика</h3>
+                    <h3 className="text-lg font-bold text-foreground mb-1">Подробная статистика</h3>
                     <p className="text-gray-400 text-sm text-center mb-4 max-w-md">
                         Перейдите на тариф Pro, чтобы разблокировать статистику по странам, устройствам, браузерам и ОС, а также аналитику по каждой ссылке.
                     </p>
                     <Button
-                        className="bg-[#4c6fb1] text-white"
+                        className="bg-primary text-white"
                         onClick={() => navigate('/profile')}
                     >
                         Перейти на Pro
@@ -205,14 +205,14 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             {/* Advanced Analytics Section — Unlimited Only */}
             {!isUnlimited ? (
                 <div className="mt-10 mb-10">
-                    <div className="bg-white border-3 border-dashed border-[#c8d69b] rounded-[15px] p-8 flex flex-col items-center">
+                    <div className="bg-white border-3 border-dashed border-border rounded-[15px] p-8 flex flex-col items-center">
                         <Lock size={32} className="text-gray-400 mb-3" />
-                        <h3 className="text-lg font-bold text-[#343b1b] mb-1">Расширенная аналитика</h3>
+                        <h3 className="text-lg font-bold text-foreground mb-1">Расширенная аналитика</h3>
                         <p className="text-gray-400 text-sm text-center mb-4 max-w-md">
                             Разблокируйте отслеживание источников, почасовые тепловые карты, ленту кликов и экспорт CSV с тарифом Unlimited.
                         </p>
                         <Button
-                            className="bg-[#343b1b] text-white"
+                            className="bg-[var(--color-navbar)] text-white"
                             onClick={() => navigate('/profile')}
                         >
                             Перейти на Unlimited
@@ -222,10 +222,10 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
             ) : (
                 <div className="mt-10 mb-10">
                     <div className="flex items-center gap-2 mb-6">
-                        <div className="bg-[#343b1b] text-white text-xs px-3 py-1 rounded-full font-medium">
+                        <div className="bg-[var(--color-navbar)] text-white text-xs px-3 py-1 rounded-full font-medium">
                             Unlimited
                         </div>
-                        <h2 className="text-xl font-bold text-[#343b1b]">Расширенная аналитика</h2>
+                        <h2 className="text-xl font-bold text-foreground">Расширенная аналитика</h2>
                     </div>
 
                     <div className="grid grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-6 w-full">
@@ -245,9 +245,9 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                     </div>
 
                     {/* Top Performing Links */}
-                    <div className="mt-6 bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-6">
+                    <div className="mt-6 bg-white border-3 border-border shadow-md rounded-[15px] p-6">
                         <div className="flex items-center gap-2 mb-4">
-                            <div className="p-2 rounded-lg bg-[#f6e6a5]">
+                            <div className="p-2 rounded-lg bg-amber-100">
                                 <Trophy size={18} />
                             </div>
                             <h3 className="font-semibold text-[15px]">Лучшие ссылки</h3>
@@ -265,12 +265,12 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                                 <tbody>
                                     {(advanced?.top_links || []).map((link, i) => (
                                         <tr key={link.link_id} className="border-b last:border-0 hover:bg-gray-50">
-                                            <td className="py-3 font-semibold text-[#4c6fb1]">{i + 1}</td>
+                                            <td className="py-3 font-semibold text-[var(--color-link)]">{i + 1}</td>
                                             <td className="py-3">
                                                 <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">/r/{link.slug}</code>
                                             </td>
                                             <td className="py-3 max-w-xs truncate text-gray-600">
-                                                <a href={link.target_url} target="_blank" rel="noreferrer" className="hover:text-[#4c6fb1] flex items-center gap-1">
+                                                <a href={link.target_url} target="_blank" rel="noreferrer" className="hover:text-[var(--color-link)] flex items-center gap-1">
                                                     {link.target_url.length > 50 ? link.target_url.substring(0, 50) + '...' : link.target_url}
                                                     <ArrowUpRight size={12} />
                                                 </a>
@@ -289,9 +289,9 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
                     </div>
 
                     {/* Recent Clicks Feed */}
-                    <div className="mt-6 bg-white border-3 border-[#c8d69b] shadow-md rounded-[15px] p-6">
+                    <div className="mt-6 bg-white border-3 border-border shadow-md rounded-[15px] p-6">
                         <div className="flex items-center gap-2 mb-4">
-                            <div className="p-2 rounded-lg bg-[#4c6fb1]">
+                            <div className="p-2 rounded-lg bg-primary">
                                 <Activity size={18} className="text-white" />
                             </div>
                             <h3 className="font-semibold text-[15px]">Последние клики</h3>

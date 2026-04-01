@@ -8,9 +8,9 @@ type LandingCardProps = {
 
 const LandingCard = ({ icon: Icon, title, text }: LandingCardProps) => {
   return (
-    <div className="bg-[#fbfcef] border-2 border-[#c8d69b] shadow-md p-5 rounded-[15px] w-full max-w-[420px] min-h-[220px]">
+    <div className="bg-background border-2 border-border shadow-md p-5 rounded-[15px] w-full max-w-[420px] min-h-[220px]">
       <div className="flex flex-col gap-3 items-start">
-        <div className="bg-[#4c6fb1] p-2.5 rounded-[10px]">
+        <div className="bg-primary p-2.5 rounded-[10px]">
           <Icon className="w-7 h-7 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-gray-800 text-[22px]">{title}</h3>

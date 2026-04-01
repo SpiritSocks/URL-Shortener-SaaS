@@ -31,7 +31,7 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                 <XAxis dataKey="name" tickMargin={8} interval="preserveStartEnd" tick={{ fontSize: 12 }} />
                 <YAxis tickMargin={6} width={32} tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(value) => [value, "Клики"]} />
-                <Line type="monotone" dataKey="clicks" name="Клики" stroke="#4c6fb1" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="clicks" name="Клики" stroke="#5c7a2a" activeDot={{ r: 8 }} />
             </LineChart>
         </ResponsiveContainer>
     )
