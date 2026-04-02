@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Pencil } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { apiUpdateMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePayment, type PlanData } from "@/lib/api";
 
@@ -108,14 +108,14 @@ const ProfilePage = () => {
             {/* User info and stats */}
             <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-2 gap-4 min-w-auto">
                 <div className="lg:col-span-2 lg:row-span-2 bg-white border-border border-3 shadow-md rounded-[15px] p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row justify-between gap-3 mb-6 sm:mb-8">
-                        <div className="flex flex-row items-center gap-3">
+                    <div className="flex flex-row items-center justify-between gap-3 mb-6 sm:mb-8">
+                        <div className="flex flex-row items-center gap-3 sm:gap-4">
                             <img
                                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || 'User'}`}
                                 alt={user?.username || 'User'}
-                                className="w-8 h-8 rounded-full"
+                                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
                             />
-                            <h2 className="text-[15px] font-medium text-foreground">
+                            <h2 className="text-base sm:text-lg font-medium text-foreground">
                                 {user?.username || 'User'}
                             </h2>
                         </div>
@@ -140,12 +140,13 @@ const ProfilePage = () => {
                                 </Button>
                             </div>
                         ) : (
-                            <Button
-                                className="bg-foreground hover:bg-black text-white"
+                            <button
+                                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-gray-100 transition-colors"
                                 onClick={() => setEditing(true)}
+                                aria-label="Редактировать профиль"
                             >
-                                Изменить
-                            </Button>
+                                <Pencil size={18} />
+                            </button>
                         )}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full justify-center">
