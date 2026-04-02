@@ -6,13 +6,14 @@ import (
 )
 
 type User struct {
-	ID           int64
-	Username     string
-	Email        string
-	PasswordHash string
-	CreatedAt    time.Time
-	IsAdmin      bool
-	PlanID       int64
+	ID            int64
+	Username      string
+	Email         string
+	PasswordHash  string
+	CreatedAt     time.Time
+	IsAdmin       bool
+	PlanID        int64
+	PlanExpiresAt *time.Time
 }
 
 type UserRepository interface {
@@ -20,6 +21,7 @@ type UserRepository interface {
 	GetByEmail(ctx context.Context, email string) (User, error)
 	GetUser(ctx context.Context, userID int64) (User, error)
 	UpdateUser(ctx context.Context, u *User) error
+	ExpireSubscriptions(ctx context.Context) (int64, error)
 }
 
 type UserService interface {

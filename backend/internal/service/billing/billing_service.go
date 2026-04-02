@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
 	"github.com/google/uuid"
@@ -35,10 +36,20 @@ func (s *service) GetUserPlan(ctx context.Context, userID int64) (domain.Plan, e
 	if err != nil {
 		return domain.Plan{}, err
 	}
+
 	planID := user.PlanID
 	if planID == 0 {
 		planID = 1
 	}
+
+	// If the paid subscription has expired, downgrade to free immediately
+	if planID != 1 && user.PlanExpiresAt != nil && user.PlanExpiresAt.Before(time.Now()) {
+		user.PlanID = 1
+		user.PlanExpiresAt = nil
+		_ = s.userRepo.UpdateUser(ctx, &user)
+		planID = 1
+	}
+
 	return s.planRepo.GetByID(ctx, planID)
 }
 
@@ -74,12 +85,13 @@ func (s *service) CreatePayment(ctx context.Context, userID int64, planName stri
 	}
 
 	if plan.PriceKop == 0 {
-		// Free plan — just assign directly
+		// Free plan — assign directly, clear expiry
 		user, err := s.userRepo.GetUser(ctx, userID)
 		if err != nil {
 			return "", err
 		}
 		user.PlanID = plan.PlanID
+		user.PlanExpiresAt = nil
 		if err := s.userRepo.UpdateUser(ctx, &user); err != nil {
 			return "", err
 		}
@@ -174,6 +186,26 @@ func (s *service) HandleWebhook(ctx context.Context, yookassaID, status string) 
 		return err
 	}
 
+	plan, err := s.planRepo.GetByID(ctx, payment.PlanID)
+	if err != nil {
+		return err
+	}
+
 	user.PlanID = payment.PlanID
+
+	if plan.PriceKop > 0 {
+		// Paid plan — set expiry to 30 days from now
+		// If already on a paid plan with remaining time, extend from current expiry
+		now := time.Now()
+		baseTime := now
+		if user.PlanExpiresAt != nil && user.PlanExpiresAt.After(now) {
+			baseTime = *user.PlanExpiresAt
+		}
+		expiresAt := baseTime.Add(30 * 24 * time.Hour)
+		user.PlanExpiresAt = &expiresAt
+	} else {
+		user.PlanExpiresAt = nil
+	}
+
 	return s.userRepo.UpdateUser(ctx, &user)
 }

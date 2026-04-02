@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
@@ -12,6 +13,7 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
+	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/domain"
 	"github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/repository/postgres"
 	analyticssvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/analytics"
 	authsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/auth"
@@ -92,6 +94,9 @@ func main() {
 	billingService := billingsvc.NewBillingService(planRepo, paymentRepo, authRepo)
 	customDomainService := customdomainsvc.NewCustomDomainService(customDomainRepo)
 	bioService := biosvc.NewBioService(bioRepo, linkService, billingService)
+
+	// Start background subscription expiry checker
+	go runSubscriptionExpiry(authRepo)
 
 	// Handlers
 	authHandler := authttp.NewAuthHandler(authService)
@@ -193,6 +198,22 @@ func corsMiddleware() gin.HandlerFunc {
 	}
 }
 
+func runSubscriptionExpiry(userRepo domain.UserRepository) {
+	ticker := time.NewTicker(1 * time.Hour)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		n, err := userRepo.ExpireSubscriptions(ctx)
+		cancel()
+		if err != nil {
+			log.Printf("[subscription-expiry] error: %v", err)
+		} else if n > 0 {
+			log.Printf("[subscription-expiry] downgraded %d expired subscription(s) to free", n)
+		}
+	}
+}
+
 func runMigrations(db *sql.DB) {
 	// Try ./migrations first (Docker), fall back to ../migrations (local dev)
 	migrationDir := "./migrations"
@@ -206,6 +227,7 @@ func runMigrations(db *sql.DB) {
 		migrationDir + "/004_custom_domains.sql",
 		migrationDir + "/005_fix_domain_fk.sql",
 		migrationDir + "/006_bio_pages.sql",
+		migrationDir + "/007_plan_expiry.sql",
 	}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)
