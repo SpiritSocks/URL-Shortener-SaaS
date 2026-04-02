@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 import { QrCode, MousePointerClick, Zap, Shield, Link2 } from 'lucide-react';
@@ -7,10 +8,17 @@ import LandingCard from "@/shared/widgets/LandingCard/LandingCard";
 import cards from "@/lib/cards";
 
 import { useNavigate } from "react-router-dom";
+import { isLoggedIn } from "@/lib/api";
 
 const App = () => {
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      navigate('/home', { replace: true });
+    }
+  }, [navigate]);
 
   const handleLoginRegistration = () => {
     navigate('/login');

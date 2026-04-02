@@ -104,22 +104,22 @@ type CSVRow struct {
 // --- Per-link analytics ---
 
 type LinkDetailStats struct {
-	LinkID      int64          `json:"link_id"`
-	Slug        string         `json:"slug"`
-	TargetURL   string         `json:"target_url"`
-	CreatedAt   time.Time      `json:"created_at"`
-	TotalClicks int64          `json:"total_clicks"`
-	ClicksToday int64          `json:"clicks_today"`
-	ClicksWeek  int64          `json:"clicks_week"`
-	ClicksMonth int64          `json:"clicks_month"`
-	ClicksOver  []DailyClicks  `json:"clicks_over_time"`
-	Countries   []CountryStats `json:"countries"`
-	Devices     []DeviceStats  `json:"devices"`
-	Browsers    []BrowserStats `json:"browsers"`
-	OSStats     []OSStats      `json:"os_stats"`
-	Referers    []RefererStats `json:"referers"`
-	HourlyMap   []HourlyStats  `json:"hourly_map"`
-	RecentClicks []RecentClick `json:"recent_clicks"`
+	LinkID       int64          `json:"link_id"`
+	Slug         string         `json:"slug"`
+	TargetURL    string         `json:"target_url"`
+	CreatedAt    time.Time      `json:"created_at"`
+	TotalClicks  int64          `json:"total_clicks"`
+	ClicksToday  int64          `json:"clicks_today"`
+	ClicksWeek   int64          `json:"clicks_week"`
+	ClicksMonth  int64          `json:"clicks_month"`
+	ClicksOver   []DailyClicks  `json:"clicks_over_time"`
+	Countries    []CountryStats `json:"countries"`
+	Devices      []DeviceStats  `json:"devices"`
+	Browsers     []BrowserStats `json:"browsers"`
+	OSStats      []OSStats      `json:"os_stats"`
+	Referers     []RefererStats `json:"referers"`
+	HourlyMap    []HourlyStats  `json:"hourly_map"`
+	RecentClicks []RecentClick  `json:"recent_clicks"`
 }
 
 // --- Interfaces ---

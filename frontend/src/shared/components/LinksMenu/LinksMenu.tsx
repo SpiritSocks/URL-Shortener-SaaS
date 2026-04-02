@@ -140,23 +140,23 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      {link.custom_domain_id && <Globe size={14} className="text-green-500 flex-shrink-0" />}
+                      {link.custom_domain_id && <Globe size={14} className="text-green-500 shrink-0" />}
                       <a
                         href={getDisplayURL(link)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[var(--color-link)] font-semibold text-sm sm:text-lg hover:underline truncate"
+                        className="text-(--color-link) font-semibold text-sm sm:text-lg hover:underline truncate"
                       >
                         {getDisplayURL(link)}
                       </a>
-                      <ExternalLink size={14} className="text-[var(--color-link)] flex-shrink-0" />
+                      <ExternalLink size={14} className="text-(--color-link) shrink-0" />
                     </div>
                     <p className="text-gray-500 text-xs sm:text-sm truncate mt-1">{link.target_url}</p>
                     <p className="text-gray-400 text-xs mt-1">
                       Создано {new Date(link.created_at).toLocaleDateString('ru-RU')}
                     </p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <Button
                       variant="outline"
                       className="border-border text-xs px-3"
@@ -175,7 +175,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-primary text-[var(--color-link)] hover:bg-primary hover:text-white text-xs px-3"
+                      className="border-primary text-(--color-link) hover:bg-primary hover:text-white text-xs px-3"
                       onClick={() => navigate(`/link/${link.id}`)}
                     >
                       <BarChart3 size={14} />
