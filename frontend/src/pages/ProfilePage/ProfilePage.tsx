@@ -68,6 +68,14 @@ const ProfilePage = () => {
 
     const handleSelectPlan = async (planName: string) => {
         if (currentPlan?.name === planName) return;
+
+        if (planName === 'free' && currentPlan && currentPlan.price_kop > 0) {
+            const confirmed = window.confirm(
+                'Вы переходите на бесплатный тариф. Оставшееся оплаченное время сгорит и вы потеряете доступ к платным функциям. Продолжить?'
+            );
+            if (!confirmed) return;
+        }
+
         setPaymentLoading(planName);
         try {
             const result = await apiCreatePayment(planName);
