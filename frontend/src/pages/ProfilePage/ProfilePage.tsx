@@ -33,6 +33,7 @@ const ProfilePage = () => {
     const [plans, setPlans] = useState<PlanData[]>([]);
     const [currentPlan, setCurrentPlan] = useState<PlanData | null>(null);
     const [paymentLoading, setPaymentLoading] = useState<string | null>(null);
+    const [showDowngradeModal, setShowDowngradeModal] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -70,10 +71,8 @@ const ProfilePage = () => {
         if (currentPlan?.name === planName) return;
 
         if (planName === 'free' && currentPlan && currentPlan.price_kop > 0) {
-            const confirmed = window.confirm(
-                'Вы переходите на бесплатный тариф. Оставшееся оплаченное время сгорит и вы потеряете доступ к платным функциям. Продолжить?'
-            );
-            if (!confirmed) return;
+            setShowDowngradeModal(true);
+            return;
         }
 
         setPaymentLoading(planName);
@@ -96,6 +95,25 @@ const ProfilePage = () => {
     const formatPrice = (kop: number) => {
         if (kop === 0) return "Бесплатно";
         return `${(kop / 100).toFixed(0)} ₽/мес`;
+    };
+
+    const confirmDowngrade = async () => {
+        setShowDowngradeModal(false);
+        setPaymentLoading('free');
+        try {
+            const result = await apiCreatePayment('free');
+            if (result.redirect_url) {
+                window.location.href = result.redirect_url;
+            } else {
+                await refreshUser();
+                const updatedPlan = await apiGetUserPlan();
+                setCurrentPlan(updatedPlan);
+            }
+        } catch (err: any) {
+            alert(err.message || 'Ошибка');
+        } finally {
+            setPaymentLoading(null);
+        }
     };
 
     return (
@@ -285,6 +303,33 @@ const ProfilePage = () => {
             </div>
         </section>
         </div>
+
+        {showDowngradeModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                <div className="absolute inset-0 bg-black/40" onClick={() => setShowDowngradeModal(false)} />
+                <div className="relative bg-white border-3 border-border rounded-[15px] shadow-xl p-6 sm:p-8 w-full max-w-md">
+                    <h2 className="text-lg font-bold text-foreground mb-2">Перейти на бесплатный тариф?</h2>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                        Оставшееся оплаченное время сгорит, и вы сразу потеряете доступ к платным функциям — аналитике, кастомным доменам и дополнительным ссылкам.
+                    </p>
+                    <div className="flex gap-3">
+                        <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => setShowDowngradeModal(false)}
+                        >
+                            Отмена
+                        </Button>
+                        <Button
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                            onClick={confirmDowngrade}
+                        >
+                            Да, перейти
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        )}
     );
 }
 

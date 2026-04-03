@@ -111,7 +111,7 @@ const LinkDetailPage = () => {
             <section className="flex flex-col max-w-6xl mx-auto px-4 pt-8 pb-16 gap-6">
                 {/* Breadcrumb */}
                 <div className="flex items-center gap-2 text-sm">
-                    <button onClick={() => navigate('/home')} className="text-[var(--color-link)] hover:underline flex items-center gap-1">
+                    <button onClick={() => navigate('/home')} className="text-(--color-link) hover:underline flex items-center gap-1">
                         <ArrowLeft size={14} />
                         Ваши ссылки
                     </button>
@@ -128,11 +128,11 @@ const LinkDetailPage = () => {
                                     href={displayUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[var(--color-link)] font-bold text-lg sm:text-xl hover:underline truncate"
+                                    className="text-(--color-link) font-bold text-lg sm:text-xl hover:underline truncate"
                                 >
                                     {displayUrl}
                                 </a>
-                                <ExternalLink size={16} className="text-[var(--color-link)] flex-shrink-0" />
+                                <ExternalLink size={16} className="text-(--color-link) shrink-0" />
                             </div>
                             <p className="text-gray-500 text-sm truncate">{stats.target_url}</p>
                         </div>
@@ -172,7 +172,7 @@ const LinkDetailPage = () => {
                             <a
                                 href={getQRCodeURL(stats.slug)}
                                 download={`qr-${stats.slug}.png`}
-                                className="text-[var(--color-link)] text-sm hover:underline"
+                                className="text-(--color-link) text-sm hover:underline"
                             >
                                 Скачать QR-код
                             </a>
@@ -281,13 +281,13 @@ const LinkDetailPage = () => {
                                             <span className="text-gray-400 text-xs">
                                                 {new Date(click.clicked_at).toLocaleString()}
                                             </span>
-                                            <span className="bg-[var(--color-border)] text-foreground px-2 py-0.5 rounded text-xs font-medium">
+                                            <span className="bg-(--color-border) text-foreground px-2 py-0.5 rounded text-xs font-medium">
                                                 {toCountryCode(click.country)}
                                             </span>
                                             <span className="text-gray-600 text-xs">{click.device}</span>
                                             <span className="text-gray-600 text-xs">{click.browser}</span>
                                             <span className="text-gray-600 text-xs">{click.os}</span>
-                                            <span className="text-[var(--color-link)] text-xs">{click.referer}</span>
+                                            <span className="text-(--color-link) text-xs">{click.referer}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -333,7 +333,7 @@ const StatCard = ({ label, value, subtitle, icon, iconBg }: {
         <p className="text-2xl font-bold text-foreground">
             {typeof value === 'number' ? value.toLocaleString() : value}
         </p>
-        {subtitle && <p className="text-xs text-[var(--color-link)] mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-(--color-link) mt-1">{subtitle}</p>}
     </div>
 );
 
@@ -344,18 +344,18 @@ const LockedCard = ({ title, description, planLabel, onUpgrade }: {
     planLabel: string;
     onUpgrade: () => void;
 }) => (
-    <div className="bg-[var(--color-navbar)] text-white rounded-[15px] p-6 flex flex-col items-center text-center">
+    <div className="bg-(--color-navbar) text-white rounded-[15px] p-6 flex flex-col items-center text-center">
         <Lock size={28} className="text-amber-200 mb-3" />
         <h3 className="font-bold text-lg mb-1">
             {title}
-            <span className="ml-2 text-[10px] font-medium border border-primary text-[var(--color-link)] bg-white px-2 py-0.5 rounded-full">
+            <span className="ml-2 text-[10px] font-medium border border-primary text-(--color-link) bg-white px-2 py-0.5 rounded-full">
                 {planLabel}
             </span>
         </h3>
         <p className="text-gray-300 text-sm mb-4">{description}</p>
         <Button
             variant="outline"
-            className="border-white text-white hover:bg-white hover:text-foreground"
+            className="border-white text-(--color-text-muted) hover:bg-white hover:text-foreground"
             onClick={onUpgrade}
         >
             Перейти на {planLabel}
