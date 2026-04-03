@@ -355,7 +355,7 @@ const LockedCard = ({ title, description, planLabel, onUpgrade }: {
         <p className="text-gray-300 text-sm mb-4">{description}</p>
         <Button
             variant="outline"
-            className="border-white text-(--color-text-muted) hover:bg-white hover:text-foreground"
+            className="border-white text-(--color-text-muted) hover:bg-white hover:text-foreground mt-auto"
             onClick={onUpgrade}
         >
             Перейти на {planLabel}
