@@ -144,6 +144,7 @@ func main() {
 		// User
 		protected.GET("/me", authHandler.GetMe)
 		protected.PUT("/me", authHandler.UpdateMe)
+		protected.DELETE("/me", authHandler.DeleteMe)
 
 		// Links
 		protected.POST("/links", linkHandler.Create)

@@ -62,6 +62,11 @@ func (r *AuthRepository) UpdateUser(ctx context.Context, u *domain.User) error {
 	return err
 }
 
+func (r *AuthRepository) DeleteUser(ctx context.Context, userID int64) error {
+	_, err := r.Conn.ExecContext(ctx, `DELETE FROM users WHERE user_id = $1`, userID)
+	return err
+}
+
 func (r *AuthRepository) ExpireSubscriptions(ctx context.Context) (int64, error) {
 	const q = `
 		UPDATE users

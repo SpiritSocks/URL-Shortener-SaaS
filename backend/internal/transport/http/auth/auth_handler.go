@@ -85,6 +85,15 @@ func (h *Handler) GetMe(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.ToDTO(user))
 }
 
+func (h *Handler) DeleteMe(c *gin.Context) {
+	userID := c.MustGet("user_id").(int64)
+	if err := h.svc.DeleteUser(c.Request.Context(), userID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete account"})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
+
 func (h *Handler) UpdateMe(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 	var req dto.UserDTO

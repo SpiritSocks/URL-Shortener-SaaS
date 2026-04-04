@@ -78,6 +78,18 @@ export async function apiUpdateMe(username: string, email: string) {
   return res.json();
 }
 
+export async function apiDeleteMe(): Promise<void> {
+  const res = await fetch(`${API_BASE}/me`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Failed to delete account');
+  }
+}
+
 export interface LinkData {
   id: number;
   slug: string;

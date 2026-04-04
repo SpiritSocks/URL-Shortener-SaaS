@@ -69,3 +69,7 @@ func (srv *service) UpdateUser(ctx context.Context, u *domain.User) error {
 	}
 	return srv.repo.UpdateUser(ctx, u)
 }
+
+func (srv *service) DeleteUser(ctx context.Context, userID int64) error {
+	return srv.repo.DeleteUser(ctx, userID)
+}

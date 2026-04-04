@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, Pencil } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
-import { apiUpdateMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePayment, type PlanData } from "@/lib/api";
+import { apiUpdateMe, apiDeleteMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePayment, type PlanData } from "@/lib/api";
 
 import styles from '@/pages/ProfilePage/ProfilePage.module.css';
 
@@ -21,7 +21,7 @@ const PLAN_COLORS: Record<string, string> = {
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-    const { user, refreshUser } = useAuth();
+    const { user, refreshUser, logout } = useAuth();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -34,6 +34,8 @@ const ProfilePage = () => {
     const [currentPlan, setCurrentPlan] = useState<PlanData | null>(null);
     const [paymentLoading, setPaymentLoading] = useState<string | null>(null);
     const [showDowngradeModal, setShowDowngradeModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -113,6 +115,19 @@ const ProfilePage = () => {
             alert(err.message || 'Ошибка');
         } finally {
             setPaymentLoading(null);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        setDeleting(true);
+        try {
+            await apiDeleteMe();
+            logout();
+        } catch (err: any) {
+            alert(err.message || 'Ошибка удаления аккаунта');
+        } finally {
+            setDeleting(false);
+            setShowDeleteModal(false);
         }
     };
 
@@ -255,7 +270,8 @@ const ProfilePage = () => {
                         return (
                             <div
                                 key={plan.plan_id}
-                                className={`relative bg-white border-3 ${isCurrent ? 'border-border' : PLAN_COLORS[plan.name] || 'border-gray-200'}
+                                className={`relative bg-white border-3 ${isCurrent ? 'border-border' : PLAN_COLORS[plan.name.toLowerCase().trim()] || 
+                                'border-gray-200'}
                                 shadow-md rounded-[15px] p-6 flex flex-col transition-all ${
                                     plan.name === 'pro' ? 'ring-2 ring-primary ring-offset-2' : ''
                                 }`}
@@ -273,7 +289,7 @@ const ProfilePage = () => {
                                 </div>
 
                                 <ul className="space-y-2 mb-6 flex-1">
-                                    {(PLAN_FEATURES[plan.name] || []).map((feature, i) => (
+                                    {(PLAN_FEATURES[plan.name.toLowerCase().trim()] || []).map((feature, i) => (
                                         <li key={i} className="flex items-start gap-2 text-sm">
                                             <Check size={16} className="text-green-600 mt-0.5 shrink-0" />
                                             <span>{feature}</span>
@@ -287,7 +303,8 @@ const ProfilePage = () => {
                                     </Button>
                                 ) : (
                                     <Button
-                                        className={`w-full ${plan.name === 'pro' ? 'bg-primary' : plan.name === 'unlimited' ? 'bg-[var(--color-navbar)]' : 'bg-gray-700'} text-white`}
+                                        className={`w-full ${plan.name === 'pro' ? 'bg-primary' : plan.name === 'unlimited' ? 'bg-[var(--color-navbar)]' : 
+                                        'bg-gray-700'} text-white`}
                                         disabled={paymentLoading !== null}
                                         onClick={() => handleSelectPlan(plan.name)}
                                     >
@@ -301,7 +318,49 @@ const ProfilePage = () => {
                     })}
                 </div>
             </div>
+
+            {/* Delete account */}
+            <div className="mt-6 border-3 border-red-200 bg-white rounded-[15px] p-6 shadow-md">
+                <h2 className="text-lg font-bold text-red-600 mb-1">Удаление аккаунта</h2>
+                <p className="text-gray-500 text-sm mb-4">
+                    Это действие необратимо. Все ваши данные, ссылки и аналитика будут удалены навсегда.
+                </p>
+                <Button
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                    onClick={() => setShowDeleteModal(true)}
+                >
+                    Удалить аккаунт
+                </Button>
+            </div>
         </section>
+
+        {showDeleteModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteModal(false)} />
+                <div className="relative bg-white border-3 border-border rounded-[15px] shadow-xl p-6 sm:p-8 w-full max-w-sm">
+                    <h2 className="text-lg font-bold text-foreground mb-2">Вы уверены?</h2>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                        Аккаунт и все связанные данные будут удалены без возможности восстановления.
+                    </p>
+                    <div className="flex gap-3">
+                        <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => setShowDeleteModal(false)}
+                        >
+                            Отмена
+                        </Button>
+                        <Button
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                            disabled={deleting}
+                            onClick={handleDeleteAccount}
+                        >
+                            {deleting ? 'Удаление...' : 'Удалить'}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        )}
 
         {showDowngradeModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -309,7 +368,8 @@ const ProfilePage = () => {
                 <div className="relative bg-white border-3 border-border rounded-[15px] shadow-xl p-6 sm:p-8 w-full max-w-md">
                     <h2 className="text-lg font-bold text-foreground mb-2">Перейти на бесплатный тариф?</h2>
                     <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                        Оставшееся оплаченное время сгорит, и вы сразу потеряете доступ к платным функциям — аналитике, кастомным доменам и дополнительным ссылкам.
+                        Оставшееся оплаченное время сгорит, и вы сразу потеряете доступ к платным функциям — аналитике, кастомным доменам и 
+                        дополнительным ссылкам.
                     </p>
                     <div className="flex gap-3">
                         <Button

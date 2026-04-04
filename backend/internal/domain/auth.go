@@ -21,6 +21,7 @@ type UserRepository interface {
 	GetByEmail(ctx context.Context, email string) (User, error)
 	GetUser(ctx context.Context, userID int64) (User, error)
 	UpdateUser(ctx context.Context, u *User) error
+	DeleteUser(ctx context.Context, userID int64) error
 	ExpireSubscriptions(ctx context.Context) (int64, error)
 }
 
@@ -29,4 +30,5 @@ type UserService interface {
 	Login(ctx context.Context, email, password string) (User, error)
 	GetUser(ctx context.Context, userID int64) (User, error)
 	UpdateUser(ctx context.Context, u *User) error
+	DeleteUser(ctx context.Context, userID int64) error
 }

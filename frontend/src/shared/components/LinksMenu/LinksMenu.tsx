@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Trash2, Copy, QrCode, ExternalLink, BarChart3, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiCreateLink, apiGetLinks, apiDeleteLink, apiGetDomains, getQRCodeURL, getShortURL, type LinkData, type CustomDomainData } from "@/lib/api";
+import { apiCreateLink, apiGetLinks, apiDeleteLink, apiGetDomains, apiGetUserPlan, getQRCodeURL, getShortURL, type LinkData, type CustomDomainData, type PlanData } from "@/lib/api";
 
 type LinksMenuProps = {
   isOpen: boolean;
@@ -18,6 +18,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
   const [copied, setCopied] = useState<number | null>(null);
   const [domains, setDomains] = useState<CustomDomainData[]>([]);
   const [selectedDomain, setSelectedDomain] = useState('');
+  const [plan, setPlan] = useState<PlanData | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -25,6 +26,7 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
       apiGetDomains()
         .then(d => setDomains(d.filter(dom => dom.verified)))
         .catch(() => {});
+      apiGetUserPlan().then(setPlan).catch(() => {});
     }
   }, [isOpen]);
 
@@ -126,7 +128,14 @@ const LinksMenu = ({ isOpen }: LinksMenuProps) => {
 
     <section className="flex justify-center items-center px-4 pb-6 mt-4">
       <div className="flex flex-col w-full max-w-5xl gap-2">
-        <h1 className="text-foreground font-bold text-sm sm:text-3xl">Ваши ссылки</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-foreground font-bold text-sm sm:text-3xl">Ваши ссылки</h1>
+          {plan && plan.max_links !== -1 && (
+            <span className="text-xs sm:text-sm text-gray-400 font-medium">
+              {links.length} / {plan.max_links}
+            </span>
+          )}
+        </div>
 
         {links.length === 0 ? (
           <div className="flex flex-col justify-center items-center bg-white border-2 border-border shadow-md rounded-[15px] p-4 sm:p-6">
