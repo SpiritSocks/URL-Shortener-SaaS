@@ -172,16 +172,14 @@ const App = () => {
 
         <div className="flex flex-col md:flex-row px-4 sm:px-8 md:px-16 py-8 md:py-20 gap-8 md:gap-16">
           <article className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4">Создано для малого бизнеса</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4">Всё под контролем — даже без маркетолога</h2>
             <p className="text-gray-600 mb-10 leading-relaxed text-[16px]">
-              Linxie создан специально для малого бизнеса, которому нужно
-              профессиональное управление ссылками без сложностей и высоких затрат
-              корпоративных решений.
+              Разместите QR-код на визитке или меню, а Linxie покажет, сколько людей перешло, откуда и когда. Никаких настроек — зарегистрировались и сразу работаете.
             </p>
 
             <div className="space-y-8">
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary">
+                <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-lg bg-primary">
                   <MousePointerClick color="white"/>
                 </div>
                 <div>
@@ -193,7 +191,7 @@ const App = () => {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary">
+                <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-lg bg-primary">
                   <Zap color="white"/>
                 </div>
                 <div>
@@ -205,7 +203,7 @@ const App = () => {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary">
+                <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-lg bg-primary">
                   <Shield color="white"/>
                 </div>
                 <div>
