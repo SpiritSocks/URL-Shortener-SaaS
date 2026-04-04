@@ -139,12 +139,6 @@ const LoginRegistrationPage = () => {
 
         <div className="relative flex flex-col justify-center items-center text-center h-full px-12 w-full">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-              </svg>
-            </div>
             <span className="text-white text-xl font-medium">Linxie</span>
           </div>
           <h1 className="text-white text-4xl font-medium leading-snug mb-3">
