@@ -106,3 +106,10 @@ func (r *LinkRepository) CountByOwner(ctx context.Context, ownerID int64) (int64
 	err := r.Conn.QueryRowContext(ctx, q, ownerID).Scan(&count)
 	return count, err
 }
+
+func (r *LinkRepository) TotalCountByOwner(ctx context.Context, ownerID int64) (int64, error) {
+	const q = `SELECT COUNT(*) FROM links WHERE owner_id = $1`
+	var count int64
+	err := r.Conn.QueryRowContext(ctx, q, ownerID).Scan(&count)
+	return count, err
+}

@@ -163,6 +163,65 @@ const App = () => {
         </div>
       </section>
 
+      <section id="pricing" className="bg-background py-14 px-4">
+        <div className="flex flex-col items-center mb-10">
+          <h2 className="text-2xl sm:text-3xl md:text-[42px] font-bold text-center">Простые и честные тарифы</h2>
+          <p className="text-gray-500 text-sm sm:text-base text-center mt-2 max-w-xl">
+            Начните бесплатно, переходите на платный когда будете готовы
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {/* Free */}
+          <div className="bg-white border-3 border-border rounded-[15px] shadow-md p-6 flex flex-col">
+            <h3 className="text-xl font-bold mb-1">Free</h3>
+            <div className="text-3xl font-bold mb-1">0 ₽</div>
+            <p className="text-gray-400 text-sm mb-6">навсегда</p>
+            <ul className="space-y-2 mb-8 flex-1 text-sm">
+              {["До 5 ссылок в месяц", "Генерация QR-кодов", "Базовая аналитика"].map(f => (
+                <li key={f} className="flex items-start gap-2"><Check size={15} className="text-green-600 mt-0.5 shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <button onClick={handleLoginRegistration} className="w-full border-2 border-border rounded-[10px] py-2.5 font-semibold text-sm hover:bg-gray-50 transition-colors">
+              Начать бесплатно
+            </button>
+          </div>
+
+          {/* Pro */}
+          <div className="relative bg-white border-3 border-primary rounded-[15px] shadow-md p-6 flex flex-col ring-2 ring-primary ring-offset-2">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">
+              Популярный
+            </div>
+            <h3 className="text-xl font-bold mb-1">Pro</h3>
+            <div className="text-3xl font-bold mb-1">99 ₽</div>
+            <p className="text-gray-400 text-sm mb-6">в месяц</p>
+            <ul className="space-y-2 mb-8 flex-1 text-sm">
+              {["До 40 ссылок в месяц", "Генерация QR-кодов", "Расширенная аналитика", "Кастомные домены", "10 био ссылок"].map(f => (
+                <li key={f} className="flex items-start gap-2"><Check size={15} className="text-green-600 mt-0.5 shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <button onClick={handleLoginRegistration} className="w-full bg-primary text-white rounded-[10px] py-2.5 font-semibold text-sm hover:bg-primary/90 transition-colors">
+              Перейти на Pro
+            </button>
+          </div>
+
+          {/* Unlimited */}
+          <div className="bg-white border-3 border-[var(--color-navbar)] rounded-[15px] shadow-md p-6 flex flex-col">
+            <h3 className="text-xl font-bold mb-1">Unlimited</h3>
+            <div className="text-3xl font-bold mb-1">199 ₽</div>
+            <p className="text-gray-400 text-sm mb-6">в месяц</p>
+            <ul className="space-y-2 mb-8 flex-1 text-sm">
+              {["Безлимитные ссылки", "Генерация QR-кодов", "Ультимативная аналитика", "Кастомные домены", "Безлимитный био"].map(f => (
+                <li key={f} className="flex items-start gap-2"><Check size={15} className="text-green-600 mt-0.5 shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <button onClick={handleLoginRegistration} className="w-full bg-[var(--color-navbar)] text-white rounded-[10px] py-2.5 font-semibold text-sm hover:opacity-90 transition-opacity">
+              Перейти на Unlimited
+            </button>
+          </div>
+        </div>
+      </section>
+
       <section id="last_part" className="bg-background">
         <div className="flex flex-col sm:flex-row items-center justify-evenly gap-4 py-6 sm:h-[120px] bg-[var(--color-navbar)] text-[var(--color-page-bg)] text-sm sm:text-lg font-medium px-4">
           <p>Бесплатный тариф навсегда</p>

@@ -22,7 +22,7 @@ func (srv *service) TrackClick(ctx context.Context, event *domain.ClickEvent) er
 }
 
 func (srv *service) GetOverview(ctx context.Context, ownerID int64, planName string) (domain.OverviewStats, error) {
-	totalLinks, err := srv.linkRepo.CountByOwner(ctx, ownerID)
+	totalLinks, err := srv.linkRepo.TotalCountByOwner(ctx, ownerID)
 	if err != nil {
 		return domain.OverviewStats{}, err
 	}

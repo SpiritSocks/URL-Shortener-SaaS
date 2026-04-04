@@ -51,3 +51,7 @@ func (srv *service) ListByOwner(ctx context.Context, ownerID int64) ([]domain.Li
 func (srv *service) CountByOwner(ctx context.Context, ownerID int64) (int64, error) {
 	return srv.repo.CountByOwner(ctx, ownerID)
 }
+
+func (srv *service) TotalCountByOwner(ctx context.Context, ownerID int64) (int64, error) {
+	return srv.repo.TotalCountByOwner(ctx, ownerID)
+}

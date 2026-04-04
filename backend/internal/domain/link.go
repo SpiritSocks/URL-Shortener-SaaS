@@ -23,6 +23,7 @@ type LinkRepository interface {
 	GetBySlugAndDomain(ctx context.Context, slug string, domainID string) (Link, error)
 	ListByOwner(ctx context.Context, ownerID int64) ([]Link, error)
 	CountByOwner(ctx context.Context, ownerID int64) (int64, error)
+	TotalCountByOwner(ctx context.Context, ownerID int64) (int64, error)
 }
 
 type LinkService interface {
@@ -32,4 +33,5 @@ type LinkService interface {
 	GetBySlugAndDomain(ctx context.Context, slug string, domainID string) (Link, error)
 	ListByOwner(ctx context.Context, ownerID int64) ([]Link, error)
 	CountByOwner(ctx context.Context, ownerID int64) (int64, error)
+	TotalCountByOwner(ctx context.Context, ownerID int64) (int64, error)
 }
