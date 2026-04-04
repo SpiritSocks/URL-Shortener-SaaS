@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
-import { MousePointerClick, Zap, Shield, Link2, Copy, Check, ArrowRight, Loader2 } from 'lucide-react';
+import { MousePointerClick, Zap, Shield, Copy, Check, ArrowRight, Loader2 } from 'lucide-react';
 
 import LandingCard from "@/shared/widgets/LandingCard/LandingCard";
 
@@ -65,9 +65,7 @@ const App = () => {
     <>
     <header className="w-full bg-white flex flex-wrap items-center justify-between py-3 px-4 md:py-4 md:px-8">
       <div className="flex items-center gap-3">
-        <div className="size-10 flex items-center justify-center">
-          <Link2 className="w-8 h-8 sm:w-10 sm:h-10" color="#5c7a2a"/>
-        </div>
+        <img src="/logo.png" alt="Linxie" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
         <h1 className="font-bold text-lg md:text-[42px] text-foreground">Linxie</h1>
       </div>
 
