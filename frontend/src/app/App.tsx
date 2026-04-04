@@ -297,6 +297,8 @@ const App = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm text-white/70">
           <button onClick={handleLoginRegistration} className="hover:text-white transition-colors">Войти</button>
           <span className="hidden sm:inline">·</span>
+          <span>ИНН: 110605460965</span>
+          <span className="hidden sm:inline">·</span>
           <span>© {new Date().getFullYear()} Linxie. Все права защищены.</span>
         </div>
       </div>
