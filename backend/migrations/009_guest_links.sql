@@ -1,0 +1,1 @@
+ALTER TABLE links ALTER COLUMN owner_id DROP NOT NULL;

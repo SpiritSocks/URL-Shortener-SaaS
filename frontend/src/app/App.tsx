@@ -1,18 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
-import { QrCode, MousePointerClick, Zap, Shield, Link2 } from 'lucide-react';
+import { MousePointerClick, Zap, Shield, Link2, Copy, Check, ArrowRight, Loader2 } from 'lucide-react';
 
 import LandingCard from "@/shared/widgets/LandingCard/LandingCard";
 
 import cards from "@/lib/cards";
 
 import { useNavigate } from "react-router-dom";
-import { isLoggedIn } from "@/lib/api";
+import { isLoggedIn, apiShortenPublic } from "@/lib/api";
 
 const App = () => {
 
   const navigate = useNavigate();
+  const [inputUrl, setInputUrl] = useState('');
+  const [result, setResult] = useState<{ slug: string; short_url: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -22,7 +28,38 @@ const App = () => {
 
   const handleLoginRegistration = () => {
     navigate('/login');
-  }
+  };
+
+  const handleShorten = async () => {
+    const url = inputUrl.trim();
+    if (!url) {
+      setError('Введите ссылку');
+      inputRef.current?.focus();
+      return;
+    }
+    setError('');
+    setLoading(true);
+    setResult(null);
+    try {
+      const data = await apiShortenPublic(url);
+      setResult(data);
+    } catch (e: any) {
+      setError(e.message || 'Ошибка');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopy = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result.short_url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleShorten();
+  };
 
   return (
     <>
@@ -40,28 +77,72 @@ const App = () => {
     </header>
     <main>
       <section id="information" className="flex flex-col items-center px-4 md:px-0">
-        <div className="w-full max-w-5xl mt-5 flex flex-col md:h-[25vh]">
-          <span className="text-2xl text-foreground md:text-[46px] self-center text-center font-bold ">Сокращайте ссылки, отслеживайте результаты, развивайте бизнес</span>
-          <p className="text-base md:text-[20px] self-center text-center mt-4 md:mt-5">Создавайте брендированные короткие ссылки, генерируйте QR-коды и отслеживайте каждый клик с помощью подробной аналитики. Идеально для маркетинговых кампаний, соцсетей и печатных материалов.</p>
+        <div className="w-full max-w-3xl mt-5 flex flex-col items-center">
+          <span className="text-2xl text-foreground md:text-[46px] self-center text-center font-bold">Сокращайте ссылки, отслеживайте результаты, развивайте бизнес</span>
+          <p className="text-base md:text-[20px] self-center text-center mt-4 md:mt-5 text-gray-500">Создавайте короткие ссылки, генерируйте QR-коды и отслеживайте каждый клик. Попробуйте прямо сейчас — бесплатно.</p>
         </div>
-        <div className="shadow_container w-full flex justify-center">
-          <div id="preview" className="bg-white border-3 border-border flex flex-col md:flex-row items-center md:items-stretch justify-around m-4 md:m-10 p-4 md:p-5 rounded-[15px] gap-4 md:gap-5 w-full max-w-4xl">
-            <div className="w-full md:w-1/3 h-auto md:h-40 bg-background rounded-[15px] p-3 flex flex-col items-center justify-center text-center">
-              <h2 className="text-lg md:text-xl">Исходная ссылка</h2>
-              <p className="text-gray-400 truncate max-w-full">https://exampleUrl.com/very-long-url...</p>
-              <h2 className="mt-3 text-lg md:text-xl">Короткая ссылка</h2>
-              <p className="text-[var(--color-link)] font-bold">short.link/abc123</p>
-            </div>
 
-            <div className="w-full md:w-1/3 h-auto md:h-40 bg-background rounded-[15px] p-3 flex flex-col items-center justify-center relative">
-              <p className="text-3xl md:text-4xl font-semibold text-[var(--color-link)]">2547</p>
-              <p>Всего кликов</p>
-            </div>
-
-            <div className="w-full md:w-1/3 h-auto md:h-40 bg-background rounded-[15px] flex items-center justify-center">
-              <QrCode className="w-16 h-16 sm:w-24 sm:h-24" color="#3a6e9e" />
-            </div>
+        <div className="w-full max-w-2xl mt-8 mb-10 px-0">
+          {/* Input */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              ref={inputRef}
+              type="url"
+              value={inputUrl}
+              onChange={e => { setInputUrl(e.target.value); setError(''); }}
+              onKeyDown={handleKeyDown}
+              placeholder="Вставьте длинную ссылку..."
+              className={`flex-1 border-3 rounded-[12px] px-4 py-3 text-base outline-none transition-colors
+                ${error ? 'border-red-400' : 'border-border focus:border-primary'}`}
+            />
+            <Button
+              onClick={handleShorten}
+              disabled={loading}
+              className="bg-primary text-white px-6 py-3 rounded-[12px] font-semibold text-base shrink-0 h-auto"
+            >
+              {loading
+                ? <Loader2 className="w-5 h-5 animate-spin" />
+                : 'Сократить'}
+            </Button>
           </div>
+          {error && <p className="text-red-500 text-sm mt-2 ml-1">{error}</p>}
+
+          {/* Result */}
+          {result && (
+            <div className="mt-4 bg-white border-3 border-primary rounded-[12px] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="min-w-0">
+                <p className="text-xs text-gray-400 mb-1 truncate">{inputUrl}</p>
+                <a
+                  href={result.short_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary font-bold text-lg hover:underline break-all"
+                >
+                  {result.short_url}
+                </a>
+              </div>
+              <button
+                onClick={handleCopy}
+                className="flex items-center gap-2 shrink-0 border-2 border-border rounded-[8px] px-3 py-2 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                {copied ? 'Скопировано' : 'Копировать'}
+              </button>
+            </div>
+          )}
+
+          {/* CTA after result */}
+          {result && (
+            <div className="mt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500 bg-background border-3 border-border rounded-[12px] p-4">
+              <span>Зарегистрируйтесь, чтобы управлять ссылками и видеть аналитику кликов</span>
+              <button
+                onClick={handleLoginRegistration}
+                className="flex items-center gap-1 text-primary font-semibold hover:underline shrink-0"
+              >
+                Создать аккаунт <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -84,9 +165,9 @@ const App = () => {
 
       <section id="last_part" className="bg-background">
         <div className="flex flex-col sm:flex-row items-center justify-evenly gap-4 py-6 sm:h-[120px] bg-[var(--color-navbar)] text-[var(--color-page-bg)] text-sm sm:text-lg font-medium px-4">
-          <p>10K+ активных пользователей</p>
-          <p>500K+ созданных ссылок</p>
-          <p>5M+ отслеженных кликов</p>
+          <p>Бесплатный тариф навсегда</p>
+          <p>Простой и понятный интерфейс</p>
+          <p>Аналитика с первого клика</p>
         </div>
 
         <div className="flex flex-col md:flex-row px-4 sm:px-8 md:px-16 py-8 md:py-20 gap-8 md:gap-16">
@@ -153,8 +234,15 @@ const App = () => {
         </div>
       </section>
     </main>
-    <footer className="flex flex-row items-center h-[80px] sm:h-[120px] bg-[var(--color-navbar)] text-[var(--color-page-bg)] px-4 sm:px-5">
-      <h2 className="font-bold text-xl sm:text-3xl md:text-[42px] text-[var(--color-page-bg)]">Linxie</h2>
+    <footer className="bg-[var(--color-navbar)] text-[var(--color-page-bg)] px-4 sm:px-8 py-6 sm:py-8">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-page-bg)]">Linxie</h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm text-white/70">
+          <button onClick={handleLoginRegistration} className="hover:text-white transition-colors">Войти</button>
+          <span className="hidden sm:inline">·</span>
+          <span>© {new Date().getFullYear()} Linxie. Все права защищены.</span>
+        </div>
+      </div>
     </footer>
     </>
   )

@@ -19,7 +19,7 @@ func NewLinkRepository(conn *sql.DB) *LinkRepository {
 func (r *LinkRepository) Create(ctx context.Context, link *domain.Link) error {
 	const q = `
 		INSERT INTO links (owner_id, slug, target_url, custom_domain_id, created_at, is_active)
-		VALUES ($1, $2, $3, $4, NOW(), TRUE)
+		VALUES (NULLIF($1, 0), $2, $3, $4, NOW(), TRUE)
 		RETURNING link_id, created_at
 	`
 	return r.Conn.QueryRowContext(ctx, q,
@@ -40,12 +40,19 @@ func (r *LinkRepository) Delete(ctx context.Context, linkID, ownerID int64) erro
 	return nil
 }
 
+func scanLink(row interface {
+	Scan(dest ...any) error
+}) (domain.Link, error) {
+	var link domain.Link
+	var ownerID sql.NullInt64
+	err := row.Scan(&link.ID, &ownerID, &link.Slug, &link.TargetURL, &link.CreatedAt, &link.IsActive, &link.CustomDomainID)
+	link.OwnerID = ownerID.Int64
+	return link, err
+}
+
 func (r *LinkRepository) GetByID(ctx context.Context, linkID int64) (domain.Link, error) {
 	const q = `SELECT link_id, owner_id, slug, target_url, created_at, is_active, custom_domain_id FROM links WHERE link_id = $1`
-	var link domain.Link
-	err := r.Conn.QueryRowContext(ctx, q, linkID).Scan(
-		&link.ID, &link.OwnerID, &link.Slug, &link.TargetURL, &link.CreatedAt, &link.IsActive, &link.CustomDomainID,
-	)
+	link, err := scanLink(r.Conn.QueryRowContext(ctx, q, linkID))
 	if err == sql.ErrNoRows {
 		return domain.Link{}, domain.ErrLinkNotFound
 	}
@@ -57,10 +64,7 @@ func (r *LinkRepository) GetByID(ctx context.Context, linkID int64) (domain.Link
 
 func (r *LinkRepository) GetBySlug(ctx context.Context, slug string) (domain.Link, error) {
 	const q = `SELECT link_id, owner_id, slug, target_url, created_at, is_active, custom_domain_id FROM links WHERE slug = $1 AND is_active = TRUE`
-	var link domain.Link
-	err := r.Conn.QueryRowContext(ctx, q, slug).Scan(
-		&link.ID, &link.OwnerID, &link.Slug, &link.TargetURL, &link.CreatedAt, &link.IsActive, &link.CustomDomainID,
-	)
+	link, err := scanLink(r.Conn.QueryRowContext(ctx, q, slug))
 	if err == sql.ErrNoRows {
 		return domain.Link{}, domain.ErrLinkNotFound
 	}
@@ -70,10 +74,7 @@ func (r *LinkRepository) GetBySlug(ctx context.Context, slug string) (domain.Lin
 func (r *LinkRepository) GetBySlugAndDomain(ctx context.Context, slug string, domainID string) (domain.Link, error) {
 	const q = `SELECT link_id, owner_id, slug, target_url, created_at, is_active, custom_domain_id
 		FROM links WHERE slug = $1 AND custom_domain_id = $2 AND is_active = TRUE`
-	var link domain.Link
-	err := r.Conn.QueryRowContext(ctx, q, slug, domainID).Scan(
-		&link.ID, &link.OwnerID, &link.Slug, &link.TargetURL, &link.CreatedAt, &link.IsActive, &link.CustomDomainID,
-	)
+	link, err := scanLink(r.Conn.QueryRowContext(ctx, q, slug, domainID))
 	if err == sql.ErrNoRows {
 		return domain.Link{}, domain.ErrLinkNotFound
 	}
@@ -90,8 +91,8 @@ func (r *LinkRepository) ListByOwner(ctx context.Context, ownerID int64) ([]doma
 
 	var links []domain.Link
 	for rows.Next() {
-		var l domain.Link
-		if err := rows.Scan(&l.ID, &l.OwnerID, &l.Slug, &l.TargetURL, &l.CreatedAt, &l.IsActive, &l.CustomDomainID); err != nil {
+		l, err := scanLink(rows)
+		if err != nil {
 			return nil, err
 		}
 		links = append(links, l)

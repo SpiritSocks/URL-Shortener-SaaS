@@ -78,6 +78,19 @@ export async function apiUpdateMe(username: string, email: string) {
   return res.json();
 }
 
+export async function apiShortenPublic(url: string): Promise<{ slug: string; short_url: string }> {
+  const res = await fetch(`${API_BASE}/links/shorten`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Ошибка сокращения ссылки');
+  }
+  return res.json();
+}
+
 export async function apiDeleteMe(): Promise<void> {
   const res = await fetch(`${API_BASE}/me`, {
     method: 'DELETE',

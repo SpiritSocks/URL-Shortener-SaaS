@@ -134,6 +134,9 @@ func main() {
 	// Public: Bio page
 	api.GET("/bio/:handle", bioHandler.GetPublicPage)
 
+	// Public: Guest URL shortener (landing page demo)
+	api.POST("/links/shorten", linkHandler.ShortenPublic)
+
 	// Public: Custom domain TLS ask (Caddy on-demand)
 	api.GET("/custom-domains/ask", customDomainHandler.Ask)
 
@@ -229,6 +232,8 @@ func runMigrations(db *sql.DB) {
 		migrationDir + "/005_fix_domain_fk.sql",
 		migrationDir + "/006_bio_pages.sql",
 		migrationDir + "/007_plan_expiry.sql",
+		migrationDir + "/008_update_unlimited_price.sql",
+		migrationDir + "/009_guest_links.sql",
 	}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)

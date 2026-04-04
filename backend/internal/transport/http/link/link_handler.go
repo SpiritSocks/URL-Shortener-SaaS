@@ -26,6 +26,40 @@ func NewLinkHandler(linkSvc domain.LinkService, analyticsSvc domain.AnalyticsSer
 	return &Handler{linkSvc: linkSvc, analyticsSvc: analyticsSvc, billingSvc: billingSvc, customDomainSvc: customDomainSvc}
 }
 
+func (h *Handler) ShortenPublic(c *gin.Context) {
+	var req struct {
+		URL string `json:"url"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil || strings.TrimSpace(req.URL) == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "url is required"})
+		return
+	}
+
+	req.URL = strings.TrimSpace(req.URL)
+	if !strings.HasPrefix(req.URL, "http://") && !strings.HasPrefix(req.URL, "https://") {
+		req.URL = "https://" + req.URL
+	}
+
+	// ownerID = 0 → stored as NULL (guest link)
+	link, err := h.linkSvc.Create(c.Request.Context(), 0, req.URL, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	appDomain := os.Getenv("APP_DOMAIN")
+	if appDomain == "" {
+		appDomain = "localhost"
+	}
+
+	shortURL := "https://" + appDomain + "/r/" + link.Slug
+
+	c.JSON(http.StatusCreated, gin.H{
+		"slug":      link.Slug,
+		"short_url": shortURL,
+	})
+}
+
 func (h *Handler) Create(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 

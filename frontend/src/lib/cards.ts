@@ -1,4 +1,4 @@
-import { Unlink2 } from 'lucide-react';
+import { Link2 } from 'lucide-react';
 import { ChartLine } from 'lucide-react';
 import { QrCode } from 'lucide-react';
 import { Globe } from 'lucide-react';
@@ -7,9 +7,9 @@ import { TrendingUp } from 'lucide-react';
 
 const cards = [
     {
-      icon: Unlink2,
-      title: 'Безлимитные ссылки',
-      text: 'Создавайте сколько угодно коротких ссылок. Без ограничений. Идеально для любых задач.'
+      icon: Link2,
+      title: 'Короткие ссылки за секунды',
+      text: 'Вставьте любую длинную ссылку и получите компактный URL. Просто, быстро, без лишних шагов.'
     },
 
     {
