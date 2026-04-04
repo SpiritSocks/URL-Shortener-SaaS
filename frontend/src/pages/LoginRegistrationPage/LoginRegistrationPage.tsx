@@ -88,6 +88,7 @@ const LoginRegistrationPage = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     const passwordsDoNotMatch = mode === "register" && confirmPassword.length > 0 && password !== confirmPassword;
 
@@ -110,6 +111,11 @@ const LoginRegistrationPage = () => {
 
       if (passwordsDoNotMatch) {
         setError('Пароли не совпадают');
+        return;
+      }
+
+      if (!agreedToTerms) {
+        setError('Необходимо принять пользовательское соглашение и политику конфиденциальности');
         return;
       }
 
@@ -240,6 +246,28 @@ const LoginRegistrationPage = () => {
                   </button>
                 </div>
               </Field>
+            )}
+            {mode === 'register' && (
+              <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={e => setAgreedToTerms(e.target.checked)}
+                  className="mt-0.5 shrink-0 accent-[var(--color-primary,#5c7a2a)] w-4 h-4 cursor-pointer"
+                />
+                <span className="text-sm text-gray-600 leading-snug">
+                  Я принимаю{' '}
+                  <a href="/user_agreement.pdf" target="_blank" rel="noopener noreferrer"
+                    className="text-primary underline hover:opacity-80">
+                    пользовательское соглашение
+                  </a>
+                  {' '}и{' '}
+                  <a href="/privacy_policy.pdf" target="_blank" rel="noopener noreferrer"
+                    className="text-primary underline hover:opacity-80">
+                    политику конфиденциальности
+                  </a>
+                </span>
+              </label>
             )}
             <Button className="bg-primary w-full" disabled={loading}
               onClick={mode === 'login' ? handleLogin : handleRegistration}>
