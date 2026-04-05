@@ -422,6 +422,24 @@ export interface PublicBioPageResponse {
   show_branding: boolean;
 }
 
+export async function apiUploadAvatar(file: File): Promise<string> {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append('avatar', file);
+  const res = await fetch(`${API_BASE}/upload/avatar`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to upload avatar');
+  }
+  const data = await res.json();
+  return data.url;
+}
+
 export async function apiCreateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
   const res = await fetch(`${API_BASE}/bio/page`, {
     method: 'POST',

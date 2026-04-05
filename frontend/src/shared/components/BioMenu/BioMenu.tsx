@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { FileText, Plus, Trash2, ArrowUp, ArrowDown, Copy, Check, ExternalLink, Palette } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { FileText, Plus, Trash2, ArrowUp, ArrowDown, Copy, Check, ExternalLink, Palette, Upload, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     apiGetMyBioPage, apiCreateBioPage, apiUpdateBioPage,
     apiAddBioLink, apiRemoveBioLink, apiReorderBioLinks,
-    getBioPageURL, getShortURL,
+    apiUploadAvatar, getBioPageURL, getShortURL,
     type BioPageData, type BioLinkData
 } from "@/lib/api";
 
@@ -35,6 +35,11 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
     const [bioText, setBioText] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
     const [theme, setTheme] = useState('default');
+
+    // Avatar
+    const [avatarMode, setAvatarMode] = useState<'url' | 'upload'>('url');
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Add link form
     const [linkTitle, setLinkTitle] = useState('');
@@ -145,6 +150,22 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploading(true);
+        setError('');
+        try {
+            const url = await apiUploadAvatar(file);
+            setAvatarUrl(url);
+        } catch (err: any) {
+            setError(err.message || 'Не удалось загрузить файл');
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
     // Setup screen — user has no bio page yet
     if (!exists) {
         return (
@@ -190,14 +211,51 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30 resize-none"
                     />
 
-                    <label className="block text-sm font-medium text-foreground mt-3">URL аватара</label>
-                    <input
-                        type="text"
-                        placeholder="https://example.com/avatar.jpg"
-                        value={avatarUrl}
-                        onChange={e => setAvatarUrl(e.target.value)}
-                        className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
-                    />
+                    <label className="block text-sm font-medium text-foreground mt-3">Аватар</label>
+                    <div className="flex gap-2 mt-1 mb-2">
+                        <button
+                            onClick={() => setAvatarMode('url')}
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs border-2 transition-all ${
+                                avatarMode === 'url' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                            }`}
+                        >
+                            <Link size={12} /> По ссылке
+                        </button>
+                        <button
+                            onClick={() => setAvatarMode('upload')}
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs border-2 transition-all ${
+                                avatarMode === 'upload' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                            }`}
+                        >
+                            <Upload size={12} /> Загрузить
+                        </button>
+                    </div>
+                    {avatarMode === 'url' ? (
+                        <input
+                            type="text"
+                            placeholder="https://example.com/avatar.jpg"
+                            value={avatarUrl}
+                            onChange={e => setAvatarUrl(e.target.value)}
+                            className="w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                        />
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                onChange={handleFileUpload}
+                                className="w-full border-2 border-border rounded-md px-3 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-primary/10 file:text-foreground hover:file:bg-primary/20"
+                            />
+                            {uploading && <p className="text-xs text-gray-500">Загрузка...</p>}
+                        </div>
+                    )}
+                    {avatarUrl && (
+                        <div className="mt-2 flex items-center gap-3">
+                            <img src={avatarUrl} alt="avatar" className="w-10 h-10 rounded-full object-cover border" />
+                            <span className="text-xs text-gray-400 truncate flex-1">{avatarUrl}</span>
+                        </div>
+                    )}
 
                     <label className="block text-sm font-medium text-foreground mt-3">Тема</label>
                     <div className="flex gap-3 mt-2">
@@ -282,13 +340,51 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-foreground">Avatar URL</label>
-                        <input
-                            type="text"
-                            value={avatarUrl}
-                            onChange={e => setAvatarUrl(e.target.value)}
-                            className="mt-1 w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
-                        />
+                        <label className="block text-sm font-medium text-foreground">Аватар</label>
+                        <div className="flex gap-2 mt-1 mb-2">
+                            <button
+                                onClick={() => setAvatarMode('url')}
+                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs border-2 transition-all ${
+                                    avatarMode === 'url' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                }`}
+                            >
+                                <Link size={12} /> По ссылке
+                            </button>
+                            <button
+                                onClick={() => setAvatarMode('upload')}
+                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs border-2 transition-all ${
+                                    avatarMode === 'upload' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                }`}
+                            >
+                                <Upload size={12} /> Загрузить
+                            </button>
+                        </div>
+                        {avatarMode === 'url' ? (
+                            <input
+                                type="text"
+                                placeholder="https://example.com/avatar.jpg"
+                                value={avatarUrl}
+                                onChange={e => setAvatarUrl(e.target.value)}
+                                className="w-full border-2 border-border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                            />
+                        ) : (
+                            <div className="flex flex-col gap-2">
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/gif,image/webp"
+                                    onChange={handleFileUpload}
+                                    className="w-full border-2 border-border rounded-md px-3 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-primary/10 file:text-foreground hover:file:bg-primary/20"
+                                />
+                                {uploading && <p className="text-xs text-gray-500">Загрузка...</p>}
+                            </div>
+                        )}
+                        {avatarUrl && (
+                            <div className="mt-2 flex items-center gap-3">
+                                <img src={avatarUrl} alt="avatar" className="w-10 h-10 rounded-full object-cover border" />
+                                <span className="text-xs text-gray-400 truncate">{avatarUrl}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <label className="block text-sm font-medium text-foreground mt-3">Bio</label>

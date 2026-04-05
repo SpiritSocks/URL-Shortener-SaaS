@@ -50,8 +50,8 @@ const DashboardMenu = ({ isOpen }: DashboardMenuProps) => {
 
     if (!isOpen) return null;
 
-    const isPro = planName === 'pro' || planName === 'unlimited';
-    const isUnlimited = planName === 'unlimited';
+    const isPro = planName === 'pro' || planName === 'unlimited' || planName === 'friends';
+    const isUnlimited = planName === 'unlimited' || planName === 'friends';
 
     const clicksData = (stats?.clicks_over_time || []).map(d => ({
         name: new Date(d.date).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' }),

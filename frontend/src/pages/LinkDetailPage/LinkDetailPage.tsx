@@ -82,8 +82,8 @@ const LinkDetailPage = () => {
     if (!data) return null;
 
     const { stats, plan_name } = data;
-    const hasPro = plan_name === 'pro' || plan_name === 'unlimited';
-    const hasUnlimited = plan_name === 'unlimited';
+    const hasPro = plan_name === 'pro' || plan_name === 'unlimited' || plan_name === 'friends';
+    const hasUnlimited = plan_name === 'unlimited' || plan_name === 'friends';
 
     const displayUrl = data.custom_domain
         ? `https://${data.custom_domain}/r/${stats.slug}`

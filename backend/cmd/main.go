@@ -28,6 +28,7 @@ import (
 	customdomainhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/customdomain"
 	linkhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/link"
 	qrhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/qr"
+	uploadhttp "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/transport/http/upload"
 )
 
 func main() {
@@ -125,6 +126,13 @@ func main() {
 	// Public: QR code
 	r.GET("/api/qr/:slug", qrhttp.QRHandler)
 
+	// Static: uploaded files
+	uploadsDir := "./uploads"
+	if _, err := os.Stat(uploadsDir); os.IsNotExist(err) {
+		uploadsDir = "../uploads"
+	}
+	r.Static("/uploads", uploadsDir)
+
 	// Public: YooKassa webhook
 	api.POST("/billing/webhook", billingHandler.Webhook)
 
@@ -169,6 +177,9 @@ func main() {
 		protected.GET("/domains", customDomainHandler.List)
 		protected.POST("/domains/:id/verify", customDomainHandler.Verify)
 		protected.DELETE("/domains/:id", customDomainHandler.Delete)
+
+		// Upload
+		protected.POST("/upload/avatar", uploadhttp.UploadAvatar)
 
 		// Bio Pages
 		protected.POST("/bio/page", bioHandler.CreatePage)
