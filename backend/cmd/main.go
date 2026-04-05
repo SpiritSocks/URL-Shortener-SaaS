@@ -128,9 +128,10 @@ func main() {
 
 	// Static: uploaded files
 	uploadsDir := "./uploads"
-	if _, err := os.Stat(uploadsDir); os.IsNotExist(err) {
+	if _, err := os.Stat("./migrations"); os.IsNotExist(err) {
 		uploadsDir = "../uploads"
 	}
+	_ = os.MkdirAll(uploadsDir+"/avatars", 0755)
 	r.Static("/uploads", uploadsDir)
 
 	// Public: YooKassa webhook

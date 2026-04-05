@@ -46,9 +46,9 @@ func UploadAvatar(c *gin.Context) {
 	}
 	filename := hex.EncodeToString(b) + ext
 
-	// Determine upload directory
+	// Determine upload directory (same heuristic as main.go)
 	uploadDir := "./uploads/avatars"
-	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
+	if _, err := os.Stat("./migrations"); os.IsNotExist(err) {
 		uploadDir = "../uploads/avatars"
 	}
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {

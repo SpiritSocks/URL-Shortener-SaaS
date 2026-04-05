@@ -26,6 +26,8 @@ services:
       YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID}
       YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY}
       YOOKASSA_RETURN_URL: ${YOOKASSA_RETURN_URL:-https://linxie.ru/profile}
+    volumes:
+      - uploads_data:/app/uploads
     expose:
       - "8080"
     depends_on:
@@ -53,3 +55,4 @@ volumes:
   pg_data:
   caddy_data:
   caddy_config:
+  uploads_data:
