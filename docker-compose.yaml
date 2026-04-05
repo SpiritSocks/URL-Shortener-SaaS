@@ -23,6 +23,9 @@ services:
       FRONTEND_URL: ${FRONTEND_URL:-https://linxie.ru}
       APP_DOMAIN: ${APP_DOMAIN:-linxie.ru}
       BASE_URL: ${BASE_URL:-https://linxie.ru}
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY}
+      YOOKASSA_RETURN_URL: ${YOOKASSA_RETURN_URL:-https://linxie.ru/profile}
     expose:
       - "8080"
     depends_on:

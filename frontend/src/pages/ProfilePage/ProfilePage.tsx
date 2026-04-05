@@ -255,6 +255,14 @@ const ProfilePage = () => {
                                 {currentPlan?.has_analytics ? 'Включена' : 'Отключена'}
                             </span>
                         </div>
+                        {user?.plan_expires_at && (
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Активен до</span>
+                                <span className="font-semibold">
+                                    {new Date(user.plan_expires_at).toLocaleDateString('ru-RU')}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ interface User {
   username: string;
   email: string;
   created_at: string;
+  plan_expires_at?: string;
 }
 
 interface AuthContextType {
