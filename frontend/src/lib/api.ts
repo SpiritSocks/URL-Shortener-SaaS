@@ -454,15 +454,16 @@ export async function apiCreateBioPage(handle: string, displayName: string, bioT
   return res.json();
 }
 
-export async function apiUpdateBioPage(displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
+export async function apiUpdateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
   const res = await fetch(`${API_BASE}/bio/page`, {
     method: 'PUT',
     headers: authHeaders(),
-    body: JSON.stringify({ display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme }),
+    body: JSON.stringify({ handle, display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme }),
   });
   if (!res.ok) {
     handleUnauthorized(res);
-    throw new Error('Failed to update bio page');
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || data.error || 'Failed to update bio page');
   }
   return res.json();
 }

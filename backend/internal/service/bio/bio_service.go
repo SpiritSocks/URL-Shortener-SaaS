@@ -49,10 +49,18 @@ func (s *service) CreatePage(ctx context.Context, userID int64, handle, displayN
 	return page, nil
 }
 
-func (s *service) UpdatePage(ctx context.Context, userID int64, displayName, bioText, avatarURL, theme string) (domain.BioPage, error) {
+func (s *service) UpdatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (domain.BioPage, error) {
 	page, err := s.bioRepo.GetPageByUserID(ctx, userID)
 	if err != nil {
 		return domain.BioPage{}, err
+	}
+
+	handle = strings.ToLower(strings.TrimSpace(handle))
+	if handle != "" {
+		if !handleRe.MatchString(handle) {
+			return domain.BioPage{}, fmt.Errorf("handle must be 3-50 characters: lowercase letters, numbers, hyphens, underscores")
+		}
+		page.Handle = handle
 	}
 
 	page.DisplayName = strings.TrimSpace(displayName)

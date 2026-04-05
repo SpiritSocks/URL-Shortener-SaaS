@@ -48,7 +48,7 @@ type BioPageRepository interface {
 type BioPageService interface {
 	// Page management (auth required)
 	CreatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (BioPage, error)
-	UpdatePage(ctx context.Context, userID int64, displayName, bioText, avatarURL, theme string) (BioPage, error)
+	UpdatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (BioPage, error)
 	GetMyPage(ctx context.Context, userID int64) (BioPage, []BioLink, error)
 
 	// Bio link management (auth required)

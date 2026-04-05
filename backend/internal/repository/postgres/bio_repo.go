@@ -60,11 +60,17 @@ func (r *BioRepository) GetPageByHandle(ctx context.Context, handle string) (dom
 }
 
 func (r *BioRepository) UpdatePage(ctx context.Context, page *domain.BioPage) error {
-	const q = `UPDATE bio_pages SET display_name=$1, bio_text=$2, avatar_url=$3, theme=$4, updated_at=NOW()
-		WHERE user_id=$5 RETURNING updated_at`
-	return r.Conn.QueryRowContext(ctx, q,
-		page.DisplayName, page.BioText, page.AvatarURL, page.Theme, page.UserID,
+	const q = `UPDATE bio_pages SET handle=$1, display_name=$2, bio_text=$3, avatar_url=$4, theme=$5, updated_at=NOW()
+		WHERE user_id=$6 RETURNING updated_at`
+	err := r.Conn.QueryRowContext(ctx, q,
+		page.Handle, page.DisplayName, page.BioText, page.AvatarURL, page.Theme, page.UserID,
 	).Scan(&page.UpdatedAt)
+	if err != nil && (strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "unique")) {
+		if strings.Contains(err.Error(), "handle") {
+			return domain.ErrHandleTaken
+		}
+	}
+	return err
 }
 
 func (r *BioRepository) HandleExists(ctx context.Context, handle string) (bool, error) {

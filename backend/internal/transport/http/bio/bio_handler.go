@@ -50,6 +50,7 @@ func (h *Handler) UpdatePage(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 
 	var req struct {
+		Handle      string `json:"handle"`
 		DisplayName string `json:"display_name"`
 		BioText     string `json:"bio_text"`
 		AvatarURL   string `json:"avatar_url"`
@@ -60,13 +61,17 @@ func (h *Handler) UpdatePage(c *gin.Context) {
 		return
 	}
 
-	page, err := h.bioSvc.UpdatePage(c.Request.Context(), userID, req.DisplayName, req.BioText, req.AvatarURL, req.Theme)
+	page, err := h.bioSvc.UpdatePage(c.Request.Context(), userID, req.Handle, req.DisplayName, req.BioText, req.AvatarURL, req.Theme)
 	if err != nil {
 		if errors.Is(err, domain.ErrBioPageNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "bio page not found"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		if errors.Is(err, domain.ErrHandleTaken) {
+			c.JSON(http.StatusConflict, gin.H{"error": "handle_taken", "message": "This handle is already taken"})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

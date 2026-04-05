@@ -54,6 +54,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 setPage(data.page);
                 setLinks(data.links || []);
                 setMaxBioLinks(data.max_bio_links ?? 5);
+                setHandle(data.page.handle);
                 setDisplayName(data.page.display_name);
                 setBioText(data.page.bio_text);
                 setAvatarUrl(data.page.avatar_url);
@@ -91,7 +92,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         setError('');
         setLoading(true);
         try {
-            await apiUpdateBioPage(displayName, bioText, avatarUrl, theme);
+            await apiUpdateBioPage(handle, displayName, bioText, avatarUrl, theme);
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);
         } catch (err: any) {
@@ -144,8 +145,8 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
     };
 
     const handleCopyUrl = () => {
-        if (!page) return;
-        navigator.clipboard.writeText(getBioPageURL(page.handle));
+        if (!handle) return;
+        navigator.clipboard.writeText(getBioPageURL(handle));
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
@@ -312,11 +313,15 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                     </a>
                 </div>
 
-                {/* Public URL */}
+                {/* Public URL with editable handle */}
                 <div className="flex items-center gap-2 mb-4 bg-background border border-border rounded-lg px-3 py-2">
-                    <span className="text-sm text-gray-500 truncate flex-1">
-                        {page ? getBioPageURL(page.handle) : ''}
-                    </span>
+                    <span className="text-sm text-gray-500 shrink-0">{getBioPageURL('')}</span>
+                    <input
+                        type="text"
+                        value={handle}
+                        onChange={e => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
+                        className="text-sm text-foreground bg-transparent outline-none min-w-0 flex-1 border-b border-dashed border-gray-300 focus:border-primary"
+                    />
                     <Button
                         variant="outline"
                         size="sm"
