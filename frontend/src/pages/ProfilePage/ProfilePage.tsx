@@ -273,7 +273,7 @@ const ProfilePage = () => {
                 <p className="text-gray-500 mb-6">Выберите тариф, который лучше всего подходит вам</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {plans.map((plan) => {
+                    {plans.filter((p) => p.name !== 'friends').map((plan) => {
                         const isCurrent = currentPlan?.name === plan.name;
                         return (
                             <div

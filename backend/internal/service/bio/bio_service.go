@@ -145,7 +145,7 @@ func (s *service) GetPublicPage(ctx context.Context, handle string) (domain.BioP
 	// Determine branding based on owner's plan
 	showBranding := true
 	plan, err := s.billingSvc.GetUserPlan(ctx, page.UserID)
-	if err == nil && (plan.Name == "pro" || plan.Name == "unlimited") {
+	if err == nil && (plan.Name == "unlimited" || plan.Name == "friends") {
 		showBranding = false
 	}
 
