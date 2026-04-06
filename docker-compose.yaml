@@ -9,6 +9,7 @@ services:
       - pg_data:/var/lib/postgresql/data
     expose:
       - "5432"
+    restart: unless-stopped
 
   backend:
     image: spiritsocks/url-shortener-backend:latest
@@ -20,23 +21,39 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: shortlink_saas
       JWT_SECRET: ${JWT_SECRET}
-      FRONTEND_URL: ${FRONTEND_URL:-https://linxie.ru}
-      APP_DOMAIN: ${APP_DOMAIN:-linxie.ru}
-      BASE_URL: ${BASE_URL:-https://linxie.ru}
       YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID}
       YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY}
       YOOKASSA_RETURN_URL: ${YOOKASSA_RETURN_URL:-https://linxie.ru/profile}
-    volumes:
-      - uploads_data:/app/uploads
+      FRONTEND_URL: ${FRONTEND_URL:-https://linxie.ru}
+      APP_DOMAIN: ${APP_DOMAIN:-linxie.ru}
+      BASE_URL: ${BASE_URL:-https://linxie.ru}
     expose:
       - "8080"
     depends_on:
       - db
+    restart: unless-stopped
 
   frontend:
     image: spiritsocks/url-shortener-frontend:latest
+    environment:
+      PORT: "80"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: shortlink_saas
+      JWT_SECRET: ${JWT_SECRET}
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY}
+      YOOKASSA_RETURN_URL: ${YOOKASSA_RETURN_URL:-https://linxie.ru/profile}
+      FRONTEND_URL: ${FRONTEND_URL:-https://linxie.ru}
+      APP_DOMAIN: ${APP_DOMAIN:-linxie.ru}
+      BASE_URL: ${BASE_URL:-https://linxie.ru}
     expose:
       - "80"
+    depends_on:
+      - db
+    restart: unless-stopped
 
   caddy:
     image: caddy:latest
@@ -50,9 +67,9 @@ services:
     depends_on:
       - frontend
       - backend
+    restart: unless-stopped
 
 volumes:
   pg_data:
   caddy_data:
   caddy_config:
-  uploads_data:

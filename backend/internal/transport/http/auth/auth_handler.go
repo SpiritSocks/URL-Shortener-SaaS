@@ -146,7 +146,9 @@ func (h *Handler) RequestPasswordReset(c *gin.Context) {
 	}
 
 	// Always return success to not reveal if email exists
-	_ = h.svc.RequestPasswordReset(c.Request.Context(), req.Email)
+	if err := h.svc.RequestPasswordReset(c.Request.Context(), req.Email); err != nil {
+		log.Printf("[forgot-password] failed to send reset email to %s: %v", req.Email, err)
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "if the email exists, a reset link has been sent"})
 }
 
