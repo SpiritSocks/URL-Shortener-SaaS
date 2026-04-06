@@ -523,3 +523,55 @@ export async function apiGetPublicBioPage(handle: string): Promise<PublicBioPage
 export function getBioPageURL(handle: string): string {
   return `${window.location.origin}/@${handle}`;
 }
+
+// Password Change
+
+export async function apiRequestPasswordChange(newPassword: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/me/change-password`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ new_password: newPassword }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to request password change');
+  }
+}
+
+export async function apiForgotPassword(email: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to send reset link');
+  }
+}
+
+export async function apiResetPassword(token: string, newPassword: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, new_password: newPassword }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to reset password');
+  }
+}
+
+export async function apiConfirmPasswordChange(code: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/me/confirm-password`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ code }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to confirm password change');
+  }
+}

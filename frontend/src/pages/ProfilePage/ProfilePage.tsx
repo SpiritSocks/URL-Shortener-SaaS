@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, Pencil } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
-import { apiUpdateMe, apiDeleteMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePayment, type PlanData } from "@/lib/api";
+import { apiUpdateMe, apiDeleteMe, apiGetAnalytics, apiGetPlans, apiGetUserPlan, apiCreatePayment, apiRequestPasswordChange, apiConfirmPasswordChange, type PlanData } from "@/lib/api";
 
 import styles from '@/pages/ProfilePage/ProfilePage.module.css';
 
@@ -36,6 +36,14 @@ const ProfilePage = () => {
     const [showDowngradeModal, setShowDowngradeModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleting, setDeleting] = useState(false);
+
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [passwordStep, setPasswordStep] = useState<'password' | 'code'>('password');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [passwordLoading, setPasswordLoading] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -131,6 +139,57 @@ const ProfilePage = () => {
         }
     };
 
+    const handleRequestPasswordChange = async () => {
+        setPasswordError('');
+        if (newPassword.length < 8) {
+            setPasswordError('Пароль должен быть не менее 8 символов');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPasswordError('Пароли не совпадают');
+            return;
+        }
+        setPasswordLoading(true);
+        try {
+            await apiRequestPasswordChange(newPassword);
+            setPasswordStep('code');
+        } catch (err: any) {
+            setPasswordError(err.message || 'Ошибка');
+        } finally {
+            setPasswordLoading(false);
+        }
+    };
+
+    const handleConfirmPasswordChange = async () => {
+        setPasswordError('');
+        if (verificationCode.trim().length !== 6) {
+            setPasswordError('Введите 6-значный код');
+            return;
+        }
+        setPasswordLoading(true);
+        try {
+            await apiConfirmPasswordChange(verificationCode.trim());
+            setShowPasswordModal(false);
+            setPasswordStep('password');
+            setNewPassword('');
+            setConfirmPassword('');
+            setVerificationCode('');
+        } catch (err: any) {
+            setPasswordError(err.message || 'Неверный код');
+        } finally {
+            setPasswordLoading(false);
+        }
+    };
+
+    const closePasswordModal = () => {
+        setShowPasswordModal(false);
+        setPasswordStep('password');
+        setNewPassword('');
+        setConfirmPassword('');
+        setVerificationCode('');
+        setPasswordError('');
+    };
+
     return (
         <div className="min-h-screen bg-background font-sans">
         <section className="flex flex-col max-w-[95%] sm:max-w-[85%] lg:max-w-[70%] mx-auto justify-center gap-5 mt-6 sm:mt-10 pb-16 px-2 sm:px-0">
@@ -213,6 +272,14 @@ const ProfilePage = () => {
                                 placeholder="john.doe@email.com"
                             />
                         </div>
+                    </div>
+                    <div className="mt-4">
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowPasswordModal(true)}
+                        >
+                            Сменить пароль
+                        </Button>
                     </div>
                 </div>
                 <div className="lg:col-start-3 bg-white border-border border-3 shadow-md rounded-[15px] p-5 flex
@@ -309,9 +376,11 @@ const ProfilePage = () => {
                                     <Button disabled className="w-full bg-[var(--color-border)] text-foreground">
                                         Текущий тариф
                                     </Button>
+                                ) : plan.price_kop === 0 && currentPlan && currentPlan.price_kop > 0 ? (
+                                    null
                                 ) : (
                                     <Button
-                                        className={`w-full ${plan.name === 'pro' ? 'bg-primary' : plan.name === 'unlimited' ? 'bg-[var(--color-navbar)]' : 
+                                        className={`w-full ${plan.name === 'pro' ? 'bg-primary' : plan.name === 'unlimited' ? 'bg-[var(--color-navbar)]' :
                                         'bg-gray-700'} text-white`}
                                         disabled={paymentLoading !== null}
                                         onClick={() => handleSelectPlan(plan.name)}
@@ -366,6 +435,83 @@ const ProfilePage = () => {
                             {deleting ? 'Удаление...' : 'Удалить'}
                         </Button>
                     </div>
+                </div>
+            </div>
+        )}
+
+        {showPasswordModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                <div className="absolute inset-0 bg-black/40" onClick={closePasswordModal} />
+                <div className="relative bg-white border-3 border-border rounded-[15px] shadow-xl p-6 sm:p-8 w-full max-w-sm">
+                    {passwordStep === 'password' ? (
+                        <>
+                            <h2 className="text-lg font-bold text-foreground mb-2">Смена пароля</h2>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                                Введите новый пароль. На вашу почту будет отправлен код подтверждения.
+                            </p>
+                            <div className="space-y-3 mb-4">
+                                <input
+                                    type="password"
+                                    className={styles.profile_input}
+                                    placeholder="Новый пароль"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                />
+                                <input
+                                    type="password"
+                                    className={styles.profile_input}
+                                    placeholder="Повторите пароль"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                            </div>
+                            {passwordError && (
+                                <p className="text-red-500 text-sm mb-3">{passwordError}</p>
+                            )}
+                            <div className="flex gap-3">
+                                <Button variant="outline" className="flex-1" onClick={closePasswordModal}>
+                                    Отмена
+                                </Button>
+                                <Button
+                                    className="flex-1 bg-primary text-white"
+                                    disabled={passwordLoading}
+                                    onClick={handleRequestPasswordChange}
+                                >
+                                    {passwordLoading ? 'Отправка...' : 'Отправить код'}
+                                </Button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h2 className="text-lg font-bold text-foreground mb-2">Введите код</h2>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                                Мы отправили 6-значный код на {email}. Введите его ниже.
+                            </p>
+                            <input
+                                type="text"
+                                className={styles.profile_input}
+                                placeholder="000000"
+                                maxLength={6}
+                                value={verificationCode}
+                                onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
+                            />
+                            {passwordError && (
+                                <p className="text-red-500 text-sm mt-2 mb-3">{passwordError}</p>
+                            )}
+                            <div className="flex gap-3 mt-4">
+                                <Button variant="outline" className="flex-1" onClick={closePasswordModal}>
+                                    Отмена
+                                </Button>
+                                <Button
+                                    className="flex-1 bg-primary text-white"
+                                    disabled={passwordLoading}
+                                    onClick={handleConfirmPasswordChange}
+                                >
+                                    {passwordLoading ? 'Проверка...' : 'Подтвердить'}
+                                </Button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         )}

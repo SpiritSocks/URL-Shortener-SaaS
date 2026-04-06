@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiLogin, apiRegister } from "@/lib/api";
+import { apiLogin, apiRegister, apiForgotPassword } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { tsParticles } from "@tsparticles/engine";
 import { loadLinksPreset } from "@tsparticles/preset-links";
@@ -89,6 +89,10 @@ const LoginRegistrationPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [forgotMode, setForgotMode] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState('');
+    const [forgotSent, setForgotSent] = useState(false);
+    const [forgotLoading, setForgotLoading] = useState(false);
 
     const passwordsDoNotMatch = mode === "register" && confirmPassword.length > 0 && password !== confirmPassword;
 
@@ -103,6 +107,24 @@ const LoginRegistrationPage = () => {
         setError(err.message || 'Ошибка входа');
       } finally {
         setLoading(false);
+      }
+    };
+
+    const handleForgotPassword = async () => {
+      setError('');
+      if (!forgotEmail.trim()) {
+        setError('Введите email');
+        return;
+      }
+      setForgotLoading(true);
+      try {
+        await apiForgotPassword(forgotEmail.trim());
+        setForgotSent(true);
+      } catch {
+        // Always show success to not reveal if email exists
+        setForgotSent(true);
+      } finally {
+        setForgotLoading(false);
       }
     };
 
@@ -161,6 +183,50 @@ const LoginRegistrationPage = () => {
           &larr; Назад
         </Button>
         <FieldSet className="w-full p-4 sm:p-5 md:p-6 border-3 border-border rounded-xl bg-white">
+          {forgotMode ? (
+            forgotSent ? (
+              <FieldGroup>
+                <h2 className="text-lg font-bold text-foreground">Проверьте почту</h2>
+                <p className="text-gray-500 text-sm leading-relaxed">
+                  Если аккаунт с таким email существует, мы отправили ссылку для сброса пароля. Проверьте входящие и папку «Спам».
+                </p>
+                <Button
+                  className="bg-primary w-full text-white"
+                  onClick={() => { setForgotMode(false); setForgotSent(false); setForgotEmail(''); setError(''); }}
+                >
+                  Вернуться ко входу
+                </Button>
+              </FieldGroup>
+            ) : (
+              <FieldGroup>
+                <h2 className="text-lg font-bold text-foreground">Забыли пароль?</h2>
+                <p className="text-gray-500 text-sm leading-relaxed">
+                  Введите email, на который зарегистрирован аккаунт. Мы отправим ссылку для сброса пароля.
+                </p>
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-md text-sm">
+                    {error}
+                  </div>
+                )}
+                <Field>
+                  <FieldLabel htmlFor="forgotEmail">Эл. почта</FieldLabel>
+                  <Input id="forgotEmail" type="email" placeholder="example@mail.com" value={forgotEmail}
+                    className="border-2 border-border" onChange={(e) => setForgotEmail(e.target.value)} />
+                </Field>
+                <Button className="bg-primary w-full text-white" disabled={forgotLoading} onClick={handleForgotPassword}>
+                  {forgotLoading ? 'Отправка...' : 'Отправить ссылку'}
+                </Button>
+                <button
+                  type="button"
+                  className="text-sm text-primary hover:underline text-center w-full"
+                  onClick={() => { setForgotMode(false); setError(''); }}
+                >
+                  Назад ко входу
+                </button>
+              </FieldGroup>
+            )
+          ) : (
+            <>
             <FieldGroup className="flex flex-row justify-center items-center gap-3 mb-4">
             <Button
               variant={mode === 'login' ? 'default' : 'outline'}
@@ -216,7 +282,18 @@ const LoginRegistrationPage = () => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              <FieldDescription>Минимум 8 символов.</FieldDescription>
+              <div className="flex items-center justify-between">
+                <FieldDescription>Минимум 8 символов.</FieldDescription>
+                {mode === 'login' && (
+                  <button
+                    type="button"
+                    className="text-sm text-primary hover:underline"
+                    onClick={() => { setForgotMode(true); setError(''); }}
+                  >
+                    Забыли пароль?
+                  </button>
+                )}
+              </div>
             </Field>
             {mode === 'register' && (
               <Field>
@@ -268,6 +345,8 @@ const LoginRegistrationPage = () => {
               {loading ? 'Подождите...' : (mode === 'login' ? 'Войти' : 'Зарегистрироваться')}
             </Button>
           </FieldGroup>
+            </>
+          )}
         </FieldSet>
       </section>
     </div>

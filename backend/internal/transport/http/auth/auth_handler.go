@@ -117,3 +117,79 @@ func (h *Handler) UpdateMe(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.ToDTO(updated))
 }
+
+func (h *Handler) RequestPasswordChange(c *gin.Context) {
+	userID := c.MustGet("user_id").(int64)
+	var req struct {
+		NewPassword string `json:"new_password"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.svc.RequestPasswordChange(c.Request.Context(), userID, req.NewPassword); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "code sent"})
+}
+
+func (h *Handler) RequestPasswordReset(c *gin.Context) {
+	var req struct {
+		Email string `json:"email"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Always return success to not reveal if email exists
+	_ = h.svc.RequestPasswordReset(c.Request.Context(), req.Email)
+	c.JSON(http.StatusOK, gin.H{"message": "if the email exists, a reset link has been sent"})
+}
+
+func (h *Handler) ResetPassword(c *gin.Context) {
+	var req struct {
+		Token       string `json:"token"`
+		NewPassword string `json:"new_password"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.svc.ResetPassword(c.Request.Context(), req.Token, req.NewPassword); err != nil {
+		if err == domain.ErrInvalidCode {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Ссылка недействительна или истекла"})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "password reset successful"})
+}
+
+func (h *Handler) ConfirmPasswordChange(c *gin.Context) {
+	userID := c.MustGet("user_id").(int64)
+	var req struct {
+		Code string `json:"code"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.svc.ConfirmPasswordChange(c.Request.Context(), userID, req.Code); err != nil {
+		status := http.StatusBadRequest
+		if err == domain.ErrInvalidCode {
+			status = http.StatusUnauthorized
+		}
+		c.JSON(status, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "password changed"})
+}

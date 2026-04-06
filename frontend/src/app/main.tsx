@@ -9,6 +9,7 @@ import LoginRegistrationPage from '@/pages/LoginRegistrationPage/LoginRegistrati
 import ProfilePage from '@/pages/ProfilePage/ProfilePage.tsx';
 import LinkDetailPage from '@/pages/LinkDetailPage/LinkDetailPage.tsx';
 import BioPage from '@/pages/BioPage/BioPage.tsx';
+import ResetPasswordPage from '@/pages/ResetPasswordPage/ResetPasswordPage.tsx';
 
 import '../assets/style/index.css';
 
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
   {path: '/login', element: <LoginRegistrationPage/>},
   {path: '/profile', element: <ProfilePage/>},
   {path: '/link/:id', element: <LinkDetailPage/>},
+  {path: '/reset-password', element: <ResetPasswordPage/>},
   {path: '/:handle', element: <BioPage/>},
 ]);
 

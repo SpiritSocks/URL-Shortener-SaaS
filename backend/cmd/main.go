@@ -18,6 +18,7 @@ import (
 	analyticssvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/analytics"
 	authsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/auth"
 	billingsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/billing"
+	emailsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/email"
 	biosvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/bio"
 	customdomainsvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/customdomain"
 	linksvc "github.com/SpiritSocks/URL-Shortener-SaaS/backend/internal/service/link"
@@ -89,7 +90,8 @@ func main() {
 	bioRepo := postgres.NewBioRepository(db)
 
 	// Services
-	authService := authsvc.NewAuthService(authRepo)
+	emailService := emailsvc.NewEmailService()
+	authService := authsvc.NewAuthService(authRepo, emailService)
 	linkService := linksvc.NewLinkService(linkRepo)
 	analyticsService := analyticssvc.NewAnalyticsService(analyticsRepo, linkRepo)
 	billingService := billingsvc.NewBillingService(planRepo, paymentRepo, authRepo)
@@ -118,6 +120,8 @@ func main() {
 	{
 		auth.POST("/register", authHandler.Register)
 		auth.POST("/login", authHandler.Login)
+		auth.POST("/forgot-password", authHandler.RequestPasswordReset)
+		auth.POST("/reset-password", authHandler.ResetPassword)
 	}
 
 	// Public: Redirect short links (both /r/:slug and /:slug for custom domains)
@@ -157,6 +161,8 @@ func main() {
 		protected.GET("/me", authHandler.GetMe)
 		protected.PUT("/me", authHandler.UpdateMe)
 		protected.DELETE("/me", authHandler.DeleteMe)
+		protected.POST("/me/change-password", authHandler.RequestPasswordChange)
+		protected.POST("/me/confirm-password", authHandler.ConfirmPasswordChange)
 
 		// Links
 		protected.POST("/links", linkHandler.Create)
@@ -246,6 +252,9 @@ func runMigrations(db *sql.DB) {
 		migrationDir + "/007_plan_expiry.sql",
 		migrationDir + "/008_update_unlimited_price.sql",
 		migrationDir + "/009_guest_links.sql",
+		migrationDir + "/010_friends_plan.sql",
+		migrationDir + "/011_password_change_codes.sql",
+		migrationDir + "/012_password_reset_tokens.sql",
 	}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)

@@ -42,8 +42,9 @@ func (s *service) GetUserPlan(ctx context.Context, userID int64) (domain.Plan, e
 		planID = 1
 	}
 
-	// If the paid subscription has expired, downgrade to free immediately
-	if planID != 1 && user.PlanExpiresAt != nil && user.PlanExpiresAt.Before(time.Now()) {
+	// If the paid subscription has expired beyond the 3-day grace period, downgrade to free
+	gracePeriod := 3 * 24 * time.Hour
+	if planID != 1 && user.PlanExpiresAt != nil && user.PlanExpiresAt.Add(gracePeriod).Before(time.Now()) {
 		user.PlanID = 1
 		user.PlanExpiresAt = nil
 		_ = s.userRepo.UpdateUser(ctx, &user)

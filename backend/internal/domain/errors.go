@@ -15,4 +15,5 @@ var (
 	ErrHandleTaken        = errors.New("handle already taken")
 	ErrBioLinkNotFound    = errors.New("bio link not found")
 	ErrBioLinkLimitReached = errors.New("bio link limit reached")
+	ErrInvalidCode         = errors.New("invalid or expired code")
 )
