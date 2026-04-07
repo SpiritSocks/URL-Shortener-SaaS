@@ -13,6 +13,8 @@ services:
 
   backend:
     image: spiritsocks/url-shortener-backend:latest
+    volumes:
+      - uploads_data:/app/uploads
     environment:
       PORT: "8080"
       DB_HOST: db
@@ -71,5 +73,6 @@ services:
 
 volumes:
   pg_data:
+  uploads_data:
   caddy_data:
   caddy_config:

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { apiGetPublicBioPage, type PublicBioPageResponse } from "@/lib/api";
+import { getSocialIcon } from "@/lib/socialIcons";
 
 const THEME_STYLES: Record<string, { bg: string; text: string; subtext: string; btn: string; btnText: string; footer: string }> = {
     default: {
@@ -105,17 +106,21 @@ const BioPage = () => {
 
                 {/* Links */}
                 <div className="w-full flex flex-col gap-3 mt-2">
-                    {links.map(link => (
-                        <a
-                            key={link.id}
-                            href={`/r/${link.slug}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={`block w-full ${t.btn} ${t.btnText} text-center font-medium py-3.5 px-6 rounded-xl shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md`}
-                        >
-                            {link.title}
-                        </a>
-                    ))}
+                    {links.map(link => {
+                        const Icon = getSocialIcon(link.target_url);
+                        return (
+                            <a
+                                key={link.id}
+                                href={`/r/${link.slug}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`flex items-center justify-center gap-2.5 w-full ${t.btn} ${t.btnText} font-medium py-3.5 px-6 rounded-xl shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md`}
+                            >
+                                <Icon size={18} />
+                                {link.title}
+                            </a>
+                        );
+                    })}
                 </div>
 
                 {links.length === 0 && (

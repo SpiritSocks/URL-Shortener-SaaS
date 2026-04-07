@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FileText, Plus, Trash2, ArrowUp, ArrowDown, Copy, Check, ExternalLink, Palette, Upload, Link } from "lucide-react";
+import { getSocialIcon } from "@/lib/socialIcons";
 import { Button } from "@/components/ui/button";
 import {
     apiGetMyBioPage, apiCreateBioPage, apiUpdateBioPage,
@@ -336,7 +337,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 {/* Editable fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-foreground">Display Name</label>
+                        <label className="block text-sm font-medium text-foreground">Имя</label>
                         <input
                             type="text"
                             value={displayName}
@@ -481,7 +482,9 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2">
-                        {links.map((link, index) => (
+                        {links.map((link, index) => {
+                            const Icon = getSocialIcon(link.target_url);
+                            return (
                             <div key={link.id} className="bg-white border-2 border-border shadow-sm rounded-[15px] p-4 flex items-center gap-3">
                                 <div className="flex flex-col gap-1">
                                     <button
@@ -499,6 +502,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                         <ArrowDown size={14} />
                                     </button>
                                 </div>
+                                <Icon size={20} className="text-gray-500 shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="font-semibold text-sm text-foreground truncate">{link.title}</p>
                                     <p className="text-xs text-gray-400 truncate">{link.target_url}</p>
@@ -512,7 +516,8 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                     <Trash2 size={14} />
                                 </Button>
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
