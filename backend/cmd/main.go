@@ -198,6 +198,9 @@ func main() {
 		protected.PUT("/bio/links/reorder", bioHandler.ReorderLinks)
 	}
 
+	// Public: Bio page SSR (OG meta tags + server-rendered HTML)
+	r.GET("/@:handle", bioHandler.ServeBioPageSSR)
+
 	log.Printf("listening on :%s", port)
 	log.Fatal(r.Run(":" + port))
 }
