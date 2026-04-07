@@ -135,6 +135,35 @@ func (h *Handler) AddBioLink(c *gin.Context) {
 	c.JSON(http.StatusCreated, bioLinkToJSON(bl))
 }
 
+func (h *Handler) UpdateBioLink(c *gin.Context) {
+	userID := c.MustGet("user_id").(int64)
+	bioLinkID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid bio link id"})
+		return
+	}
+
+	var req struct {
+		Title string `json:"title"`
+		URL   string `json:"url"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil || req.Title == "" || req.URL == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "title and url are required"})
+		return
+	}
+
+	if err := h.bioSvc.UpdateLink(c.Request.Context(), userID, bioLinkID, req.Title, req.URL); err != nil {
+		if errors.Is(err, domain.ErrBioLinkNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "bio link not found"})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "bio link updated"})
+}
+
 func (h *Handler) RemoveBioLink(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 	bioLinkID, err := strconv.ParseInt(c.Param("id"), 10, 64)

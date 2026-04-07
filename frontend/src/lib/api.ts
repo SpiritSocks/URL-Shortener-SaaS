@@ -491,6 +491,19 @@ export async function apiAddBioLink(title: string, url: string): Promise<BioLink
   return res.json();
 }
 
+export async function apiUpdateBioLink(id: number, title: string, url: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/bio/links/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ title, url }),
+  });
+  if (!res.ok) {
+    handleUnauthorized(res);
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to update bio link');
+  }
+}
+
 export async function apiRemoveBioLink(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/bio/links/${id}`, {
     method: 'DELETE',

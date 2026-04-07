@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { FileText, Plus, Trash2, ArrowUp, ArrowDown, Copy, Check, ExternalLink, Palette, Upload, Link } from "lucide-react";
+import { FileText, Plus, Trash2, ArrowUp, ArrowDown, Copy, Check, ExternalLink, Palette, Upload, Link, Pencil, X } from "lucide-react";
 import { getSocialIcon } from "@/lib/socialIcons";
 import { Button } from "@/components/ui/button";
 import {
     apiGetMyBioPage, apiCreateBioPage, apiUpdateBioPage,
-    apiAddBioLink, apiRemoveBioLink, apiReorderBioLinks,
+    apiAddBioLink, apiUpdateBioLink, apiRemoveBioLink, apiReorderBioLinks,
     apiUploadAvatar, getBioPageURL, getShortURL,
     type BioPageData, type BioLinkData
 } from "@/lib/api";
@@ -41,6 +41,12 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
     const [avatarMode, setAvatarMode] = useState<'url' | 'upload'>('url');
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Edit link
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editTitle, setEditTitle] = useState('');
+    const [editUrl, setEditUrl] = useState('');
+    const [editLoading, setEditLoading] = useState(false);
 
     // Add link form
     const [linkTitle, setLinkTitle] = useState('');
@@ -142,6 +148,33 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
             await apiReorderBioLinks(newLinks.map(l => l.id));
         } catch {
             await fetchPage();
+        }
+    };
+
+    const handleStartEdit = (link: BioLinkData) => {
+        setEditingId(link.id);
+        setEditTitle(link.title);
+        setEditUrl(link.target_url);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setEditTitle('');
+        setEditUrl('');
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editingId || !editTitle.trim() || !editUrl.trim()) return;
+        setEditLoading(true);
+        setError('');
+        try {
+            await apiUpdateBioLink(editingId, editTitle.trim(), editUrl.trim());
+            setEditingId(null);
+            await fetchPage();
+        } catch (err: any) {
+            setError(err.message || 'Не удалось обновить ссылку');
+        } finally {
+            setEditLoading(false);
         }
     };
 
@@ -483,7 +516,8 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 ) : (
                     <div className="flex flex-col gap-2">
                         {links.map((link, index) => {
-                            const Icon = getSocialIcon(link.target_url);
+                            const Icon = getSocialIcon(editingId === link.id ? editUrl : link.target_url);
+                            const isEditing = editingId === link.id;
                             return (
                             <div key={link.id} className="bg-white border-2 border-border shadow-sm rounded-[15px] p-4 flex items-center gap-3">
                                 <div className="flex flex-col gap-1">
@@ -503,18 +537,69 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                     </button>
                                 </div>
                                 <Icon size={20} className="text-gray-500 shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-sm text-foreground truncate">{link.title}</p>
-                                    <p className="text-xs text-gray-400 truncate">{link.target_url}</p>
-                                    <p className="text-xs text-[var(--color-link)] mt-0.5">{getShortURL(link.slug)}</p>
+                                {isEditing ? (
+                                    <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                                        <input
+                                            type="text"
+                                            value={editTitle}
+                                            onChange={e => setEditTitle(e.target.value)}
+                                            className="w-full border-2 border-border rounded-md px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                                            placeholder="Название"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={editUrl}
+                                            onChange={e => setEditUrl(e.target.value)}
+                                            onKeyDown={e => e.key === 'Enter' && handleSaveEdit()}
+                                            className="w-full border-2 border-border rounded-md px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-green-600/30"
+                                            placeholder="https://example.com"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-sm text-foreground truncate">{link.title}</p>
+                                        <p className="text-xs text-gray-400 truncate">{link.target_url}</p>
+                                        <p className="text-xs text-[var(--color-link)] mt-0.5">{getShortURL(link.slug)}</p>
+                                    </div>
+                                )}
+                                <div className="flex gap-1.5 shrink-0">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="outline"
+                                                className="border-primary text-primary hover:bg-primary/10 text-xs px-3"
+                                                disabled={editLoading || !editTitle.trim() || !editUrl.trim()}
+                                                onClick={handleSaveEdit}
+                                            >
+                                                <Check size={14} />
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                className="border-gray-300 text-gray-500 hover:bg-gray-50 text-xs px-3"
+                                                onClick={handleCancelEdit}
+                                            >
+                                                <X size={14} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="outline"
+                                                className="border-gray-300 text-gray-500 hover:bg-gray-50 text-xs px-3"
+                                                onClick={() => handleStartEdit(link)}
+                                            >
+                                                <Pencil size={14} />
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                className="border-red-300 text-red-500 hover:bg-red-50 text-xs px-3"
+                                                onClick={() => handleRemoveLink(link.id)}
+                                            >
+                                                <Trash2 size={14} />
+                                            </Button>
+                                        </>
+                                    )}
                                 </div>
-                                <Button
-                                    variant="outline"
-                                    className="border-red-300 text-red-500 hover:bg-red-50 text-xs px-3 shrink-0"
-                                    onClick={() => handleRemoveLink(link.id)}
-                                >
-                                    <Trash2 size={14} />
-                                </Button>
                             </div>
                             );
                         })}

@@ -91,6 +91,38 @@ func (r *BioRepository) AddLink(ctx context.Context, bl *domain.BioLink) error {
 	).Scan(&bl.ID, &bl.Position, &bl.CreatedAt)
 }
 
+func (r *BioRepository) UpdateLink(ctx context.Context, bioLinkID int64, bioPageID int64, title string, targetURL string) error {
+	tx, err := r.Conn.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// Update title in bio_links
+	res, err := tx.ExecContext(ctx,
+		`UPDATE bio_links SET title=$1 WHERE bio_link_id=$2 AND bio_page_id=$3`,
+		title, bioLinkID, bioPageID,
+	)
+	if err != nil {
+		return err
+	}
+	n, _ := res.RowsAffected()
+	if n == 0 {
+		return domain.ErrBioLinkNotFound
+	}
+
+	// Update target_url in the linked links row
+	_, err = tx.ExecContext(ctx,
+		`UPDATE links SET target_url=$1 WHERE link_id=(SELECT link_id FROM bio_links WHERE bio_link_id=$2)`,
+		targetURL, bioLinkID,
+	)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
+
 func (r *BioRepository) RemoveLink(ctx context.Context, bioLinkID int64, bioPageID int64) error {
 	const q = `DELETE FROM bio_links WHERE bio_link_id=$1 AND bio_page_id=$2`
 	res, err := r.Conn.ExecContext(ctx, q, bioLinkID, bioPageID)

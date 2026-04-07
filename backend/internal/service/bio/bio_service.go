@@ -123,6 +123,19 @@ func (s *service) AddLink(ctx context.Context, userID int64, title, targetURL st
 	return bl, nil
 }
 
+func (s *service) UpdateLink(ctx context.Context, userID int64, bioLinkID int64, title, targetURL string) error {
+	page, err := s.bioRepo.GetPageByUserID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	title = strings.TrimSpace(title)
+	targetURL = strings.TrimSpace(targetURL)
+	if title == "" || targetURL == "" {
+		return fmt.Errorf("title and url are required")
+	}
+	return s.bioRepo.UpdateLink(ctx, bioLinkID, page.ID, title, targetURL)
+}
+
 func (s *service) RemoveLink(ctx context.Context, userID int64, bioLinkID int64) error {
 	page, err := s.bioRepo.GetPageByUserID(ctx, userID)
 	if err != nil {

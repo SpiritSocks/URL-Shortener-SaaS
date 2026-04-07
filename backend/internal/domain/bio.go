@@ -38,6 +38,7 @@ type BioPageRepository interface {
 	HandleExists(ctx context.Context, handle string) (bool, error)
 
 	AddLink(ctx context.Context, bl *BioLink) error
+	UpdateLink(ctx context.Context, bioLinkID int64, bioPageID int64, title string, targetURL string) error
 	RemoveLink(ctx context.Context, bioLinkID int64, bioPageID int64) error
 	ListLinks(ctx context.Context, bioPageID int64) ([]BioLink, error)
 	ListVisibleLinks(ctx context.Context, bioPageID int64) ([]BioLink, error)
@@ -53,6 +54,7 @@ type BioPageService interface {
 
 	// Bio link management (auth required)
 	AddLink(ctx context.Context, userID int64, title, targetURL string) (BioLink, error)
+	UpdateLink(ctx context.Context, userID int64, bioLinkID int64, title, targetURL string) error
 	RemoveLink(ctx context.Context, userID int64, bioLinkID int64) error
 	ReorderLinks(ctx context.Context, userID int64, orderedIDs []int64) error
 

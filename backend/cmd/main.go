@@ -193,6 +193,7 @@ func main() {
 		protected.PUT("/bio/page", bioHandler.UpdatePage)
 		protected.GET("/bio/page", bioHandler.GetMyPage)
 		protected.POST("/bio/links", bioHandler.AddBioLink)
+		protected.PUT("/bio/links/:id", bioHandler.UpdateBioLink)
 		protected.DELETE("/bio/links/:id", bioHandler.RemoveBioLink)
 		protected.PUT("/bio/links/reorder", bioHandler.ReorderLinks)
 	}
