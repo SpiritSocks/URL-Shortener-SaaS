@@ -156,15 +156,15 @@ func (s *service) ReorderLinks(ctx context.Context, userID int64, orderedIDs []i
 	return s.bioRepo.ReorderLinks(ctx, page.ID, orderedIDs)
 }
 
-func (s *service) GetPublicPage(ctx context.Context, handle string) (domain.BioPage, []domain.BioLink, bool, error) {
+func (s *service) GetPublicPage(ctx context.Context, handle string) (domain.BioPage, []domain.BioLink, bool, bool, error) {
 	page, err := s.bioRepo.GetPageByHandle(ctx, handle)
 	if err != nil {
-		return domain.BioPage{}, nil, false, err
+		return domain.BioPage{}, nil, false, false, err
 	}
 
 	links, err := s.bioRepo.ListVisibleLinks(ctx, page.ID)
 	if err != nil {
-		return domain.BioPage{}, nil, false, err
+		return domain.BioPage{}, nil, false, false, err
 	}
 
 	// Determine features based on owner's plan

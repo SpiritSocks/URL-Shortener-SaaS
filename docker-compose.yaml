@@ -29,6 +29,11 @@ services:
       FRONTEND_URL: ${FRONTEND_URL:-https://linxie.ru}
       APP_DOMAIN: ${APP_DOMAIN:-linxie.ru}
       BASE_URL: ${BASE_URL:-https://linxie.ru}
+      SMTP_HOST: ${SMTP_HOST:-smtp.timeweb.ru}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:-support@linxie.ru}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM:-support@linxie.ru}
     expose:
       - "8080"
     depends_on:
