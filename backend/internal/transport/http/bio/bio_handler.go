@@ -22,18 +22,20 @@ func (h *Handler) CreatePage(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 
 	var req struct {
-		Handle      string `json:"handle"`
-		DisplayName string `json:"display_name"`
-		BioText     string `json:"bio_text"`
-		AvatarURL   string `json:"avatar_url"`
-		Theme       string `json:"theme"`
+		Handle         string `json:"handle"`
+		DisplayName    string `json:"display_name"`
+		BioText        string `json:"bio_text"`
+		AvatarURL      string `json:"avatar_url"`
+		Theme          string `json:"theme"`
+		CustomBtnColor string `json:"custom_btn_color"`
+		CustomBgColor  string `json:"custom_bg_color"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil || req.Handle == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "handle is required"})
 		return
 	}
 
-	page, err := h.bioSvc.CreatePage(c.Request.Context(), userID, req.Handle, req.DisplayName, req.BioText, req.AvatarURL, req.Theme)
+	page, err := h.bioSvc.CreatePage(c.Request.Context(), userID, req.Handle, req.DisplayName, req.BioText, req.AvatarURL, req.Theme, req.CustomBtnColor, req.CustomBgColor)
 	if err != nil {
 		if errors.Is(err, domain.ErrHandleTaken) {
 			c.JSON(http.StatusConflict, gin.H{"error": "handle_taken", "message": "This handle is already taken"})
@@ -50,18 +52,20 @@ func (h *Handler) UpdatePage(c *gin.Context) {
 	userID := c.MustGet("user_id").(int64)
 
 	var req struct {
-		Handle      string `json:"handle"`
-		DisplayName string `json:"display_name"`
-		BioText     string `json:"bio_text"`
-		AvatarURL   string `json:"avatar_url"`
-		Theme       string `json:"theme"`
+		Handle         string `json:"handle"`
+		DisplayName    string `json:"display_name"`
+		BioText        string `json:"bio_text"`
+		AvatarURL      string `json:"avatar_url"`
+		Theme          string `json:"theme"`
+		CustomBtnColor string `json:"custom_btn_color"`
+		CustomBgColor  string `json:"custom_bg_color"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
-	page, err := h.bioSvc.UpdatePage(c.Request.Context(), userID, req.Handle, req.DisplayName, req.BioText, req.AvatarURL, req.Theme)
+	page, err := h.bioSvc.UpdatePage(c.Request.Context(), userID, req.Handle, req.DisplayName, req.BioText, req.AvatarURL, req.Theme, req.CustomBtnColor, req.CustomBgColor)
 	if err != nil {
 		if errors.Is(err, domain.ErrBioPageNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "bio page not found"})
@@ -99,10 +103,11 @@ func (h *Handler) GetMyPage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"exists":         true,
-		"page":           pageToJSON(page),
-		"links":          linksList,
-		"max_bio_links":  plan.MaxBioLinks,
+		"exists":        true,
+		"page":          pageToJSON(page),
+		"links":         linksList,
+		"max_bio_links": plan.MaxBioLinks,
+		"plan_name":     plan.Name,
 	})
 }
 
@@ -210,7 +215,7 @@ func (h *Handler) GetPublicPage(c *gin.Context) {
 		return
 	}
 
-	page, links, showBranding, err := h.bioSvc.GetPublicPage(c.Request.Context(), handle)
+	page, links, showBranding, showIcons, err := h.bioSvc.GetPublicPage(c.Request.Context(), handle)
 	if err != nil {
 		if errors.Is(err, domain.ErrBioPageNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "bio page not found"})
@@ -229,19 +234,22 @@ func (h *Handler) GetPublicPage(c *gin.Context) {
 		"page":          pageToJSON(page),
 		"links":         linksList,
 		"show_branding": showBranding,
+		"show_icons":    showIcons,
 	})
 }
 
 func pageToJSON(p domain.BioPage) map[string]interface{} {
 	return map[string]interface{}{
-		"id":           p.ID,
-		"handle":       p.Handle,
-		"display_name": p.DisplayName,
-		"bio_text":     p.BioText,
-		"avatar_url":   p.AvatarURL,
-		"theme":        p.Theme,
-		"created_at":   p.CreatedAt,
-		"updated_at":   p.UpdatedAt,
+		"id":               p.ID,
+		"handle":           p.Handle,
+		"display_name":     p.DisplayName,
+		"bio_text":         p.BioText,
+		"avatar_url":       p.AvatarURL,
+		"theme":            p.Theme,
+		"custom_btn_color": p.CustomBtnColor,
+		"custom_bg_color":  p.CustomBgColor,
+		"created_at":       p.CreatedAt,
+		"updated_at":       p.UpdatedAt,
 	}
 }
 

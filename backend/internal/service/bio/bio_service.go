@@ -21,7 +21,7 @@ func NewBioService(bioRepo domain.BioPageRepository, linkSvc domain.LinkService,
 	return &service{bioRepo: bioRepo, linkSvc: linkSvc, billingSvc: billingSvc}
 }
 
-func (s *service) CreatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (domain.BioPage, error) {
+func (s *service) CreatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme, customBtnColor, customBgColor string) (domain.BioPage, error) {
 	handle = strings.ToLower(strings.TrimSpace(handle))
 	if !handleRe.MatchString(handle) {
 		return domain.BioPage{}, fmt.Errorf("handle must be 3-50 characters: lowercase letters, numbers, hyphens, underscores")
@@ -36,12 +36,14 @@ func (s *service) CreatePage(ctx context.Context, userID int64, handle, displayN
 	}
 
 	page := domain.BioPage{
-		UserID:      userID,
-		Handle:      handle,
-		DisplayName: displayName,
-		BioText:     bioText,
-		AvatarURL:   avatarURL,
-		Theme:       theme,
+		UserID:         userID,
+		Handle:         handle,
+		DisplayName:    displayName,
+		BioText:        bioText,
+		AvatarURL:      avatarURL,
+		Theme:          theme,
+		CustomBtnColor: strings.TrimSpace(customBtnColor),
+		CustomBgColor:  strings.TrimSpace(customBgColor),
 	}
 	if err := s.bioRepo.CreatePage(ctx, &page); err != nil {
 		return domain.BioPage{}, err
@@ -49,7 +51,7 @@ func (s *service) CreatePage(ctx context.Context, userID int64, handle, displayN
 	return page, nil
 }
 
-func (s *service) UpdatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (domain.BioPage, error) {
+func (s *service) UpdatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme, customBtnColor, customBgColor string) (domain.BioPage, error) {
 	page, err := s.bioRepo.GetPageByUserID(ctx, userID)
 	if err != nil {
 		return domain.BioPage{}, err
@@ -63,9 +65,11 @@ func (s *service) UpdatePage(ctx context.Context, userID int64, handle, displayN
 		page.Handle = handle
 	}
 
-	page.DisplayName = strings.TrimSpace(displayName)
-	page.BioText = strings.TrimSpace(bioText)
-	page.AvatarURL = strings.TrimSpace(avatarURL)
+	page.DisplayName    = strings.TrimSpace(displayName)
+	page.BioText        = strings.TrimSpace(bioText)
+	page.AvatarURL      = strings.TrimSpace(avatarURL)
+	page.CustomBtnColor = strings.TrimSpace(customBtnColor)
+	page.CustomBgColor  = strings.TrimSpace(customBgColor)
 	theme = strings.TrimSpace(theme)
 	if theme != "" {
 		page.Theme = theme
@@ -163,12 +167,18 @@ func (s *service) GetPublicPage(ctx context.Context, handle string) (domain.BioP
 		return domain.BioPage{}, nil, false, err
 	}
 
-	// Determine branding based on owner's plan
+	// Determine features based on owner's plan
 	showBranding := true
+	showIcons := false
 	plan, err := s.billingSvc.GetUserPlan(ctx, page.UserID)
-	if err == nil && (plan.Name == "unlimited" || plan.Name == "friends") {
-		showBranding = false
+	if err == nil {
+		if plan.Name == "pro" || plan.Name == "unlimited" || plan.Name == "friends" {
+			showBranding = false
+		}
+		if plan.Name != "free" {
+			showIcons = true
+		}
 	}
 
-	return page, links, showBranding, nil
+	return page, links, showBranding, showIcons, nil
 }

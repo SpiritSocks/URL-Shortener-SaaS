@@ -36,11 +36,15 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
     const [bioText, setBioText] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
     const [theme, setTheme] = useState('default');
+    const [customBtnColor, setCustomBtnColor] = useState('');
+    const [customBgColor, setCustomBgColor] = useState('');
 
     // Avatar
     const [avatarMode, setAvatarMode] = useState<'url' | 'upload'>('url');
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [planName, setPlanName] = useState('free');
 
     // Edit link
     const [editingId, setEditingId] = useState<number | null>(null);
@@ -61,11 +65,14 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 setPage(data.page);
                 setLinks(data.links || []);
                 setMaxBioLinks(data.max_bio_links ?? 5);
+                setPlanName(data.plan_name ?? 'free');
                 setHandle(data.page.handle);
                 setDisplayName(data.page.display_name);
                 setBioText(data.page.bio_text);
                 setAvatarUrl(data.page.avatar_url);
                 setTheme(data.page.theme);
+                setCustomBtnColor(data.page.custom_btn_color ?? '');
+                setCustomBgColor(data.page.custom_bg_color ?? '');
             }
         } catch {
             // ignore
@@ -86,7 +93,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         setError('');
         setLoading(true);
         try {
-            await apiCreateBioPage(handle.trim().toLowerCase(), displayName, bioText, avatarUrl, theme);
+            await apiCreateBioPage(handle.trim().toLowerCase(), displayName, bioText, avatarUrl, theme, customBtnColor, customBgColor);
             await fetchPage();
         } catch (err: any) {
             setError(err.message || 'Не удалось создать био-страницу');
@@ -99,7 +106,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
         setError('');
         setLoading(true);
         try {
-            await apiUpdateBioPage(handle, displayName, bioText, avatarUrl, theme);
+            await apiUpdateBioPage(handle, displayName, bioText, avatarUrl, theme, customBtnColor, customBgColor);
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);
         } catch (err: any) {
@@ -288,26 +295,34 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                 avatarMode === 'upload' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                             }`}
                         >
-                            <Upload size={12} /> Загрузить
+                            <Upload size={12} /> Загрузить {planName === 'free' && <span className="ml-1 text-[9px] bg-yellow-400 text-yellow-900 font-bold px-1 rounded">Pro</span>}
                         </button>
                     </div>
 
                     <label className="block text-sm font-medium text-foreground mt-3">Тема</label>
-                    <div className="flex gap-3 mt-2">
-                        {THEMES.map(t => (
-                            <button
-                                key={t.id}
-                                onClick={() => setTheme(t.id)}
-                                className={`flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
-                                    theme === t.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'
-                                }`}
-                            >
-                                <div className={`w-8 h-8 rounded-md ${t.bg} border`}>
-                                    <div className={`w-4 h-2 ${t.accent} rounded-sm mt-2 mx-auto`} />
+                    <div className="flex gap-3 mt-2 flex-wrap">
+                        {THEMES.map(t => {
+                            const locked = planName === 'free' && (t.id === 'ocean' || t.id === 'sunset');
+                            return (
+                                <div key={t.id} className="relative">
+                                    <button
+                                        onClick={() => !locked && setTheme(t.id)}
+                                        disabled={locked}
+                                        title={locked ? 'Доступно на Pro и выше' : t.label}
+                                        className={`flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
+                                            locked ? 'opacity-40 cursor-not-allowed border-gray-200' :
+                                            theme === t.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'
+                                        }`}
+                                    >
+                                        <div className={`w-8 h-8 rounded-md ${t.bg} border`}>
+                                            <div className={`w-4 h-2 ${t.accent} rounded-sm mt-2 mx-auto`} />
+                                        </div>
+                                        <span className="text-xs text-gray-600">{t.label}</span>
+                                    </button>
+                                    {locked && <span className="absolute -top-1 -right-1 text-[9px] bg-yellow-400 text-yellow-900 font-bold px-1 rounded">Pro</span>}
                                 </div>
-                                <span className="text-xs text-gray-600">{t.label}</span>
-                            </button>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
@@ -416,8 +431,9 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                 <Link size={12} /> По ссылке
                             </button>
                             <button
-                                onClick={() => setAvatarMode('upload')}
+                                onClick={() => planName !== 'free' && setAvatarMode('upload')}
                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs border-2 transition-all ${
+                                    planName === 'free' ? 'opacity-50 cursor-not-allowed border-gray-200 text-gray-400' :
                                     avatarMode === 'upload' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                                 }`}
                             >
@@ -438,12 +454,17 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 <label className="block text-sm font-medium text-foreground mt-3 flex items-center gap-1">
                     <Palette size={14} /> Тема
                 </label>
-                <div className="flex gap-3 mt-2">
-                    {THEMES.map(t => (
+                <div className="flex gap-3 mt-2 flex-wrap">
+                    {THEMES.map(t => {
+                        const locked = planName === 'free' && (t.id === 'ocean' || t.id === 'sunset');
+                        return (
+                        <div key={t.id} className="relative">
                         <button
-                            key={t.id}
-                            onClick={() => setTheme(t.id)}
+                            onClick={() => !locked && setTheme(t.id)}
+                            disabled={locked}
+                            title={locked ? 'Доступно на Pro и выше' : t.label}
                             className={`flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
+                                locked ? 'opacity-40 cursor-not-allowed border-gray-200' :
                                 theme === t.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'
                             }`}
                         >
@@ -452,8 +473,53 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                             </div>
                             <span className="text-xs text-gray-600">{t.label}</span>
                         </button>
-                    ))}
+                        {locked && <span className="absolute -top-1 -right-1 text-[9px] bg-yellow-400 text-yellow-900 font-bold px-1 rounded">Pro</span>}
+                        </div>
+                        );
+                    })}
                 </div>
+
+                {/* Custom colors — Unlimited only */}
+                {planName === 'unlimited' || planName === 'friends' ? (
+                    <div className="mt-3">
+                        <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-1">
+                            <Palette size={14} /> Кастомные цвета
+                            <span className="ml-1 text-[9px] bg-purple-500 text-white font-bold px-1.5 py-0.5 rounded">Unlimited</span>
+                        </label>
+                        <div className="flex gap-4">
+                            <div className="flex items-center gap-2">
+                                <label className="text-xs text-gray-500 whitespace-nowrap">Кнопки</label>
+                                <input
+                                    type="color"
+                                    value={customBtnColor || '#343b1b'}
+                                    onChange={e => setCustomBtnColor(e.target.value)}
+                                    className="w-8 h-8 rounded cursor-pointer border border-border"
+                                />
+                                {customBtnColor && (
+                                    <button onClick={() => setCustomBtnColor('')} className="text-xs text-gray-400 hover:text-gray-600">сброс</button>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <label className="text-xs text-gray-500 whitespace-nowrap">Фон</label>
+                                <input
+                                    type="color"
+                                    value={customBgColor || '#FAFAF5'}
+                                    onChange={e => setCustomBgColor(e.target.value)}
+                                    className="w-8 h-8 rounded cursor-pointer border border-border"
+                                />
+                                {customBgColor && (
+                                    <button onClick={() => setCustomBgColor('')} className="text-xs text-gray-400 hover:text-gray-600">сброс</button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
+                        <Palette size={12} />
+                        <span>Кастомные цвета доступны на</span>
+                        <span className="text-[9px] bg-purple-500 text-white font-bold px-1.5 py-0.5 rounded">Unlimited</span>
+                    </div>
+                )}
 
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 

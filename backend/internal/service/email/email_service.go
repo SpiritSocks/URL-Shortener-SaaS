@@ -2,11 +2,36 @@ package email
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net"
 	"net/smtp"
 	"os"
 )
+
+// loginAuth implements smtp.Auth using the LOGIN mechanism
+// (required by many Russian hosting providers like Timeweb).
+type loginAuth struct {
+	username, password string
+}
+
+func (a *loginAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	return "LOGIN", nil, nil
+}
+
+func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
+	if !more {
+		return nil, nil
+	}
+	switch string(fromServer) {
+	case "Username:", "username:":
+		return []byte(a.username), nil
+	case "Password:", "password:":
+		return []byte(a.password), nil
+	default:
+		return nil, errors.New("unexpected server challenge: " + string(fromServer))
+	}
+}
 
 type Service struct {
 	host     string
@@ -70,7 +95,7 @@ func (s *Service) sendSSL(addr, to, msg string) error {
 	}
 	defer client.Quit()
 
-	auth := smtp.PlainAuth("", s.user, s.password, s.host)
+	auth := &loginAuth{username: s.user, password: s.password}
 	if err := client.Auth(auth); err != nil {
 		return fmt.Errorf("smtp auth: %w", err)
 	}
@@ -110,7 +135,7 @@ func (s *Service) sendSTARTTLS(addr, to, msg string) error {
 		return fmt.Errorf("starttls: %w", err)
 	}
 
-	auth := smtp.PlainAuth("", s.user, s.password, s.host)
+	auth := &loginAuth{username: s.user, password: s.password}
 	if err := client.Auth(auth); err != nil {
 		return fmt.Errorf("smtp auth: %w", err)
 	}

@@ -74,11 +74,15 @@ const BioPage = () => {
         );
     }
 
-    const { page, links, show_branding } = data;
+    const { page, links, show_branding, show_icons } = data;
     const t = THEME_STYLES[page.theme] || THEME_STYLES.default;
 
+    // Custom colors override theme (Unlimited feature)
+    const bgStyle = page.custom_bg_color ? { background: page.custom_bg_color } : {};
+    const btnStyle = page.custom_btn_color ? { background: page.custom_btn_color } : {};
+
     return (
-        <div className={`min-h-screen ${t.bg} flex flex-col items-center px-4 py-12`}>
+        <div className={`min-h-screen ${page.custom_bg_color ? '' : t.bg} flex flex-col items-center px-4 py-12`} style={bgStyle}>
             <div className="w-full max-w-md flex flex-col items-center gap-6">
                 {/* Avatar */}
                 {page.avatar_url && (
@@ -114,9 +118,10 @@ const BioPage = () => {
                                 href={`/r/${link.slug}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className={`flex items-center justify-center gap-2.5 w-full ${t.btn} ${t.btnText} font-medium py-3.5 px-6 rounded-xl shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md`}
+                                className={`flex items-center justify-center gap-2.5 w-full ${page.custom_btn_color ? '' : t.btn} ${t.btnText} font-medium py-3.5 px-6 rounded-xl shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md`}
+                                style={btnStyle}
                             >
-                                <Icon size={18} />
+                                {show_icons && <Icon size={18} />}
                                 {link.title}
                             </a>
                         );

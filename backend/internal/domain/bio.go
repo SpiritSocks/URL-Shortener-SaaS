@@ -6,15 +6,17 @@ import (
 )
 
 type BioPage struct {
-	ID          int64     `json:"id"`
-	UserID      int64     `json:"user_id"`
-	Handle      string    `json:"handle"`
-	DisplayName string    `json:"display_name"`
-	BioText     string    `json:"bio_text"`
-	AvatarURL   string    `json:"avatar_url"`
-	Theme       string    `json:"theme"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID             int64     `json:"id"`
+	UserID         int64     `json:"user_id"`
+	Handle         string    `json:"handle"`
+	DisplayName    string    `json:"display_name"`
+	BioText        string    `json:"bio_text"`
+	AvatarURL      string    `json:"avatar_url"`
+	Theme          string    `json:"theme"`
+	CustomBtnColor string    `json:"custom_btn_color"`
+	CustomBgColor  string    `json:"custom_bg_color"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 type BioLink struct {
@@ -48,8 +50,8 @@ type BioPageRepository interface {
 
 type BioPageService interface {
 	// Page management (auth required)
-	CreatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (BioPage, error)
-	UpdatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme string) (BioPage, error)
+	CreatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme, customBtnColor, customBgColor string) (BioPage, error)
+	UpdatePage(ctx context.Context, userID int64, handle, displayName, bioText, avatarURL, theme, customBtnColor, customBgColor string) (BioPage, error)
 	GetMyPage(ctx context.Context, userID int64) (BioPage, []BioLink, error)
 
 	// Bio link management (auth required)
@@ -59,5 +61,5 @@ type BioPageService interface {
 	ReorderLinks(ctx context.Context, userID int64, orderedIDs []int64) error
 
 	// Public (no auth)
-	GetPublicPage(ctx context.Context, handle string) (BioPage, []BioLink, bool, error)
+	GetPublicPage(ctx context.Context, handle string) (BioPage, []BioLink, bool, bool, error)
 }

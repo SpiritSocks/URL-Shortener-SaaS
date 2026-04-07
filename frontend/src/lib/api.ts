@@ -395,6 +395,8 @@ export interface BioPageData {
   bio_text: string;
   avatar_url: string;
   theme: string;
+  custom_btn_color: string;
+  custom_bg_color: string;
   created_at: string;
   updated_at: string;
 }
@@ -414,12 +416,14 @@ export interface MyBioPageResponse {
   page?: BioPageData;
   links?: BioLinkData[];
   max_bio_links?: number;
+  plan_name?: string;
 }
 
 export interface PublicBioPageResponse {
   page: BioPageData;
   links: BioLinkData[];
   show_branding: boolean;
+  show_icons: boolean;
 }
 
 export async function apiUploadAvatar(file: File): Promise<string> {
@@ -440,11 +444,11 @@ export async function apiUploadAvatar(file: File): Promise<string> {
   return data.url;
 }
 
-export async function apiCreateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
+export async function apiCreateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string, customBtnColor = '', customBgColor = ''): Promise<BioPageData> {
   const res = await fetch(`${API_BASE}/bio/page`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ handle, display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme }),
+    body: JSON.stringify({ handle, display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme, custom_btn_color: customBtnColor, custom_bg_color: customBgColor }),
   });
   if (!res.ok) {
     handleUnauthorized(res);
@@ -454,11 +458,11 @@ export async function apiCreateBioPage(handle: string, displayName: string, bioT
   return res.json();
 }
 
-export async function apiUpdateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string): Promise<BioPageData> {
+export async function apiUpdateBioPage(handle: string, displayName: string, bioText: string, avatarUrl: string, theme: string, customBtnColor = '', customBgColor = ''): Promise<BioPageData> {
   const res = await fetch(`${API_BASE}/bio/page`, {
     method: 'PUT',
     headers: authHeaders(),
-    body: JSON.stringify({ handle, display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme }),
+    body: JSON.stringify({ handle, display_name: displayName, bio_text: bioText, avatar_url: avatarUrl, theme, custom_btn_color: customBtnColor, custom_bg_color: customBgColor }),
   });
   if (!res.ok) {
     handleUnauthorized(res);

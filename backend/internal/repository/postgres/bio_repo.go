@@ -18,12 +18,12 @@ func NewBioRepository(conn *sql.DB) *BioRepository {
 
 func (r *BioRepository) CreatePage(ctx context.Context, page *domain.BioPage) error {
 	const q = `
-		INSERT INTO bio_pages (user_id, handle, display_name, bio_text, avatar_url, theme)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO bio_pages (user_id, handle, display_name, bio_text, avatar_url, theme, custom_btn_color, custom_bg_color)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING bio_page_id, created_at, updated_at
 	`
 	err := r.Conn.QueryRowContext(ctx, q,
-		page.UserID, page.Handle, page.DisplayName, page.BioText, page.AvatarURL, page.Theme,
+		page.UserID, page.Handle, page.DisplayName, page.BioText, page.AvatarURL, page.Theme, page.CustomBtnColor, page.CustomBgColor,
 	).Scan(&page.ID, &page.CreatedAt, &page.UpdatedAt)
 	if err != nil && (strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "unique")) {
 		if strings.Contains(err.Error(), "handle") {
@@ -34,11 +34,11 @@ func (r *BioRepository) CreatePage(ctx context.Context, page *domain.BioPage) er
 }
 
 func (r *BioRepository) GetPageByUserID(ctx context.Context, userID int64) (domain.BioPage, error) {
-	const q = `SELECT bio_page_id, user_id, handle, display_name, bio_text, avatar_url, theme, created_at, updated_at
+	const q = `SELECT bio_page_id, user_id, handle, display_name, bio_text, avatar_url, theme, custom_btn_color, custom_bg_color, created_at, updated_at
 		FROM bio_pages WHERE user_id = $1`
 	var p domain.BioPage
 	err := r.Conn.QueryRowContext(ctx, q, userID).Scan(
-		&p.ID, &p.UserID, &p.Handle, &p.DisplayName, &p.BioText, &p.AvatarURL, &p.Theme, &p.CreatedAt, &p.UpdatedAt,
+		&p.ID, &p.UserID, &p.Handle, &p.DisplayName, &p.BioText, &p.AvatarURL, &p.Theme, &p.CustomBtnColor, &p.CustomBgColor, &p.CreatedAt, &p.UpdatedAt,
 	)
 	if err == sql.ErrNoRows {
 		return domain.BioPage{}, domain.ErrBioPageNotFound
@@ -47,11 +47,11 @@ func (r *BioRepository) GetPageByUserID(ctx context.Context, userID int64) (doma
 }
 
 func (r *BioRepository) GetPageByHandle(ctx context.Context, handle string) (domain.BioPage, error) {
-	const q = `SELECT bio_page_id, user_id, handle, display_name, bio_text, avatar_url, theme, created_at, updated_at
+	const q = `SELECT bio_page_id, user_id, handle, display_name, bio_text, avatar_url, theme, custom_btn_color, custom_bg_color, created_at, updated_at
 		FROM bio_pages WHERE handle = $1`
 	var p domain.BioPage
 	err := r.Conn.QueryRowContext(ctx, q, handle).Scan(
-		&p.ID, &p.UserID, &p.Handle, &p.DisplayName, &p.BioText, &p.AvatarURL, &p.Theme, &p.CreatedAt, &p.UpdatedAt,
+		&p.ID, &p.UserID, &p.Handle, &p.DisplayName, &p.BioText, &p.AvatarURL, &p.Theme, &p.CustomBtnColor, &p.CustomBgColor, &p.CreatedAt, &p.UpdatedAt,
 	)
 	if err == sql.ErrNoRows {
 		return domain.BioPage{}, domain.ErrBioPageNotFound
@@ -60,10 +60,10 @@ func (r *BioRepository) GetPageByHandle(ctx context.Context, handle string) (dom
 }
 
 func (r *BioRepository) UpdatePage(ctx context.Context, page *domain.BioPage) error {
-	const q = `UPDATE bio_pages SET handle=$1, display_name=$2, bio_text=$3, avatar_url=$4, theme=$5, updated_at=NOW()
-		WHERE user_id=$6 RETURNING updated_at`
+	const q = `UPDATE bio_pages SET handle=$1, display_name=$2, bio_text=$3, avatar_url=$4, theme=$5, custom_btn_color=$6, custom_bg_color=$7, updated_at=NOW()
+		WHERE user_id=$8 RETURNING updated_at`
 	err := r.Conn.QueryRowContext(ctx, q,
-		page.Handle, page.DisplayName, page.BioText, page.AvatarURL, page.Theme, page.UserID,
+		page.Handle, page.DisplayName, page.BioText, page.AvatarURL, page.Theme, page.CustomBtnColor, page.CustomBgColor, page.UserID,
 	).Scan(&page.UpdatedAt)
 	if err != nil && (strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "unique")) {
 		if strings.Contains(err.Error(), "handle") {
