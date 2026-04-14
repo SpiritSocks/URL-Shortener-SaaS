@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { FileText, Plus, Trash2, ArrowUp, ArrowDown, Copy, Check, ExternalLink, Palette, Upload, Link, Pencil, X } from "lucide-react";
 import { getSocialIcon } from "@/lib/socialIcons";
+import { isPaidPlan, isUnlimitedPlan } from "@/lib/plans";
 import { Button } from "@/components/ui/button";
 import {
     apiGetMyBioPage, apiCreateBioPage, apiUpdateBioPage,
@@ -295,14 +296,14 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                 avatarMode === 'upload' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                             }`}
                         >
-                            <Upload size={12} /> Загрузить {planName === 'free' && <span className="ml-1 text-[9px] bg-yellow-400 text-yellow-900 font-bold px-1 rounded">Pro</span>}
+                            <Upload size={12} /> Загрузить {!isPaidPlan(planName) && <span className="ml-1 text-[9px] bg-yellow-400 text-yellow-900 font-bold px-1 rounded">Pro</span>}
                         </button>
                     </div>
 
                     <label className="block text-sm font-medium text-foreground mt-3">Тема</label>
                     <div className="flex gap-3 mt-2 flex-wrap">
                         {THEMES.map(t => {
-                            const locked = planName === 'free' && (t.id === 'ocean' || t.id === 'sunset');
+                            const locked = !isPaidPlan(planName) && (t.id === 'ocean' || t.id === 'sunset');
                             return (
                                 <div key={t.id} className="relative">
                                     <button
@@ -431,9 +432,9 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                                 <Link size={12} /> По ссылке
                             </button>
                             <button
-                                onClick={() => planName !== 'free' && setAvatarMode('upload')}
+                                onClick={() => isPaidPlan(planName) && setAvatarMode('upload')}
                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs border-2 transition-all ${
-                                    planName === 'free' ? 'opacity-50 cursor-not-allowed border-gray-200 text-gray-400' :
+                                    !isPaidPlan(planName) ? 'opacity-50 cursor-not-allowed border-gray-200 text-gray-400' :
                                     avatarMode === 'upload' ? 'border-primary bg-primary/10 text-foreground' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                                 }`}
                             >
@@ -480,7 +481,7 @@ const BioMenu = ({ isOpen }: BioMenuProps) => {
                 </div>
 
                 {/* Custom colors — Unlimited only */}
-                {planName === 'unlimited' || planName === 'friends' ? (
+                {isUnlimitedPlan(planName) ? (
                     <div className="mt-3">
                         <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-1">
                             <Palette size={14} /> Кастомные цвета

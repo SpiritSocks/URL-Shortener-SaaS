@@ -172,10 +172,10 @@ func (s *service) GetPublicPage(ctx context.Context, handle string) (domain.BioP
 	showIcons := false
 	plan, err := s.billingSvc.GetUserPlan(ctx, page.UserID)
 	if err == nil {
-		if plan.Name == "pro" || plan.Name == "unlimited" || plan.Name == "friends" {
+		if domain.PlanIsPaidOrAbove(plan.Name) {
 			showBranding = false
 		}
-		if plan.Name != "free" {
+		if domain.PlanIsPaidOrAbove(plan.Name) {
 			showIcons = true
 		}
 	}

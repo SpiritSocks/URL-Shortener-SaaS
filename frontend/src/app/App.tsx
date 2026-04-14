@@ -203,7 +203,7 @@ const App = () => {
           </div>
 
           {/* Unlimited */}
-          <div className="bg-white border-3 border-[var(--color-navbar)] rounded-[15px] shadow-md p-6 flex flex-col">
+          <div className="bg-white border-3 border-(--color-navbar) rounded-[15px] shadow-md p-6 flex flex-col">
             <h3 className="text-xl font-bold mb-1">Unlimited</h3>
             <div className="text-3xl font-bold mb-1">199 ₽</div>
             <p className="text-gray-400 text-sm mb-6">в месяц</p>
@@ -212,7 +212,7 @@ const App = () => {
                 <li key={f} className="flex items-start gap-2"><Check size={15} className="text-green-600 mt-0.5 shrink-0" />{f}</li>
               ))}
             </ul>
-            <button onClick={handleLoginRegistration} className="w-full bg-[var(--color-navbar)] text-white rounded-[10px] py-2.5 font-semibold text-sm hover:opacity-90 transition-opacity">
+            <button onClick={handleLoginRegistration} className="w-full bg-(--color-navbar) text-white rounded-[10px] py-2.5 font-semibold text-sm hover:opacity-90 transition-opacity">
               Перейти на Unlimited
             </button>
           </div>
@@ -220,7 +220,7 @@ const App = () => {
       </section>
 
       <section id="last_part" className="bg-background">
-        <div className="flex flex-col sm:flex-row items-center justify-evenly gap-4 py-6 sm:h-[120px] bg-[var(--color-navbar)] text-[var(--color-page-bg)] text-sm sm:text-lg font-medium px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-evenly gap-4 py-6 sm:h-[120px] bg-(--color-navbar) text-(--color-page-bg) text-sm sm:text-lg font-medium px-4">
           <p>Бесплатный тариф навсегда</p>
           <p>Простой и понятный интерфейс</p>
           <p>Аналитика с первого клика</p>
@@ -276,7 +276,7 @@ const App = () => {
             <div className="bg-primary text-white rounded-2xl p-6 md:p-10 h-full flex flex-col justify-center">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">Готовы начать?</h3>
               <p className="text-white/80 mb-8">
-                Присоединяйтесь к тысячам компаний, которые используют Linxie для отслеживания маркетинговых кампаний и расширения охвата.
+                Присоединяйтесь к людям, которые используют Linxie для отслеживания маркетинговых кампаний и расширения охвата.
               </p>
               <button className="bg-white text-primary font-semibold py-3 px-6 rounded-lg flex
               items-center justify-center gap-2 hover:bg-white/90 transition w-full"
@@ -288,9 +288,9 @@ const App = () => {
         </div>
       </section>
     </main>
-    <footer className="bg-[var(--color-navbar)] text-[var(--color-page-bg)] px-4 sm:px-8 py-6 sm:py-8">
+    <footer className="bg-(--color-navbar) text-(--color-page-bg) px-4 sm:px-8 py-6 sm:py-8">
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-page-bg)]">Linxie</h2>
+        <h2 className="font-bold text-xl sm:text-2xl text-(--color-page-bg)">Linxie</h2>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm text-white/70">
           <button onClick={handleLoginRegistration} className="hover:text-white transition-colors">Войти</button>
           <span className="hidden sm:inline">·</span>

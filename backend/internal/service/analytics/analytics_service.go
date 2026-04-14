@@ -56,7 +56,7 @@ func (srv *service) GetOverview(ctx context.Context, ownerID int64, planName str
 	}
 
 	// Breakdowns are available on Pro and Unlimited plans
-	if planName == "pro" || planName == "unlimited" || planName == "friends" {
+	if domain.PlanIsPaidOrAbove(planName) {
 		stats.Countries, err = srv.repo.CountryBreakdown(ctx, ownerID)
 		if err != nil {
 			return domain.OverviewStats{}, err
@@ -146,7 +146,7 @@ func (srv *service) GetLinkDetail(ctx context.Context, linkID int64, slug, targe
 	}
 
 	// Pro and Unlimited get full breakdowns
-	if planName == "pro" || planName == "unlimited" || planName == "friends" {
+	if domain.PlanIsPaidOrAbove(planName) {
 		stats.Countries, err = srv.repo.CountryBreakdownByLink(ctx, linkID)
 		if err != nil {
 			return domain.LinkDetailStats{}, fmt.Errorf("country breakdown: %w", err)
@@ -166,7 +166,7 @@ func (srv *service) GetLinkDetail(ctx context.Context, linkID int64, slug, targe
 	}
 
 	// Unlimited gets advanced per-link analytics
-	if planName == "unlimited" || planName == "friends" {
+	if domain.PlanIsUnlimited(planName) {
 		stats.Referers, err = srv.repo.RefererBreakdownByLink(ctx, linkID)
 		if err != nil {
 			return domain.LinkDetailStats{}, fmt.Errorf("referer breakdown: %w", err)

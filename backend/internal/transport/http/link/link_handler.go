@@ -254,7 +254,7 @@ func (h *AnalyticsHandler) GetAdvanced(c *gin.Context) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "analytics_locked", "message": "Upgrade your plan to access analytics"})
 			return
 		}
-		if plan.Name != "unlimited" && plan.Name != "friends" {
+		if !domain.PlanIsUnlimited(plan.Name) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "advanced_locked", "message": "Advanced analytics is available on the Unlimited plan"})
 			return
 		}
@@ -332,7 +332,7 @@ func (h *AnalyticsHandler) ExportCSV(c *gin.Context) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "analytics_locked"})
 			return
 		}
-		if plan.Name != "unlimited" && plan.Name != "friends" {
+		if !domain.PlanIsUnlimited(plan.Name) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "advanced_locked", "message": "CSV export is available on the Unlimited plan"})
 			return
 		}

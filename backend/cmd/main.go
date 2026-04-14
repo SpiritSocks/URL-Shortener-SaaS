@@ -256,6 +256,8 @@ func runMigrations(db *sql.DB) {
 		migrationDir + "/010_friends_plan.sql",
 		migrationDir + "/011_password_change_codes.sql",
 		migrationDir + "/012_password_reset_tokens.sql",
+		migrationDir + "/013_free_plan_bio_limits.sql",
+		migrationDir + "/014_bio_plan_features.sql",
 	}
 	for _, f := range files {
 		migration, err := os.ReadFile(f)

@@ -334,8 +334,8 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* Plan Selection */}
-            <div className="mt-6">
+            {/* Plan Selection — hidden for friends plan */}
+            {currentPlan?.name !== 'friends' && <div className="mt-6">
                 <h2 className="text-xl md:text-2xl font-bold mb-2">Выберите тариф</h2>
                 <p className="text-gray-500 mb-6">Выберите тариф, который лучше всего подходит вам</p>
 
@@ -394,7 +394,7 @@ const ProfilePage = () => {
                         );
                     })}
                 </div>
-            </div>
+            </div>}
 
             {/* Delete account */}
             <div className="mt-6 border-3 border-red-200 bg-white rounded-[15px] p-6 shadow-md">

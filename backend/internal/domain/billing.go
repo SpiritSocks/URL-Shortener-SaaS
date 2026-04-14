@@ -37,6 +37,17 @@ type PaymentRepository interface {
 	UpdateStatus(ctx context.Context, yookassaID, status string) error
 }
 
+// PlanIsUnlimited returns true for plans that get all Unlimited features.
+// Add new plan names here to automatically inherit everything.
+func PlanIsUnlimited(name string) bool {
+	return name == "unlimited" || name == "friends"
+}
+
+// PlanIsPaidOrAbove returns true for any non-free plan.
+func PlanIsPaidOrAbove(name string) bool {
+	return name != "" && name != "free"
+}
+
 type BillingService interface {
 	GetPlans(ctx context.Context) ([]Plan, error)
 	GetUserPlan(ctx context.Context, userID int64) (Plan, error)

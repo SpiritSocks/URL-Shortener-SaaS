@@ -145,6 +145,8 @@ const LoginRegistrationPage = () => {
       try {
         await apiRegister(userName, userEmail, password);
         await refreshUser();
+        // @ts-ignore
+        if (typeof ym !== 'undefined') ym(108419631, 'reachGoal', 'registration');
         navigate('/home');
       } catch (err: any) {
         setError(err.message || 'Ошибка регистрации');
