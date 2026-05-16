@@ -1,10 +1,8 @@
 # Linxie URL Shortener 🚀
 
-![Linxie Logo](https://linxie.ru/uploads/avatars/949dc695af49c2488b304f7a624b4f40.jpg)
+![Linxie Logo](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_logo.png)
 
 **Linxie** — сервис для сокращения ссылок с аналитикой, кастомными доменами и функционалом типа Linktree.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE) [![GitHub release](https://img.shields.io/github/v/release/SpiritSocks/Linxie-URL-Shortener)](https://github.com/SpiritSocks/Linxie-URL-Shortener/releases)
 
 ---
 
