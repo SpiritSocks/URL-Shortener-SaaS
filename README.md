@@ -1,6 +1,6 @@
 # Linxie URL Shortener 🚀
 
-![Linxie Logo](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_logo.png)
+![Linxie Logo](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_logo.png)
 
 **Linxie** — сервис для сокращения ссылок с аналитикой, кастомными доменами и функционалом типа Linktree.
 
@@ -89,10 +89,10 @@ php artisan serve
 ## 📸 Скриншоты
 
 ![Главная страница](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_landing.jpg)
-![Создание ссылки](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_links-page.jpg)  
-![Био-страница](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_bio-page.jpg)  
-![Кастомные домены](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_domains-page.jpg)  
-![Аналитика](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_analytics-page.jpg)
+![Создание ссылки](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_links-page.jpg)  
+![Био-страница](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_bio-page.jpg)  
+![Кастомные домены](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_domains-page.jpg)  
+![Аналитика](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_analytics-page.jpg)
 
 ---
 
