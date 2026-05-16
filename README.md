@@ -88,7 +88,7 @@ php artisan serve
 
 ## 📸 Скриншоты
 
-![Главная страница](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_landing.jpg)  
+![Главная страница](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_landing.jpg)
 ![Создание ссылки](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_links-page.jpg)  
 ![Био-страница](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_bio-page.jpg)  
 ![Кастомные домены](https://github.com/SpiritSocks/Linxie-URL-Shortener/images/linxie_domains-page.jpg)  
