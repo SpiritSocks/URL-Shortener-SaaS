@@ -42,7 +42,7 @@ https://linxie.ru/u/spiritsocks
 
 Графики и диаграммы для наглядности.
 
-![Analytics Example](./screenshots/screenshot_analytics.jpg)
+![Analytics Example](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_analytics-example.png)
 
 ---
 
