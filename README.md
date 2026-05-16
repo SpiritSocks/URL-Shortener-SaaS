@@ -1,6 +1,6 @@
 # Linxie URL Shortener 🚀
 
-![Linxie Logo](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_logo.png)
+![Linxie Logo](https://raw.githubusercontent.com/SpiritSocks/Linxie-URL-Shortener/main/images/linxie_logo.jpg)
 
 **Linxie** — сервис для сокращения ссылок с аналитикой, кастомными доменами и функционалом типа Linktree.
 
@@ -110,13 +110,6 @@ php artisan serve
 - Расширенные аналитические панели с фильтрацией по источникам трафика
 - API для автоматического сокращения ссылок через внешние сервисы
 - Мобильное приложение для управления и аналитики
-
----
-
-## 📄 Лицензия
-
-MIT License.  
-См. [LICENSE](LICENSE) для подробностей.
 
 ---
 
